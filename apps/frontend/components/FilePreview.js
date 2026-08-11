@@ -208,11 +208,13 @@ const FilePreview = ({
 
     if (file.type.startsWith('image/')) {
       return (
-        <div className={`${previewContainer} ${previewBackground}`}>
+        <div className={`${previewContainer} ${previewBackground}`} style={{ aspectRatio: '4 / 3' }}>
           <img
             src={previewUrl || file.url}
             alt={`${file.name} 미리보기`}
             className="w-full h-full object-cover"
+            width="320"
+            height="240"
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = '/placeholder-image.png';
@@ -226,7 +228,7 @@ const FilePreview = ({
 
     if (file.type.startsWith('video/')) {
       return (
-        <div className={`${previewContainer}`}>
+        <div className={`${previewContainer}`} style={{ aspectRatio: '4 / 3' }}>
           <video
             src={previewUrl || file.url}
             className="w-full h-full object-cover"
