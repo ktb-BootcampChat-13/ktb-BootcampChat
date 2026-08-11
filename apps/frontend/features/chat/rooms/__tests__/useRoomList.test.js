@@ -102,4 +102,5 @@ describe('useRoomList', () => {
     expect(result.current.error).toBeNull();
     expect(result.current.rooms).toEqual([{ _id: 'room-1' }]);
   });
+
 });

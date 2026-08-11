@@ -11,13 +11,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.stereotype.Component;
 
-@Component
-@ConditionalOnProperty(name = "file.storage.type", havingValue = "local", matchIfMissing = true)
+/** 테스트 전용 로컬 구현. 애플리케이션 빈으로 등록하지 않아 운영 코드에서는 사용할 수 없다. */
 public class LocalStorage implements StoragePort {
 
     private final Path rootLocation;
