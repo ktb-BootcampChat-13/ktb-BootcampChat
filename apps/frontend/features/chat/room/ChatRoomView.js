@@ -4,9 +4,9 @@ import {
   Button,
   Text,
   Callout,
-  Card,
   Spinner,
   Flex,
+  Box,
 } from '@vapor-ui/core';
 import { ErrorCircleOutlineIcon } from '@vapor-ui/icons';
 import { useChatRoom } from './useChatRoom';
@@ -34,52 +34,6 @@ const ChatRoomView = ({ roomId, onNavigate, onReplace, asPath }) => {
     hasMoreMessages,
     handleLoadMore,
   } = useChatRoom({ roomId, onNavigate, onReplace, asPath });
-
-  const renderLoadingState = () => (
-    <div className="chat-container">
-      <Card.Root className="chat-room-card">
-        <Card.Body
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Flex
-            style={{ textAlign: 'center', marginTop: 'var(--vapor-space-500)' }}
-            $css={{ gap: '$100', alignItems: 'center' }}
-          >
-            <Spinner
-              size="lg"
-              colorPalette="primary"
-              aria-label="채팅방 연결 중"
-            />
-            <Text typography="heading5">채팅방 연결 중...</Text>
-          </Flex>
-        </Card.Body>
-      </Card.Root>
-    </div>
-  );
-
-  const renderErrorState = () => (
-    <div className="chat-container">
-      <Card.Root className="chat-room-card">
-        <Card.Body
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <ConnectionErrorBanner
-            message={error || '채팅방을 불러오는데 실패했습니다.'}
-          />
-          <Button onClick={() => window.location.reload()}>다시 시도</Button>
-        </Card.Body>
-      </Card.Root>
-    </div>
-  );
 
   const renderContent = () => {
     if (loading) {
@@ -145,16 +99,9 @@ const ChatRoomView = ({ roomId, onNavigate, onReplace, asPath }) => {
     );
   };
 
-  if (error) {
-    return renderErrorState();
-  }
-
-  if (loading || !room) {
-    return renderLoadingState();
-  }
-
   return (
     <VStack
+      data-testid="chat-room-layout"
       $css={{
         gap: '$0',
         height: 'calc(100vh - 80px)',
@@ -162,8 +109,9 @@ const ChatRoomView = ({ roomId, onNavigate, onReplace, asPath }) => {
         backgroundColor: 'var(--vapor-color-surface-normal)',
       }}
     >
-      {/* 채팅방 정보 (참여자 목록 및 연결 상태) */}
-      <ChatRoomInfo room={room} connectionStatus={connectionStatus} />
+      <Box data-testid="chat-room-header-slot" $css={{ minHeight: '64px', width: '100%' }}>
+        {room ? <ChatRoomInfo room={room} connectionStatus={connectionStatus} /> : null}
+      </Box>
 
       {/* 메시지 영역 */}
       <VStack
@@ -173,16 +121,29 @@ const ChatRoomView = ({ roomId, onNavigate, onReplace, asPath }) => {
           minHeight: '0',
         }}
       >
-        {renderContent()}
+        {error ? (
+          <Flex $css={{ height: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '$200' }}>
+            <ConnectionErrorBanner message={error || '채팅방을 불러오는데 실패했습니다.'} />
+            <Button onClick={() => window.location.reload()}>다시 시도</Button>
+          </Flex>
+        ) : loading || !room ? (
+          <Flex $css={{ height: '100%', alignItems: 'center', justifyContent: 'center', gap: '$100' }}>
+            <Spinner size="lg" colorPalette="primary" aria-label="채팅방 연결 중" />
+            <Text typography="heading5">채팅방 연결 중...</Text>
+          </Flex>
+        ) : renderContent()}
       </VStack>
 
-      {/* 입력 영역 */}
-      <ChatInput
-        onSubmit={handleMessageSubmit}
-        fileInputRef={fileInputRef}
-        disabled={connectionStatus !== 'connected'}
-        room={room}
-      />
+      <Box data-testid="chat-room-input-slot" $css={{ minHeight: '72px', width: '100%' }}>
+        {room ? (
+          <ChatInput
+            onSubmit={handleMessageSubmit}
+            fileInputRef={fileInputRef}
+            disabled={connectionStatus !== 'connected'}
+            room={room}
+          />
+        ) : null}
+      </Box>
     </VStack>
   );
 };

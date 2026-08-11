@@ -38,6 +38,13 @@ function normalizeApiPath(rawUrl) {
     }).join('/')}`;
 }
 
+function normalizeDocumentPath(rawUrl) {
+    const url = new URL(rawUrl, 'http://localhost');
+    if (url.pathname === '/' || url.pathname === '/login') return url.pathname;
+    if (/^\/chat\/[a-f\d]{24}$/i.test(url.pathname)) return '/chat/{roomId}';
+    return url.pathname;
+}
+
 function parseSocketEvent(payload) {
     const text = Buffer.isBuffer(payload) ? payload.toString('utf8') : String(payload);
     const arrayStart = text.indexOf('[');
@@ -80,7 +87,7 @@ function summarizeSamples(samples) {
 function createObservation(page, vuContext) {
     const startedRequests = new Map();
     const pendingSocketEvents = new Map();
-    const samples = { http: [], socket: [], actions: [] };
+    const samples = { documents: [], http: [], socket: [], actions: [], layoutShifts: [] };
     let currentAction = null;
     let socketSequence = 0;
 
@@ -108,6 +115,21 @@ function createObservation(page, vuContext) {
     };
     const onRequestFinished = (request) => { void recordHttp(request, true); };
     const onRequestFailed = (request) => { void recordHttp(request, false); };
+    const onResponse = (response) => {
+        const request = response.request();
+        if (request.resourceType() !== 'document') return;
+        const timing = request.timing();
+        const ttfbMs = timing?.responseStart;
+        samples.documents.push({
+            name: `GET ${normalizeDocumentPath(response.url())}`,
+            durationMs: Number.isFinite(ttfbMs) && ttfbMs >= 0 ? ttfbMs : 0,
+            startedAt: new Date(Date.now() - Math.max(ttfbMs || 0, 0)).toISOString(),
+            endedAt: new Date().toISOString(),
+            success: response.status() < 400,
+            status: response.status(),
+            redirectedFrom: request.redirectedFrom()?.url() || null,
+        });
+    };
     const onWebSocket = (webSocket) => {
         const connectionKey = `connection:${socketSequence += 1}`;
         pendingSocketEvents.set(connectionKey, {
@@ -151,7 +173,65 @@ function createObservation(page, vuContext) {
     page.on('request', onRequest);
     page.on('requestfinished', onRequestFinished);
     page.on('requestfailed', onRequestFailed);
+    page.on('response', onResponse);
     page.on('websocket', onWebSocket);
+
+    void page.addInitScript(() => {
+        window.__e2eLayoutShifts = [];
+        const selectorFor = (node) => {
+            if (!node || node.nodeType !== Node.ELEMENT_NODE) return null;
+            if (node.id) return `#${node.id}`;
+            const testId = node.getAttribute('data-testid');
+            if (testId) return `[data-testid="${testId}"]`;
+            return node.tagName.toLowerCase() + (node.classList.length ? `.${[...node.classList].slice(0, 2).join('.')}` : '');
+        };
+        new PerformanceObserver((list) => {
+            for (const entry of list.getEntries()) {
+                if (entry.hadRecentInput) continue;
+                window.__e2eLayoutShifts.push({
+                    value: entry.value,
+                    atMs: entry.startTime,
+                    sources: (entry.sources || []).map((source) => ({
+                        selector: selectorFor(source.node),
+                        previousRect: source.previousRect,
+                        currentRect: source.currentRect,
+                        image: source.node?.tagName === 'IMG' ? {
+                            src: source.node.currentSrc || source.node.src,
+                            naturalWidth: source.node.naturalWidth,
+                            naturalHeight: source.node.naturalHeight,
+                            renderedWidth: source.node.clientWidth,
+                            renderedHeight: source.node.clientHeight,
+                        } : null,
+                    })),
+                });
+            }
+        }).observe({ type: 'layout-shift', buffered: true });
+    });
+
+    async function collectPageDiagnostics() {
+        const selectors = [
+            '[data-testid="login-email-input"]', '[data-testid="login-submit-button"]',
+            '[data-testid="chat-room-name-input"]', '[data-testid="chat-message-input"]',
+            '[data-testid="message-submission-status"]', '[data-testid="file-message-container"]',
+        ];
+        const ui = {};
+        for (const selector of selectors) {
+            const locator = page.locator(selector).first();
+            ui[selector] = {
+                count: await locator.count().catch(() => 0),
+                visible: await locator.isVisible().catch(() => false),
+                enabled: await locator.isEnabled().catch(() => false),
+                text: await locator.textContent().catch(() => null),
+            };
+        }
+        return {
+            url: page.url(),
+            ui,
+            recentHttp: samples.http.slice(-10).map(({ name, status, success, action, startedAt, endedAt }) =>
+                ({ name, status, success, action, startedAt, endedAt })),
+            pendingSocketEvents: [...pendingSocketEvents.keys()].map(String),
+        };
+    }
 
     async function action(name, callback) {
         const previousAction = currentAction;
@@ -169,6 +249,8 @@ function createObservation(page, vuContext) {
             samples.actions.push({
                 name, durationMs: performance.now() - startedAt, startedAt: wallStartedAt,
                 endedAt: new Date().toISOString(), success: false,
+                error: { name: error.name, message: error.message },
+                diagnostics: await collectPageDiagnostics(),
             });
             throw error;
         } finally {
@@ -181,7 +263,10 @@ function createObservation(page, vuContext) {
         page.off('request', onRequest);
         page.off('requestfinished', onRequestFinished);
         page.off('requestfailed', onRequestFailed);
+        page.off('response', onResponse);
         page.off('websocket', onWebSocket);
+
+        samples.layoutShifts = await page.evaluate(() => window.__e2eLayoutShifts || []).catch(() => []);
 
         const runId = process.env.OBSERVATION_RUN_ID || new Date().toISOString().replace(/[:.]/g, '-');
         const outputRoot = process.env.OBSERVATION_OUTPUT_DIR || path.resolve(__dirname, 'results');
@@ -195,8 +280,13 @@ function createObservation(page, vuContext) {
             samples,
             summary: {
                 actions: summarizeSamples(samples.actions),
+                documents: summarizeSamples(samples.documents),
                 http: summarizeSamples(samples.http),
                 socket: summarizeSamples(samples.socket),
+                cls: {
+                    total: Number(samples.layoutShifts.reduce((sum, entry) => sum + entry.value, 0).toFixed(4)),
+                    entries: samples.layoutShifts.length,
+                },
             },
         };
         const filename = `vu-${process.pid}-${randomUUID()}.json`;
@@ -217,6 +307,7 @@ function printTable(title, rows) {
 
 function printSummary(summary) {
     printTable('User actions', summary.actions);
+    printTable('Next.js documents (TTFB)', summary.documents);
     printTable('HTTP API (ranked by cumulative response time)', summary.http);
     printTable('Socket.IO actions', summary.socket);
 }
@@ -224,6 +315,7 @@ function printSummary(summary) {
 module.exports = {
     createObservation,
     normalizeApiPath,
+    normalizeDocumentPath,
     parseSocketEvent,
     summarizeSamples,
 };

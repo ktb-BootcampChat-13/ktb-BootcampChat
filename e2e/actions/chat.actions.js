@@ -54,9 +54,12 @@ async function createChatRoomAction(page, roomName) {
  * @param {import('@playwright/test').Page} page
  * @param {string} message - 전송할 메시지 내용
  */
-async function sendMessageAction(page, message) {
+async function sendMessageAction(page, message, { expectFailure = false } = {}) {
   await page.getByTestId('chat-message-input').fill(message);
   await page.getByTestId('chat-send-button').click();
+  await page.getByTestId('message-submission-status').filter({
+    hasText: expectFailure ? 'failed' : 'complete',
+  }).waitFor({ state: 'visible', timeout: 15000 });
 }
 
 /**

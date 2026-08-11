@@ -13,11 +13,6 @@ const { randomUUID } = require('crypto');
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 const MASS_MESSAGE_COUNT = process.env.MASS_MESSAGE_COUNT || 10;
 
-// Action 간 timeout 설정 (환경변수로 조절 가능)
-const ACTION_TIMEOUT = parseInt(process.env.ACTION_TIMEOUT || '1000', 10);
-const ACTION_TIMEOUT_SHORT = parseInt(process.env.ACTION_TIMEOUT_SHORT || '500', 10);
-const ACTION_TIMEOUT_LONG = parseInt(process.env.ACTION_TIMEOUT_LONG || '2000', 10);
-
 async function gotoChatPage(page, vuContext) {
     await page.goto(`${BASE_URL}/chat`);
     await expect(page).toHaveURL(`${BASE_URL}/chat`);
@@ -46,7 +41,6 @@ async function chatRoomCreationScenario(page, vuContext) {
         const message = `테스트 메시지 ${bannedWordSafeText(Date.now())}`;
         await observe('message_send', async () => {
             await sendMessageAction(page, message);
-            await page.waitForTimeout(ACTION_TIMEOUT_SHORT);
             const messageElement = page.getByTestId('message-content').filter({ hasText: message });
             await expect(messageElement).toBeVisible();
         });
@@ -108,7 +102,6 @@ async function fileUploadScenario(page, vuContext) {
         await observe('file_upload', async () => {
             await uploadFileAction(page, filePath, message);
             await uploadPromise;
-            await page.waitForTimeout(ACTION_TIMEOUT);
             const fileMessageContainer = page.getByTestId('file-message-container').filter({ hasText: message });
             await expect(fileMessageContainer).toBeVisible({ timeout: 10000 });
         });
@@ -143,7 +136,7 @@ async function forbiddenWordScenario(page, vuContext) {
         // 2. 금칙어 메시지 전송 시도
         const forbiddenWord = FORBIDDEN_WORDS[Math.floor(Math.random() * FORBIDDEN_WORDS.length)];
         await observe('forbidden_message_send', async () => {
-            await sendMessageAction(page, forbiddenWord);
+            await sendMessageAction(page, forbiddenWord, { expectFailure: true });
             const errorToast = page.getByTestId('toast-error');
             await expect(errorToast).toBeVisible({ timeout: 5000 });
             const sentMessage = page.getByTestId('message-content').filter({ hasText: forbiddenWord });

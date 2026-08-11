@@ -13,6 +13,8 @@ const ConnectionErrorBanner = ({ message, title = '연결에 문제가 생겼어
     <img
       src="/error.svg"
       alt=""
+      width="220"
+      height="165"
       style={{ width: '220px', maxWidth: '70%', height: 'auto' }}
     />
     <Text typography="heading4" foreground="normal-100">
