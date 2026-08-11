@@ -62,6 +62,43 @@ HTTP의 4xx/5xx는 실패로 집계되므로 의도된 로그인 실패 시나�
 `PHASE1_ARRIVAL_COUNT`는 지속 동시 VU가 아니라 phase 동안 생성할 총 사용자 수입니다.
 Stage 0을 3회 완료하고 Mongo profiler/실행계획 근거까지 확보하기 전에는 VU를 올리지 않습니다.
 
+### 로그인 fill 실패 관측
+
+분산 실행에서는 모든 Pod가 같은 `OBSERVATION_RUN_ID`와 공유 `OBSERVATION_OUTPUT_DIR`을 사용해야
+합니다. `PHASE1_ARRIVAL_COUNT`는 Pod별 생성 수이고 `EXPECTED_TOTAL_VUS`는 전체 Pod 합계입니다.
+
+```bash
+OBSERVATION_RUN_ID=login-fill-r1 \
+OBSERVATION_OUTPUT_DIR=/shared/e2e-observations \
+EXPECTED_TOTAL_VUS=500 \
+EXPECTED_FAILED_LOGIN_401=500 \
+EXPECTED_LOGIN_FILL_FAILURES=0 \
+GIT_SHA="$GIT_COMMIT" \
+FRONTEND_IMAGE_DIGEST="$FRONTEND_DIGEST" \
+LOAD_IMAGE_DIGEST="$LOAD_DIGEST" \
+pnpm --filter e2e exec artillery run artillery/artillery-config.yaml
+```
+
+실패 VU에는 email/password/submit 단계, 두 input의 DOM·editable 상태, URL, 최근 API·문서·정적
+리소스, 이벤트 루프 지연과 입력값이 마스킹된 screenshot이 기록됩니다. 분석기는 원본 수와
+artifact hash가 완전하지 않으면 성공하지 않습니다.
+
+```bash
+node e2e/artillery/analyze-login-fill-failures.js \
+  /shared/e2e-observations/login-fill-r1 \
+  --output-dir /shared/e2e-analysis/login-fill-r1 \
+  --expected-run-id login-fill-r1 \
+  --evidence /shared/e2e-observations/login-fill-r1/infrastructure-evidence.json \
+  --artillery-result /shared/e2e-observations/login-fill-r1/artillery-result.json \
+  --artillery-stdout /shared/e2e-observations/login-fill-r1/artillery.stdout.log
+```
+
+실행 metadata는 각 VU JSON에 포함됩니다. 별도의 통합 metadata JSON을 수집한 경우에만
+`--metadata <file>`을 추가합니다.
+
+세부 스키마, evidence 형식, `1 → 4 → 492 → 500 VU` 재검증 게이트는
+[`LOGIN_FILL_FAILURE_INVESTIGATION.md`](./LOGIN_FILL_FAILURE_INVESTIGATION.md)를 따릅니다.
+
 ## 환경 변수
 
   Artillery 실행 시 다음 환경 변수로 커스터마이징할 수 있습니다:
