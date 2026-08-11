@@ -60,8 +60,7 @@ class MessageLoaderTest {
         messageLoader = new MessageLoader(
                 messageRepository,
                 userRepository,
-                new MessageResponseMapper(fileRepository),
-                messageReadStatusService
+                new MessageResponseMapper(fileRepository)
         );
         
         var testUser = User.builder()
@@ -81,7 +80,6 @@ class MessageLoaderTest {
         
         lenient().when(userRepository.findAllById(anySet()))
                 .thenReturn(List.of(testUser));
-        lenient().doNothing().when(messageReadStatusService).updateReadStatus(anyList(), anyString());
     }
     
     private Message createMessage(String id, LocalDateTime timestamp) {
@@ -115,17 +113,19 @@ class MessageLoaderTest {
         // Then: 결과는 오름차순으로 정렬되어야 함
         assertThat(result.getMessages()).hasSize(30);
         assertThat(result.isHasMore()).isTrue();
+        verify(userRepository).findAllById(anySet());
+        verify(userRepository, never()).findById(anyString());
         
         // 시간순 정렬 확인 (오름차순: 오래된 것 → 최신 것)
         // [50시간 전, 49시간 전, ..., 21시간 전]
         verifyAscending(result);
     }
     
-    private static @NotNull Page<Message> getMessagePage(List<Message> first30Messages) {
+    private static @NotNull Slice<Message> getMessagePage(List<Message> first30Messages) {
         List<Message> messages = new ArrayList<>(first30Messages.reversed());
         
         Pageable pageable = PageRequest.of(0, 30, Sort.by("timestamp").descending());
-        Page<Message> messagePage = new PageImpl<>(messages, pageable, 50);
+        Slice<Message> messagePage = new SliceImpl<>(messages, pageable, true);
         return messagePage;
     }
     
@@ -137,7 +137,7 @@ class MessageLoaderTest {
         
         // DB는 DESC 정렬로 반환 (최신 것부터)
         // [1시간 전, 2시간 전, ..., 30시간 전]
-        Page<Message> messagePage = getMessagePage(last30Messages);
+        Slice<Message> messagePage = getMessagePage(last30Messages);
         
         when(messageRepository.findByRoomIdAndTimestampBefore(
                 eq(roomId), any(LocalDateTime.class), any(Pageable.class)))
