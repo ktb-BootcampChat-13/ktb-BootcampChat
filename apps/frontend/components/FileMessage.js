@@ -172,11 +172,13 @@ const FileMessage = ({
       const previewUrl = fileService.getPreviewUrl(msg.file, user?.token, true);
 
       return (
-        <div className="bg-transparent-pattern">
+        <div className="bg-transparent-pattern" style={{ width: 'min(400px, 100%)', aspectRatio: '4 / 3' }}>
           <img
             src={previewUrl}
             alt={originalname}
-            className="max-w-[400px] max-h-[400px] object-cover object-center rounded-md"
+            width="400"
+            height="300"
+            className="w-full h-full object-cover object-center rounded-md"
             onLoad={() => {
               console.debug('Image loaded successfully:', originalname);
             }}

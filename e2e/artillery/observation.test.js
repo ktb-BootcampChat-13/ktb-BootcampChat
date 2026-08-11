@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { normalizeApiPath, parseSocketEvent, summarizeSamples } = require('./observation');
+const { normalizeApiPath, normalizeDocumentPath, parseSocketEvent, summarizeSamples } = require('./observation');
 
 test('normalizes dynamic API identifiers without changing static routes', () => {
     assert.equal(normalizeApiPath('http://localhost:5001/api/rooms'), '/api/rooms');
@@ -8,6 +8,12 @@ test('normalizes dynamic API identifiers without changing static routes', () => 
     assert.equal(normalizeApiPath('http://localhost:5001/api/rooms/507f1f77bcf86cd799439011/join'), '/api/rooms/{roomId}/join');
     assert.equal(normalizeApiPath('http://localhost:5001/api/files/view/123_random.jpg'), '/api/files/view/{filename}');
     assert.equal(normalizeApiPath('http://localhost:3000/_next/static/a.js'), null);
+});
+
+test('keeps Next document paths separate from API paths', () => {
+    assert.equal(normalizeDocumentPath('http://localhost:3000/'), '/');
+    assert.equal(normalizeDocumentPath('http://localhost:3000/login?redirect=/chat'), '/login');
+    assert.equal(normalizeDocumentPath('http://localhost:3000/chat/507f1f77bcf86cd799439011'), '/chat/{roomId}');
 });
 
 test('extracts Socket.IO event names from websocket frames', () => {

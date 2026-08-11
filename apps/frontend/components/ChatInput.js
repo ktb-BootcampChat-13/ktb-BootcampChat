@@ -46,6 +46,7 @@ const ChatInput = forwardRef(({
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState(null);
+  const [submissionStatus, setSubmissionStatus] = useState('idle');
   const [isDragging, setIsDragging] = useState(false);
   const [mentionPosition, setMentionPosition] = useState({ top: 0, left: 0 });
 
@@ -109,7 +110,10 @@ const ChatInput = forwardRef(({
           throw new Error('파일이 선택되지 않았습니다.');
         }
 
-        onSubmit({
+        setUploading(true);
+        setSubmissionStatus('uploading-and-waiting-for-message');
+        setUploadError(null);
+        await onSubmit({
           type: 'file',
           content: message.trim(),
           fileData: file
@@ -119,19 +123,29 @@ const ChatInput = forwardRef(({
         setShowEmojiPicker(false);
         setShowMentionList(false);
         setFiles([]);
+        setSubmissionStatus('complete');
 
       } catch (error) {
         console.error('File submit error:', error);
         setUploadError(error.message);
+        setSubmissionStatus('failed');
+      } finally {
+        setUploading(false);
       }
     } else if (message.trim()) {
-      onSubmit({
-        type: 'text',
-        content: message.trim()
-      });
-      setMessage('');
-      setShowEmojiPicker(false);
-      setShowMentionList(false);
+      try {
+        setSubmissionStatus('waiting-for-message');
+        await onSubmit({
+          type: 'text',
+          content: message.trim()
+        });
+        setMessage('');
+        setShowEmojiPicker(false);
+        setShowMentionList(false);
+        setSubmissionStatus('complete');
+      } catch (error) {
+        setSubmissionStatus('failed');
+      }
     }
   }, [files, message, onSubmit, setMessage, setShowEmojiPicker, setShowMentionList]);
 
@@ -403,6 +417,9 @@ const ChatInput = forwardRef(({
         )}
 
         <VStack $css={{ gap: '$100', width: '100%' }}>
+          <span className="sr-only" role="status" data-testid="message-submission-status">
+            {submissionStatus}
+          </span>
           <VStack className="relative" $css={{ gap: '$025' }}>
             <HStack $css={{ gap: '$200' }}>
                 <Textarea
