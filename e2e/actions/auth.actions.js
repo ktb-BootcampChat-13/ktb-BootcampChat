@@ -1,5 +1,28 @@
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 
+async function runLoginStep(step, testId, callback) {
+  try {
+    return await callback();
+  } catch (error) {
+    const originalMessage = error?.message || String(error);
+    const prefix = `[loginAction step=${step} locator=${testId}]`;
+
+    if (error && typeof error === 'object') {
+      const originalStack = error.stack;
+      error.message = `${prefix} ${originalMessage}`;
+      error.loginActionStep = step;
+      error.loginActionLocator = testId;
+      if (typeof originalStack === 'string') {
+        const firstFrame = originalStack.indexOf('\n');
+        error.stack = `${error.name || 'Error'}: ${error.message}${firstFrame >= 0 ? originalStack.slice(firstFrame) : ''}`;
+      }
+      throw error;
+    }
+
+    throw new Error(`${prefix} ${originalMessage}`);
+  }
+}
+
 /**
  * 로그인 액션
  * @param {import('@playwright/test').Page} page
@@ -17,9 +40,12 @@ async function openLoginAction(page) {
 
 async function loginAction(page, credentials, waitForRedirect = true, navigate = true) {
   if (navigate) await openLoginAction(page);
-  await page.getByTestId('login-email-input').fill(credentials.email);
-  await page.getByTestId('login-password-input').fill(credentials.password);
-  await page.getByTestId('login-submit-button').click();
+  await runLoginStep('email_fill', 'login-email-input', () =>
+    page.getByTestId('login-email-input').fill(credentials.email));
+  await runLoginStep('password_fill', 'login-password-input', () =>
+    page.getByTestId('login-password-input').fill(credentials.password));
+  await runLoginStep('submit_click', 'login-submit-button', () =>
+    page.getByTestId('login-submit-button').click());
   if (waitForRedirect) {
     await page.waitForURL(`${BASE_URL}/chat`);
   }

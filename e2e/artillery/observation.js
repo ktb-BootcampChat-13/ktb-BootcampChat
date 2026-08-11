@@ -8,12 +8,111 @@ const INTEGER = /^\d+$/;
 const CHAT_ROOM_URL = /\/chat\/[a-f\d]{24}(?:[/?#]|$)/i;
 const CHAT_INPUT_TEST_ID = 'chat-message-input';
 const LATE_VISIBILITY_TIMEOUT_MS = 15000;
+const EVENT_LOOP_SAMPLE_MS = 1000;
+const DEFAULT_RUN_ID = new Date().toISOString().replace(/[:.]/g, '-');
+const RESOURCE_TYPES = new Set(['document', 'script', 'stylesheet', 'font', 'image']);
 
 const SOCKET_PAIRS = {
     joinRoom: { response: 'joinRoomSuccess', metric: 'room_join' },
     fetchPreviousMessages: { response: 'previousMessagesLoaded', metric: 'message_history' },
     chatMessage: { response: 'message', metric: 'message_send' },
 };
+
+function numberFromEnvironment(value) {
+    if (value === undefined || value === null || value === '') return null;
+    const number = Number(value);
+    return Number.isFinite(number) ? number : null;
+}
+
+function sanitizeArtifactSegment(value) {
+    return String(value || 'unknown').replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 120);
+}
+
+function createRunMetadata(environment = process.env) {
+    return {
+        targetUrl: environment.BASE_URL || null,
+        gitSha: environment.GIT_SHA || environment.COMMIT_SHA || null,
+        images: {
+            frontend: environment.FRONTEND_IMAGE_DIGEST || null,
+            loadGenerator: environment.LOAD_IMAGE_DIGEST || null,
+        },
+        workload: {
+            durationSeconds: numberFromEnvironment(environment.PHASE1_DURATION),
+            arrivalCount: numberFromEnvironment(environment.PHASE1_ARRIVAL_COUNT),
+            virtualUsersPerPod: numberFromEnvironment(environment.VUS_PER_POD),
+        },
+        expectations: {
+            totalVus: numberFromEnvironment(environment.EXPECTED_TOTAL_VUS),
+            failedLogin401: numberFromEnvironment(environment.EXPECTED_FAILED_LOGIN_401),
+            fillFailures: numberFromEnvironment(environment.EXPECTED_LOGIN_FILL_FAILURES),
+        },
+        pod: {
+            name: environment.POD_NAME || environment.HOSTNAME || null,
+            namespace: environment.POD_NAMESPACE || null,
+            nodeName: environment.NODE_NAME || null,
+            cpuRequest: environment.POD_CPU_REQUEST || null,
+            cpuLimit: environment.POD_CPU_LIMIT || null,
+            memoryRequest: environment.POD_MEMORY_REQUEST || null,
+            memoryLimit: environment.POD_MEMORY_LIMIT || null,
+        },
+        runtime: {
+            nodeVersion: process.version,
+            platform: process.platform,
+            arch: process.arch,
+            pid: process.pid,
+        },
+    };
+}
+
+function serializeError(error) {
+    return {
+        name: error?.name || 'Error',
+        message: error?.message || String(error),
+        stack: typeof error?.stack === 'string' ? error.stack : null,
+        cause: error?.cause ? {
+            name: error.cause.name || null,
+            message: error.cause.message || String(error.cause),
+            stack: typeof error.cause.stack === 'string' ? error.cause.stack : null,
+        } : null,
+        loginActionStep: error?.loginActionStep || null,
+        loginActionLocator: error?.loginActionLocator || null,
+    };
+}
+
+async function inspectLocator(locator) {
+    const count = await locator.count().catch(() => 0);
+    if (count === 0) {
+        return {
+            count: 0, connected: false, visible: false, enabled: false,
+            readOnly: null, editable: false, tagName: null, inputType: null,
+        };
+    }
+
+    const [visible, enabled, element] = await Promise.all([
+        locator.isVisible().catch(() => false),
+        locator.isEnabled().catch(() => false),
+        locator.evaluate((node) => {
+            const tagName = node.tagName?.toLowerCase() || null;
+            const supportsReadOnly = tagName === 'input' || tagName === 'textarea';
+            const disabled = 'disabled' in node ? Boolean(node.disabled) : false;
+            const readOnly = supportsReadOnly ? Boolean(node.readOnly) : null;
+            const editable = supportsReadOnly
+                ? !disabled && !readOnly
+                : Boolean(node.isContentEditable);
+            return {
+                connected: Boolean(node.isConnected),
+                tagName,
+                inputType: tagName === 'input' ? node.type || null : null,
+                readOnly,
+                editable,
+            };
+        }, undefined, { timeout: 1000 }).catch(() => ({
+            connected: false, tagName: null, inputType: null, readOnly: null, editable: false,
+        })),
+    ]);
+
+    return { count, visible, enabled, ...element };
+}
 
 function percentile(values, ratio) {
     if (values.length === 0) return 0;
@@ -120,12 +219,36 @@ function createObservation(page, vuContext) {
     const startedRequests = new Map();
     const pendingSocketEvents = new Map();
     const samples = {
-        documents: [], http: [], socket: [], actions: [], browser: [], layoutShifts: [],
+        documents: [], resources: [], http: [], socket: [], actions: [], browser: [], runtime: [], layoutShifts: [],
     };
     const timeline = [];
     const diagnostics = [];
+    const artifacts = [];
+    const runId = process.env.OBSERVATION_RUN_ID || DEFAULT_RUN_ID;
+    const outputRoot = process.env.OBSERVATION_OUTPUT_DIR || path.resolve(__dirname, 'results');
+    const runDirectory = path.join(outputRoot, runId);
+    const vuId = vuContext?._uid || vuContext?.vars?.$uuid || randomUUID();
+    const artifactPrefix = `${process.pid}-${sanitizeArtifactSegment(vuId)}-${randomUUID()}`;
+    const runMetadata = createRunMetadata();
     let currentAction = null;
     let socketSequence = 0;
+
+    let expectedEventLoopSampleAt = performance.now() + EVENT_LOOP_SAMPLE_MS;
+    const eventLoopTimer = setInterval(() => {
+        const sampledAt = performance.now();
+        const lagMs = Math.max(0, sampledAt - expectedEventLoopSampleAt);
+        const endedAt = new Date();
+        samples.runtime.push({
+            name: 'event_loop_lag',
+            action: currentAction,
+            durationMs: lagMs,
+            startedAt: new Date(endedAt.getTime() - lagMs).toISOString(),
+            endedAt: endedAt.toISOString(),
+            success: lagMs < EVENT_LOOP_SAMPLE_MS,
+        });
+        expectedEventLoopSampleAt = sampledAt + EVENT_LOOP_SAMPLE_MS;
+    }, EVENT_LOOP_SAMPLE_MS);
+    eventLoopTimer.unref?.();
 
     const addTimelineEvent = (name, details = {}) => {
         timeline.push({ name, at: new Date().toISOString(), ...details });
@@ -177,18 +300,23 @@ function createObservation(page, vuContext) {
     const onRequestFailed = (request) => { void recordHttp(request, false); };
     const onResponse = (response) => {
         const request = response.request();
-        if (request.resourceType() !== 'document') return;
+        const resourceType = request.resourceType();
+        if (!RESOURCE_TYPES.has(resourceType)) return;
         const timing = request.timing();
         const ttfbMs = timing?.responseStart;
-        samples.documents.push({
+        const sample = {
             name: `GET ${normalizeDocumentPath(response.url())}`,
+            action: currentAction,
+            resourceType,
             durationMs: Number.isFinite(ttfbMs) && ttfbMs >= 0 ? ttfbMs : 0,
             startedAt: new Date(Date.now() - Math.max(ttfbMs || 0, 0)).toISOString(),
             endedAt: new Date().toISOString(),
             success: response.status() < 400,
             status: response.status(),
             redirectedFrom: request.redirectedFrom()?.url() || null,
-        });
+        };
+        if (resourceType === 'document') samples.documents.push(sample);
+        else samples.resources.push(sample);
     };
     const onWebSocket = (webSocket) => {
         const connectionKey = `connection:${socketSequence += 1}`;
@@ -310,27 +438,65 @@ function createObservation(page, vuContext) {
 
     async function collectPageDiagnostics() {
         const selectors = [
-            '[data-testid="login-email-input"]', '[data-testid="login-submit-button"]',
+            '[data-testid="login-email-input"]', '[data-testid="login-password-input"]',
+            '[data-testid="login-submit-button"]',
             '[data-testid="chat-room-name-input"]', '[data-testid="chat-message-input"]',
             '[data-testid="message-submission-status"]', '[data-testid="file-message-container"]',
         ];
         const ui = {};
         for (const selector of selectors) {
             const locator = page.locator(selector).first();
-            ui[selector] = {
-                count: await locator.count().catch(() => 0),
-                visible: await locator.isVisible().catch(() => false),
-                enabled: await locator.isEnabled().catch(() => false),
-                text: await locator.textContent().catch(() => null),
-            };
+            ui[selector] = await inspectLocator(locator);
         }
+        const documentState = await page.evaluate(() => ({
+            readyState: document.readyState,
+            visibilityState: document.visibilityState,
+            url: window.location.href,
+        })).catch(() => null);
         return {
             url: page.url(),
+            document: documentState,
             ui,
             recentHttp: samples.http.slice(-10).map(({ name, status, success, action, startedAt, endedAt }) =>
                 ({ name, status, success, action, startedAt, endedAt })),
+            recentDocuments: samples.documents.slice(-10),
+            recentResources: samples.resources.slice(-20),
+            recentBrowserErrors: samples.browser.slice(-10),
+            recentEventLoopLag: samples.runtime.slice(-10),
             pendingSocketEvents: [...pendingSocketEvents.keys()].map(String),
         };
+    }
+
+    async function writeFailureArtifacts(actionName, error) {
+        const artifactsDirectory = path.join(runDirectory, 'artifacts');
+        const baseName = `${artifactPrefix}-${sanitizeArtifactSegment(actionName)}`;
+        const written = [];
+
+        try {
+            fs.mkdirSync(artifactsDirectory, { recursive: true });
+            const errorFile = path.join(artifactsDirectory, `${baseName}.error.json`);
+            fs.writeFileSync(errorFile, `${JSON.stringify(serializeError(error), null, 2)}\n`);
+            written.push({ kind: 'error', path: path.relative(runDirectory, errorFile) });
+        } catch (artifactError) {
+            written.push({ kind: 'error', writeError: artifactError.message });
+        }
+
+        try {
+            fs.mkdirSync(artifactsDirectory, { recursive: true });
+            const screenshotFile = path.join(artifactsDirectory, `${baseName}.png`);
+            await page.screenshot({
+                path: screenshotFile,
+                fullPage: true,
+                mask: [page.locator('input'), page.locator('textarea')],
+                timeout: 5000,
+            });
+            written.push({ kind: 'screenshot', path: path.relative(runDirectory, screenshotFile), masked: true });
+        } catch (artifactError) {
+            written.push({ kind: 'screenshot', writeError: artifactError.message, masked: true });
+        }
+
+        artifacts.push(...written.map((artifact) => ({ action: actionName, ...artifact })));
+        return written;
     }
 
     async function action(name, callback) {
@@ -338,20 +504,24 @@ function createObservation(page, vuContext) {
         currentAction = name;
         const startedAt = performance.now();
         const wallStartedAt = new Date().toISOString();
-        addTimelineEvent('action.started', { action: name });
+        const urlAtStart = page.url();
+        addTimelineEvent('action.started', { action: name, url: urlAtStart });
         try {
             const result = await callback();
             samples.actions.push({
                 name, durationMs: performance.now() - startedAt, startedAt: wallStartedAt,
-                endedAt: new Date().toISOString(), success: true,
+                endedAt: new Date().toISOString(), success: true, urlAtStart, urlAtEnd: page.url(),
             });
             return result;
         } catch (error) {
+            const pageDiagnostics = await collectPageDiagnostics();
+            const failureArtifacts = await writeFailureArtifacts(name, error);
             samples.actions.push({
                 name, durationMs: performance.now() - startedAt, startedAt: wallStartedAt,
-                endedAt: new Date().toISOString(), success: false,
-                error: { name: error.name, message: error.message },
-                diagnostics: await collectPageDiagnostics(),
+                endedAt: new Date().toISOString(), success: false, urlAtStart, urlAtEnd: page.url(),
+                error: serializeError(error),
+                diagnostics: pageDiagnostics,
+                artifacts: failureArtifacts,
             });
             if (name === 'room_create') {
                 await diagnoseRoomCreateFailure(error, startedAt);
@@ -365,6 +535,7 @@ function createObservation(page, vuContext) {
 
     async function finish() {
         await new Promise((resolve) => setImmediate(resolve));
+        clearInterval(eventLoopTimer);
         page.off('request', onRequest);
         page.off('requestfinished', onRequestFinished);
         page.off('requestfailed', onRequestFailed);
@@ -376,30 +547,43 @@ function createObservation(page, vuContext) {
 
         samples.layoutShifts = await page.evaluate(() => window.__e2eLayoutShifts || []).catch(() => []);
 
-        const runId = process.env.OBSERVATION_RUN_ID || new Date().toISOString().replace(/[:.]/g, '-');
-        const outputRoot = process.env.OBSERVATION_OUTPUT_DIR || path.resolve(__dirname, 'results');
-        const runDirectory = path.join(outputRoot, runId);
         fs.mkdirSync(runDirectory, { recursive: true });
+        const metadata = {
+            ...runMetadata,
+            runtimeSnapshot: {
+                memoryUsage: process.memoryUsage(),
+                resourceUsage: typeof process.resourceUsage === 'function' ? process.resourceUsage() : null,
+            },
+        };
         const report = {
-            schemaVersion: 2,
+            schemaVersion: 3,
             runId,
-            vuId: vuContext?._uid || vuContext?.vars?.$uuid || randomUUID(),
+            vuId,
             generatedAt: new Date().toISOString(),
+            metadata,
             samples,
             timeline,
             diagnostics,
+            artifacts,
             summary: {
                 actions: summarizeSamples(samples.actions),
                 documents: summarizeSamples(samples.documents),
+                resources: summarizeSamples(samples.resources),
                 http: summarizeSamples(samples.http),
                 socket: summarizeSamples(samples.socket),
+                runtime: summarizeSamples(samples.runtime),
                 cls: {
                     total: Number(samples.layoutShifts.reduce((sum, entry) => sum + entry.value, 0).toFixed(4)),
                     entries: samples.layoutShifts.length,
                 },
             },
         };
-        const filename = `vu-${process.pid}-${randomUUID()}.json`;
+        const metadataFilename = `run-metadata-${sanitizeArtifactSegment(runMetadata.pod.name)}-${process.pid}.json`;
+        const metadataPath = path.join(runDirectory, metadataFilename);
+        if (!fs.existsSync(metadataPath)) {
+            fs.writeFileSync(metadataPath, `${JSON.stringify({ runId, ...runMetadata }, null, 2)}\n`);
+        }
+        const filename = `vu-${artifactPrefix}.json`;
         fs.writeFileSync(path.join(runDirectory, filename), `${JSON.stringify(report, null, 2)}\n`);
         printSummary(report.summary);
         return report;
@@ -424,9 +608,12 @@ function printSummary(summary) {
 
 module.exports = {
     createObservation,
+    createRunMetadata,
+    inspectLocator,
     normalizeApiPath,
     normalizeDocumentPath,
     parseSocketEvent,
+    serializeError,
     summarizeSamples,
     classifyRoomCreateFailure,
 };

@@ -8,12 +8,14 @@ const files = fs.readdirSync(runDirectory).filter((file) => file.startsWith('vu-
 if (files.length === 0) throw new Error(`No observation JSON files found in ${runDirectory}`);
 
 const reports = files.map((file) => JSON.parse(fs.readFileSync(path.join(runDirectory, file), 'utf8')));
-const samples = { actions: [], documents: [], http: [], socket: [], layoutShifts: [] };
+const samples = { actions: [], documents: [], resources: [], http: [], socket: [], runtime: [], layoutShifts: [] };
 for (const report of reports) {
     samples.actions.push(...report.samples.actions);
     samples.documents.push(...(report.samples.documents || []));
+    samples.resources.push(...(report.samples.resources || []));
     samples.http.push(...report.samples.http);
     samples.socket.push(...report.samples.socket);
+    samples.runtime.push(...(report.samples.runtime || []));
     samples.layoutShifts.push(...(report.samples.layoutShifts || []));
 }
 
@@ -25,8 +27,10 @@ const aggregate = {
     summary: {
         actions: summarizeSamples(samples.actions),
         documents: summarizeSamples(samples.documents),
+        resources: summarizeSamples(samples.resources),
         http: summarizeSamples(samples.http),
         socket: summarizeSamples(samples.socket),
+        runtime: summarizeSamples(samples.runtime),
         cls: {
             total: Number(samples.layoutShifts.reduce((sum, entry) => sum + entry.value, 0).toFixed(4)),
             entries: samples.layoutShifts.length,
