@@ -57,8 +57,6 @@ export const useRoomList = ({
   }, [isRetrying, setConnectionStatus]);
 
   const loadRooms = useCallback(async () => {
-    await attemptConnection();
-
     const response = await axiosInstance.get('/api/rooms');
 
     if (!response?.data?.data) {
@@ -66,7 +64,8 @@ export const useRoomList = ({
     }
 
     setRooms(response.data.data);
-  }, [attemptConnection]);
+    setConnectionStatus(CONNECTION_STATUS.CONNECTED);
+  }, [setConnectionStatus]);
 
   const fetchRooms = useCallback(async () => {
     if (!currentUser?.token || isLoadingRef.current) {

@@ -28,19 +28,6 @@ function NewChatRoom() {
   const [submissionStage, setSubmissionStage] = useState('idle');
   const [error, setError] = useState('');
 
-  const joinRoom = async (roomId, password) => {
-    try {
-      setSubmissionStage('joining');
-      await api.post(`/api/rooms/${roomId}/join`, { password });
-
-      setSubmissionStage('navigating');
-      await router.push(`/chat/${roomId}`);
-    } catch (error) {
-      console.error('Room join error:', error);
-      throw error;
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -70,7 +57,8 @@ function NewChatRoom() {
       });
 
       const { data } = response.data;
-      await joinRoom(data._id, formData.hasPassword ? formData.password : undefined);
+      setSubmissionStage('navigating');
+      await router.push(`/chat/${data._id}`);
 
     } catch (error) {
       console.error('Room creation/join error:', error);
