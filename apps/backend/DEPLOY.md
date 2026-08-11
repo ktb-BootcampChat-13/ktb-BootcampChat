@@ -117,8 +117,8 @@ tail -f logs/app.log
    REDIS_HOST=localhost
    REDIS_PORT=6379
 
-   # 파일 저장소 (AWS 자격 증명은 IAM Role 또는 AWS 기본 환경 변수 사용)
-   FILE_STORAGE_TYPE=s3
+   # 원본 파일은 서버에 유지하고, 선택적 S3 mirror는 IAM Role로 PUT만 수행
+   FILE_STORAGE_TYPE=local
    S3_BUCKET=your-s3-bucket
    AWS_REGION=ap-northeast-2
    S3_ENDPOINT=

@@ -26,6 +26,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final FileService fileService;
     private final StoragePort storagePort;
+    private final UploadPolicy uploadPolicy;
 
     @Value("${app.profile.image.max-size:5242880}") // 5MB
     private long maxProfileImageSize;
@@ -109,6 +110,8 @@ public class UserService {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("이미지가 제공되지 않았습니다.");
         }
+
+        uploadPolicy.validate(file.getOriginalFilename(), file.getContentType(), file.getSize(), true);
 
         // 파일 크기 검증
         if (file.getSize() > maxProfileImageSize) {

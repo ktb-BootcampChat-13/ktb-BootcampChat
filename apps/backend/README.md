@@ -91,7 +91,7 @@ make verify-java
 | `MONGO_URI` | ✅ | 없음 | MongoDB 연결 문자열              |
 | `REDIS_HOST` | ✅ | 없음 | Redis 호스트                    |
 | `REDIS_PORT` | ✅ | 없음 | Redis 포트                      |
-| `FILE_STORAGE_TYPE` | ❌ | `s3` | 파일 저장 방식. 현재 `s3`만 지원 |
+| `FILE_STORAGE_TYPE` | ❌ | `local` | 원본 파일 저장 방식. S3 mirror 모드에서도 `local` 유지 |
 | `S3_BUCKET` | ✅ | 없음 | 이미지 및 첨부 파일을 저장할 S3 버킷 |
 | `AWS_REGION` | ❌ | `ap-northeast-2` | S3 버킷 리전 |
 | `S3_ENDPOINT` | ❌ | 빈 값 | AWS S3 호환 스토리지의 사용자 지정 엔드포인트 |

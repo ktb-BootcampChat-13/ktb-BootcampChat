@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 @Configuration
@@ -28,8 +29,13 @@ public class S3Config {
     @Bean
     S3Presigner s3Presigner(
             @Value("${aws.s3.region}") String region,
-            @Value("${aws.s3.endpoint:}") String endpoint) {
-        var builder = S3Presigner.builder().region(Region.of(region));
+            @Value("${aws.s3.endpoint:}") String endpoint,
+            @Value("${aws.s3.path-style-access:false}") boolean pathStyleAccess) {
+        var builder = S3Presigner.builder()
+                .region(Region.of(region))
+                .serviceConfiguration(S3Configuration.builder()
+                        .pathStyleAccessEnabled(pathStyleAccess)
+                        .build());
         if (!endpoint.isBlank()) {
             builder.endpointOverride(URI.create(endpoint));
         }
