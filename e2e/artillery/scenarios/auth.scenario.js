@@ -1,4 +1,4 @@
-const { loginAction, registerAction, logoutAction } = require('../../actions/auth.actions');
+const { loginAction, openLoginAction, registerAction, logoutAction } = require('../../actions/auth.actions');
 const { expect } = require('@playwright/test');
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
@@ -21,7 +21,8 @@ async function loginScenario(page, vuContext) {
         await page.waitForTimeout(ACTION_TIMEOUT);
 
         // 2. 로그인
-        await observe('login', () => loginAction(page, testUser));
+        await observe('login_form_ready', () => openLoginAction(page));
+        await observe('login', () => loginAction(page, testUser, true, false));
         await expect(page).toHaveURL(`${BASE_URL}/chat`);
 
         // URL 만으로는 완주를 판정할 수 없다. 방 목록이 실제로 그려져야
@@ -46,10 +47,11 @@ async function loginScenario(page, vuContext) {
 async function failedLoginScenario(page, vuContext) {
     const observe = vuContext.vars.observation.action;
     try {
+        await observe('login_form_ready_for_failed_login', () => openLoginAction(page));
         await observe('failed_login', () => loginAction(page, {
             email: 'nonexistent@example.com',
             password: 'WrongPassword123!',
-        }, false));
+        }, false, false));
 
         await page.waitForTimeout(500);
         const errorElement = page.getByTestId('login-error-message');

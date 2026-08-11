@@ -25,13 +25,16 @@ function NewChatRoom() {
     password: ''
   });
   const [loading, setLoading] = useState(false);
+  const [submissionStage, setSubmissionStage] = useState('idle');
   const [error, setError] = useState('');
 
   const joinRoom = async (roomId, password) => {
     try {
+      setSubmissionStage('joining');
       await api.post(`/api/rooms/${roomId}/join`, { password });
 
-      router.push(`/chat/${roomId}`);
+      setSubmissionStage('navigating');
+      await router.push(`/chat/${roomId}`);
     } catch (error) {
       console.error('Room join error:', error);
       throw error;
@@ -58,6 +61,7 @@ function NewChatRoom() {
 
     try {
       setLoading(true);
+      setSubmissionStage('creating');
       setError('');
 
       const response = await api.post('/api/rooms', {
@@ -71,6 +75,7 @@ function NewChatRoom() {
     } catch (error) {
       console.error('Room creation/join error:', error);
       setError(error.message);
+      setSubmissionStage('failed');
     } finally {
       setLoading(false);
     }
@@ -98,6 +103,16 @@ function NewChatRoom() {
         render={<Form onSubmit={handleSubmit} />}
       >
         <Text typography="heading4">새 채팅방</Text>
+
+        <Text typography="body2" role="status" data-testid="room-creation-status">
+          {{
+            idle: '',
+            creating: '채팅방을 생성하고 있습니다.',
+            joining: '생성된 채팅방에 입장하고 있습니다.',
+            navigating: '채팅방 화면을 여는 중입니다.',
+            failed: '채팅방 생성 또는 입장에 실패했습니다.',
+          }[submissionStage]}
+        </Text>
 
         {error && (
           <Callout.Root colorPalette="danger">

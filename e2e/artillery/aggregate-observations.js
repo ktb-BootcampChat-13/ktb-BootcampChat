@@ -12,11 +12,13 @@ const reports = runDirectories.flatMap((runDirectory) => fs.readdirSync(runDirec
     .filter((file) => file.startsWith('vu-') && file.endsWith('.json'))
     .map((file) => JSON.parse(fs.readFileSync(path.join(runDirectory, file), 'utf8'))));
 
-const samples = { actions: [], http: [], socket: [] };
+const samples = { actions: [], documents: [], http: [], socket: [], layoutShifts: [] };
 for (const report of reports) {
     samples.actions.push(...report.samples.actions);
+    samples.documents.push(...(report.samples.documents || []));
     samples.http.push(...report.samples.http);
     samples.socket.push(...report.samples.socket);
+    samples.layoutShifts.push(...(report.samples.layoutShifts || []));
 }
 
 const timestamps = Object.values(samples).flat()
@@ -26,6 +28,10 @@ const timestamps = Object.values(samples).flat()
 const rankedHttp = summarizeSamples(samples.http.filter((sample) =>
     sample.name !== 'GET /api/health' &&
     !(sample.name === 'POST /api/auth/login' && sample.status === 401)));
+const expectedPerRun = Number(process.env.EXPECTED_VUS || process.env.PHASE1_ARRIVAL_COUNT || 0);
+const expectedVirtualUsers = expectedPerRun > 0 ? expectedPerRun * runDirectories.length : null;
+const completedVirtualUsers = reports.filter((report) => report.samples.actions.length > 0 &&
+    report.samples.actions.every((sample) => sample.success)).length;
 
 const aggregate = {
     schemaVersion: 1,
@@ -39,13 +45,22 @@ const aggregate = {
             report.samples.actions.every((sample) => sample.success)).length,
         failed: reports.filter((report) => report.samples.actions.some((sample) => !sample.success)).length,
         allSamplesHaveWindowsAndNames: Object.values(samples).flat().every((sample) =>
-            Boolean(sample.name && sample.startedAt && sample.endedAt)),
+            sample.value !== undefined || Boolean(sample.name && sample.startedAt && sample.endedAt)),
+        expectedVirtualUsers,
+        targetReached: expectedVirtualUsers === null ? null : reports.length === expectedVirtualUsers,
+        adoptable: expectedVirtualUsers === null ? false :
+            reports.length === expectedVirtualUsers && completedVirtualUsers / expectedVirtualUsers >= 0.99,
     },
     summary: {
         actions: summarizeSamples(samples.actions),
+        documents: summarizeSamples(samples.documents),
         httpDiagnostic: summarizeSamples(samples.http),
         httpRanked: rankedHttp,
         socket: summarizeSamples(samples.socket),
+        cls: {
+            total: Number(samples.layoutShifts.reduce((sum, entry) => sum + entry.value, 0).toFixed(4)),
+            entries: samples.layoutShifts.length,
+        },
     },
     samples,
 };

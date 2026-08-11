@@ -1,65 +1,22 @@
-# AGENTS.md
+## 6. Staged Verification for Performance Work
 
-Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+Always verify optimizations in this order. Never start with browser E2E.
 
-**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+**Stage 0 — No load (diagnosis).** Reproduce with a single request.
+- `db.setProfilingLevel(2)` + one page visit → count MongoDB commands per request (per-room counts mean N+1).
+- `explain("executionStats")` on captured queries → COLLSCAN or examined ≫ returned means missing index.
+- Check duplicate frontend calls in DevTools Network (e.g., multiple `GET /api/rooms` per room creation).
+- N+1 and index issues must be confirmed and fixed here, not under load.
 
-## 1. Think Before Coding
+**Stage 1 — Lightweight HTTP load (k6, no browser).** Replay the API flow
+(login → room list → create → join → message history) with HTTP-only VUs.
+- 10 VU · 3 min · 3 runs; watch Mongo pool checked-out / wait queue in Prometheus.
+- Iterate Stage 0 ↔ 1 until wait queue stays at 0.
+- Tomcat thread and pool tuning experiments run at this stage, one factor at a time (Rule 9).
+- All adoption criteria (error rate ≤ 1%, wait queue 0, ≥ 10% p95 improvement, no p99 regression)
+  must pass here before any Stage 2 run.
 
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
-
-Before implementing:
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them - don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
-
-## 2. Simplicity First
-
-**Minimum code that solves the problem. Nothing speculative.**
-
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
-
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
-
-## 3. Surgical Changes
-
-**Touch only what you must. Clean up only your own mess.**
-
-When editing existing code:
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it - don't delete it.
-
-When your changes create orphans:
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
-
-The test: Every changed line should trace directly to the user's request.
-
-## 4. Goal-Driven Execution
-
-**Define success criteria. Loop until verified.**
-
-Transform tasks into verifiable goals:
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
-
-For multi-step tasks, state a brief plan:
-```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
-```
-
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
-
----
-
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+**Stage 2 — Browser E2E (final regression only).** Run the distributed browser E2E
+once or twice as final confirmation after Stages 0–1 pass.
+- A Stage 2 failure after Stage 1 passed points to the frontend (rendering, request merging),
+  not server queries.
