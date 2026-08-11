@@ -20,4 +20,11 @@ public interface StoragePort {
     default Optional<URI> offloadUrl(String key, Duration ttl, ContentDisposition disposition) {
         return Optional.empty();
     }
+    default PresignedUpload presignPut(String key, String contentType, long size, Duration ttl) {
+        throw new UnsupportedOperationException("Direct upload requires S3 storage");
+    }
+    default Optional<UploadObjectMetadata> head(String key) { return Optional.empty(); }
+    default void promote(String sourceKey, String destinationKey) {
+        throw new UnsupportedOperationException("Direct upload requires S3 storage");
+    }
 }

@@ -55,20 +55,31 @@ const ProfileImageUpload = ({ currentImage, onImageChange }) => {
         throw new Error('인증 정보가 없습니다.');
       }
 
-      // FormData 생성
-      const formData = new FormData();
-      formData.append('profileImage', file);
-
-      // 파일 업로드 요청
-      const response = await api.post(
-        '/api/users/profile-image',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+      let response;
+      if (process.env.NEXT_PUBLIC_DIRECT_S3_UPLOAD === 'false') {
+        const formData = new FormData();
+        formData.append('profileImage', file);
+        response = await api.post('/api/users/profile-image', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+      } else {
+        const intent = await api.post('/api/users/profile-image/upload-intents', {
+          originalFilename: file.name,
+          contentType: file.type,
+          size: file.size,
+        });
+        // 전역 API 클라이언트를 쓰지 않아 Authorization/Cookie가 S3로 유출되지 않는다.
+        const putResponse = await fetch(intent.data.uploadUrl, {
+          method: intent.data.method,
+          headers: intent.data.headers,
+          body: file,
+          credentials: 'omit',
+        });
+        if (!putResponse.ok) throw new Error('이미지 전송에 실패했습니다.');
+        response = await api.post(
+          `/api/users/profile-image/upload-intents/${intent.data.uploadId}/complete`, {}
+        );
+      }
 
       const data = response.data;
 

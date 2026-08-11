@@ -5,7 +5,7 @@ import { Toast } from '../components/Toast';
 class FileService {
   constructor() {
     this.baseUrl = process.env.NEXT_PUBLIC_API_URL;
-    this.uploadLimit = 50 * 1024 * 1024; // 50MB
+    this.uploadLimit = 5 * 1024 * 1024;
     this.retryAttempts = 3;
     this.retryDelay = 1000;
     this.activeUploads = new Map();
@@ -14,14 +14,26 @@ class FileService {
       image: {
         extensions: ['.jpg', '.jpeg', '.png', '.gif', '.webp'],
         mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-        maxSize: 10 * 1024 * 1024,
+        maxSize: this.uploadLimit,
         name: '이미지'
       },
+      video: {
+        extensions: ['.mp4', '.webm', '.mov'],
+        mimeTypes: ['video/mp4', 'video/webm', 'video/quicktime'],
+        maxSize: this.uploadLimit,
+        name: '동영상'
+      },
+      audio: {
+        extensions: ['.mp3', '.wav', '.ogg'],
+        mimeTypes: ['audio/mpeg', 'audio/wav', 'audio/ogg'],
+        maxSize: this.uploadLimit,
+        name: '오디오'
+      },
       document: {
-        extensions: ['.pdf'],
-        mimeTypes: ['application/pdf'],
-        maxSize: 20 * 1024 * 1024,
-        name: 'PDF 문서'
+        extensions: ['.pdf', '.doc', '.docx'],
+        mimeTypes: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+        maxSize: this.uploadLimit,
+        name: '문서'
       }
     };
   }
@@ -81,6 +93,9 @@ class FileService {
     }
 
     try {
+      if (process.env.NEXT_PUBLIC_DIRECT_S3_UPLOAD !== 'false') {
+        return await this.uploadDirect(file, onProgress);
+      }
       const formData = new FormData();
       formData.append('file', file);
 
@@ -147,6 +162,38 @@ class FileService {
       }
 
       return this.handleUploadError(error);
+    }
+  }
+
+  async uploadDirect(file, onProgress) {
+    const source = CancelToken.source();
+    this.activeUploads.set(file.name, source);
+    try {
+      const intent = await axiosInstance.post('/api/files/upload-intents', {
+        originalFilename: file.name,
+        contentType: file.type,
+        size: file.size
+      }, { cancelToken: source.token });
+
+      // S3 요청에는 앱 인증 정보나 쿠키를 절대 전달하지 않는다.
+      await axios.put(intent.data.uploadUrl, file, {
+        headers: intent.data.headers,
+        withCredentials: false,
+        transformRequest: [(data) => data],
+        cancelToken: source.token,
+        onUploadProgress: ({ loaded, total }) => {
+          if (onProgress && total) onProgress(Math.round((loaded * 100) / total));
+        }
+      });
+      const response = await axiosInstance.post(
+        `/api/files/upload-intents/${intent.data.uploadId}/complete`, {}, { cancelToken: source.token }
+      );
+      const fileData = response.data.file;
+      return { success: true, data: { ...response.data, file: {
+        ...fileData, url: this.getFileUrl(fileData.filename, true)
+      } } };
+    } finally {
+      this.activeUploads.delete(file.name);
     }
   }
   getFileUrl(filename, forPreview = false) {

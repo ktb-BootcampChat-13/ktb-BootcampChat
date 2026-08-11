@@ -17,8 +17,16 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
+import java.time.Instant;
+import java.util.Map;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Component
 @ConditionalOnProperty(name = "file.storage.type", havingValue = "s3", matchIfMissing = true)
@@ -73,5 +81,35 @@ public class S3Storage implements StoragePort {
                 .getObjectRequest(objectRequest)
                 .build();
         return Optional.of(URI.create(s3Presigner.presignGetObject(presignRequest).url().toString()));
+    }
+
+    @Override
+    public PresignedUpload presignPut(String key, String contentType, long size, Duration ttl) {
+        PutObjectRequest request = PutObjectRequest.builder().bucket(bucket).key(key)
+                .contentType(contentType).contentLength(size).build();
+        var signed = s3Presigner.presignPutObject(PutObjectPresignRequest.builder()
+                .signatureDuration(ttl).putObjectRequest(request).build());
+        return new PresignedUpload(URI.create(signed.url().toString()),
+                Map.of("Content-Type", contentType), Instant.now().plus(ttl));
+    }
+
+    @Override
+    public Optional<UploadObjectMetadata> head(String key) {
+        try {
+            var result = s3Client.headObject(HeadObjectRequest.builder().bucket(bucket).key(key).build());
+            return Optional.of(new UploadObjectMetadata(result.contentLength(), result.contentType()));
+        } catch (S3Exception ex) {
+            if (ex.statusCode() == 404) return Optional.empty();
+            throw ex;
+        }
+    }
+
+    @Override
+    public void promote(String sourceKey, String destinationKey) {
+        String copySource = URLEncoder.encode(bucket + "/" + sourceKey, StandardCharsets.UTF_8)
+                .replace("%2F", "/");
+        s3Client.copyObject(CopyObjectRequest.builder().bucket(bucket).key(destinationKey)
+                .copySource(copySource).build());
+        delete(sourceKey);
     }
 }
