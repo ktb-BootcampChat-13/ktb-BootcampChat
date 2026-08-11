@@ -1,0 +1,16 @@
+{
+  "testName": "room-join-pool-smoke",
+  "fixtureId": "rooms324-users562-messages8051",
+  "apiBaseUrl": "http://localhost:5001",
+  "model": "HTTP-only room join",
+  "vus": 10,
+  "duration": "30s",
+  "thinkTimeMs": 0,
+  "endedAt": "2026-08-11T01:25:44.936Z",
+  "p95Ms": 168.76619999999997,
+  "p99Ms": 321.811,
+  "averageMs": 102.96696698762054,
+  "errorRate": 0,
+  "timeoutCount": 0,
+  "completedRequests": 2908
+}

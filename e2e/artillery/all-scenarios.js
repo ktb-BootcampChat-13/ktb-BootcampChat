@@ -8,6 +8,7 @@ const {
 const {
     fullProfileUpdateScenario,
 } = require('./scenarios/profile.scenario.js');
+const { createObservation } = require('./observation.js');
 
 function generateUserSchema() {
     const timestamp = Date.now();
@@ -53,14 +54,19 @@ const allScenariosFlat = [
 async function allScenarios(page, vuContext) {
     const testUser = generateUserSchema();
     vuContext.vars.testUser = testUser;
+    vuContext.vars.observation = createObservation(page, vuContext);
 
-    for (const scenario of allScenariosFlat) {
-        try {
-            await scenario(page, vuContext);
-        } catch (err) {
-            err.message = `[${scenario.name}] ${err.message}`;
-            throw err;
+    try {
+        for (const scenario of allScenariosFlat) {
+            try {
+                await scenario(page, vuContext);
+            } catch (err) {
+                err.message = `[${scenario.name}] ${err.message}`;
+                throw err;
+            }
         }
+    } finally {
+        await vuContext.vars.observation.finish();
     }
 }
 
