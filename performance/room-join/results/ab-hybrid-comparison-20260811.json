@@ -1,0 +1,6074 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-08-11",
+  "base": "upstream/master f28a62e",
+  "variantA": "af5cf9c",
+  "variantB": "f28a62e",
+  "hybrid": "working-tree",
+  "duration": "10s",
+  "repeats": 3,
+  "vus": [
+    1,
+    10,
+    50
+  ],
+  "notes": [
+    "All measured runs passed error-rate and timeout thresholds.",
+    "CPU and heap were captured as before/after actuator snapshots, not time-series peaks."
+  ],
+  "type": "room-join",
+  "runs": [
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p10-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p10-m1000-idempotent-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:28:54.284Z",
+        "endedAt": "2026-08-11T11:29:04.326Z",
+        "requests": 88,
+        "rps": 8.76344765981093,
+        "latencyMs": {
+          "average": 12.589897727272726,
+          "p95": 19.882899999999996,
+          "p99": 23.14031,
+          "max": 25.478
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p10-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p10-m1000-idempotent-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:29:05.284Z",
+        "endedAt": "2026-08-11T11:29:13.439Z",
+        "requests": 850,
+        "rps": 104.2426385994793,
+        "latencyMs": {
+          "average": 16.879095294117665,
+          "p95": 36.57069999999998,
+          "p99": 86.61279999999998,
+          "max": 88.205
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p10-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p10-m1000-idempotent-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:29:14.425Z",
+        "endedAt": "2026-08-11T11:29:24.559Z",
+        "requests": 4600,
+        "rps": 453.92865879574106,
+        "latencyMs": {
+          "average": 8.359172391304352,
+          "p95": 15.112,
+          "p99": 27.066259999999996,
+          "max": 39.667
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p10-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p10-m1000-new-participant-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:29:25.584Z",
+        "endedAt": "2026-08-11T11:29:35.729Z",
+        "requests": 1,
+        "rps": 0.0985782842686211,
+        "latencyMs": {
+          "average": 18.501,
+          "p95": 18.501,
+          "p99": 18.501,
+          "max": 18.501
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p10-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p10-m1000-new-participant-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:29:37.293Z",
+        "endedAt": "2026-08-11T11:29:47.489Z",
+        "requests": 10,
+        "rps": 0.9807789876340443,
+        "latencyMs": {
+          "average": 20.5079,
+          "p95": 20.934450000000002,
+          "p99": 20.941290000000002,
+          "max": 20.943
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p10-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p10-m1000-new-participant-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:29:48.743Z",
+        "endedAt": "2026-08-11T11:29:59.175Z",
+        "requests": 50,
+        "rps": 4.793316046718343,
+        "latencyMs": {
+          "average": 15.001019999999997,
+          "p95": 27.1221,
+          "p99": 27.36302,
+          "max": 27.462
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p10-m100000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p10-m100000-idempotent-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:31:08.102Z",
+        "endedAt": "2026-08-11T11:31:18.155Z",
+        "requests": 87,
+        "rps": 8.654226067483865,
+        "latencyMs": {
+          "average": 14.069965517241378,
+          "p95": 25.6762,
+          "p99": 43.34139999999996,
+          "max": 87.984
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p10-m100000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p10-m100000-idempotent-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:31:19.354Z",
+        "endedAt": "2026-08-11T11:31:29.483Z",
+        "requests": 860,
+        "rps": 84.91203064257968,
+        "latencyMs": {
+          "average": 15.880352325581399,
+          "p95": 25.84465,
+          "p99": 157.8937599999999,
+          "max": 181.748
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p10-m100000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p10-m100000-idempotent-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:31:30.444Z",
+        "endedAt": "2026-08-11T11:31:40.596Z",
+        "requests": 4552,
+        "rps": 448.3850847735439,
+        "latencyMs": {
+          "average": 9.578782513180991,
+          "p95": 20.776999999999997,
+          "p99": 65.17008,
+          "max": 91.289
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p10-m100000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p10-m100000-new-participant-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:31:42.016Z",
+        "endedAt": "2026-08-11T11:31:52.165Z",
+        "requests": 1,
+        "rps": 0.09853529258281497,
+        "latencyMs": {
+          "average": 11.647,
+          "p95": 11.647,
+          "p99": 11.647,
+          "max": 11.647
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p10-m100000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p10-m100000-new-participant-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:31:53.459Z",
+        "endedAt": "2026-08-11T11:32:03.636Z",
+        "requests": 10,
+        "rps": 0.982644435712011,
+        "latencyMs": {
+          "average": 12.273,
+          "p95": 12.85755,
+          "p99": 12.85791,
+          "max": 12.858
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p10-m100000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p10-m100000-new-participant-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:32:05.867Z",
+        "endedAt": "2026-08-11T11:32:16.290Z",
+        "requests": 50,
+        "rps": 4.797487498227328,
+        "latencyMs": {
+          "average": 30.563179999999992,
+          "p95": 56.42394999999997,
+          "p99": 64.21106,
+          "max": 64.802
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p500-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p500-m1000-idempotent-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:30:00.209Z",
+        "endedAt": "2026-08-11T11:30:10.267Z",
+        "requests": 82,
+        "rps": 8.152838276422381,
+        "latencyMs": {
+          "average": 20.459353658536582,
+          "p95": 39.03859999999998,
+          "p99": 50.44589999999999,
+          "max": 67.788
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p500-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p500-m1000-idempotent-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:30:11.339Z",
+        "endedAt": "2026-08-11T11:30:21.407Z",
+        "requests": 865,
+        "rps": 85.92419618411141,
+        "latencyMs": {
+          "average": 14.276872832369964,
+          "p95": 21.808399999999995,
+          "p99": 34.87223999999999,
+          "max": 37.311
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p500-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p500-m1000-idempotent-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:30:22.154Z",
+        "endedAt": "2026-08-11T11:30:32.467Z",
+        "requests": 4132,
+        "rps": 400.663985165736,
+        "latencyMs": {
+          "average": 20.729730154888685,
+          "p95": 61.18139999999998,
+          "p99": 242.1282699999998,
+          "max": 361.127
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p500-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p500-m1000-new-participant-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:30:33.614Z",
+        "endedAt": "2026-08-11T11:30:43.745Z",
+        "requests": 1,
+        "rps": 0.09871337968058128,
+        "latencyMs": {
+          "average": 7.67,
+          "p95": 7.67,
+          "p99": 7.67,
+          "max": 7.67
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p500-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p500-m1000-new-participant-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:30:45.163Z",
+        "endedAt": "2026-08-11T11:30:55.374Z",
+        "requests": 10,
+        "rps": 0.9794194589099258,
+        "latencyMs": {
+          "average": 51.2059,
+          "p95": 57.24725,
+          "p99": 58.167049999999996,
+          "max": 58.397
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 1,
+      "case": "p500-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r1-join-p500-m1000-new-participant-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:30:56.700Z",
+        "endedAt": "2026-08-11T11:31:07.146Z",
+        "requests": 50,
+        "rps": 4.786561479744421,
+        "latencyMs": {
+          "average": 89.91234000000003,
+          "p95": 124.78345,
+          "p99": 132.3475,
+          "max": 133.156
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p10-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p10-m1000-idempotent-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:43:37.299Z",
+        "endedAt": "2026-08-11T11:43:47.372Z",
+        "requests": 85,
+        "rps": 8.439091699567541,
+        "latencyMs": {
+          "average": 16.71375294117647,
+          "p95": 22.715199999999996,
+          "p99": 116.23247999999995,
+          "max": 180.369
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p10-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p10-m1000-idempotent-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:43:48.239Z",
+        "endedAt": "2026-08-11T11:43:58.352Z",
+        "requests": 850,
+        "rps": 84.05765484878671,
+        "latencyMs": {
+          "average": 17.001623529411766,
+          "p95": 29.20054999999999,
+          "p99": 69.45657999999999,
+          "max": 80.029
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p10-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p10-m1000-idempotent-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:43:59.350Z",
+        "endedAt": "2026-08-11T11:44:09.493Z",
+        "requests": 4577,
+        "rps": 451.24930099245273,
+        "latencyMs": {
+          "average": 8.845590779986905,
+          "p95": 15.077599999999993,
+          "p99": 19.45256,
+          "max": 34.366
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p10-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p10-m1000-new-participant-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:44:10.765Z",
+        "endedAt": "2026-08-11T11:44:20.912Z",
+        "requests": 1,
+        "rps": 0.09855574441026312,
+        "latencyMs": {
+          "average": 27.264,
+          "p95": 27.264,
+          "p99": 27.264,
+          "max": 27.264
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p10-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p10-m1000-new-participant-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:44:22.821Z",
+        "endedAt": "2026-08-11T11:44:33.022Z",
+        "requests": 10,
+        "rps": 0.9803836986504431,
+        "latencyMs": {
+          "average": 19.555899999999998,
+          "p95": 19.97335,
+          "p99": 19.979470000000003,
+          "max": 19.981
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p10-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p10-m1000-new-participant-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:44:34.499Z",
+        "endedAt": "2026-08-11T11:44:44.928Z",
+        "requests": 50,
+        "rps": 4.794339151168006,
+        "latencyMs": {
+          "average": 20.64754,
+          "p95": 30.717999999999996,
+          "p99": 31.32956,
+          "max": 31.553
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p10-m100000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p10-m100000-idempotent-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:45:53.108Z",
+        "endedAt": "2026-08-11T11:46:03.204Z",
+        "requests": 88,
+        "rps": 8.716628930927254,
+        "latencyMs": {
+          "average": 13.054977272727273,
+          "p95": 22.11904999999999,
+          "p99": 35.58138999999999,
+          "max": 43.327
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p10-m100000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p10-m100000-idempotent-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:46:04.064Z",
+        "endedAt": "2026-08-11T11:46:14.193Z",
+        "requests": 870,
+        "rps": 85.8941217716028,
+        "latencyMs": {
+          "average": 14.810641379310338,
+          "p95": 26.3506,
+          "p99": 30.00912,
+          "max": 38.582
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p10-m100000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p10-m100000-idempotent-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:46:14.890Z",
+        "endedAt": "2026-08-11T11:46:25.041Z",
+        "requests": 4600,
+        "rps": 453.1626814620999,
+        "latencyMs": {
+          "average": 8.692617173913057,
+          "p95": 14.8453,
+          "p99": 21.968149999999994,
+          "max": 64.983
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p10-m100000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p10-m100000-new-participant-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:46:26.230Z",
+        "endedAt": "2026-08-11T11:46:36.364Z",
+        "requests": 1,
+        "rps": 0.09868147730908243,
+        "latencyMs": {
+          "average": 4.222,
+          "p95": 4.222,
+          "p99": 4.222,
+          "max": 4.222
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p10-m100000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p10-m100000-new-participant-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:46:37.555Z",
+        "endedAt": "2026-08-11T11:46:47.719Z",
+        "requests": 10,
+        "rps": 0.9839308351723001,
+        "latencyMs": {
+          "average": 9.685100000000002,
+          "p95": 10.1227,
+          "p99": 10.163739999999999,
+          "max": 10.174
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p10-m100000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p10-m100000-new-participant-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:46:48.734Z",
+        "endedAt": "2026-08-11T11:46:59.166Z",
+        "requests": 50,
+        "rps": 4.793111570120778,
+        "latencyMs": {
+          "average": 12.174900000000001,
+          "p95": 21.81825,
+          "p99": 22.095979999999997,
+          "max": 22.144
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p500-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p500-m1000-idempotent-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:44:45.709Z",
+        "endedAt": "2026-08-11T11:44:55.836Z",
+        "requests": 80,
+        "rps": 7.8998239129249805,
+        "latencyMs": {
+          "average": 24.009737500000007,
+          "p95": 37.115249999999996,
+          "p99": 132.09438999999998,
+          "max": 156.473
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p500-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p500-m1000-idempotent-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:44:56.986Z",
+        "endedAt": "2026-08-11T11:45:07.066Z",
+        "requests": 846,
+        "rps": 83.9334009298154,
+        "latencyMs": {
+          "average": 16.812570921985813,
+          "p95": 26.60199999999999,
+          "p99": 132.42194999999998,
+          "max": 163.491
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p500-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p500-m1000-idempotent-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:45:07.931Z",
+        "endedAt": "2026-08-11T11:45:18.232Z",
+        "requests": 4493,
+        "rps": 436.2035553162515,
+        "latencyMs": {
+          "average": 10.71975094591587,
+          "p95": 17.84259999999997,
+          "p99": 51.38003999999998,
+          "max": 75.986
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p500-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p500-m1000-new-participant-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:45:19.233Z",
+        "endedAt": "2026-08-11T11:45:29.360Z",
+        "requests": 1,
+        "rps": 0.09874647277599244,
+        "latencyMs": {
+          "average": 7.318,
+          "p95": 7.318,
+          "p99": 7.318,
+          "max": 7.318
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p500-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p500-m1000-new-participant-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:45:30.753Z",
+        "endedAt": "2026-08-11T11:45:40.953Z",
+        "requests": 10,
+        "rps": 0.9804793426238979,
+        "latencyMs": {
+          "average": 40.1924,
+          "p95": 47.3608,
+          "p99": 48.410560000000004,
+          "max": 48.673
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 2,
+      "case": "p500-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r2-join-p500-m1000-new-participant-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:45:42.033Z",
+        "endedAt": "2026-08-11T11:45:52.429Z",
+        "requests": 50,
+        "rps": 4.809853041674106,
+        "latencyMs": {
+          "average": 60.75576,
+          "p95": 96.60239999999999,
+          "p99": 98.82021,
+          "max": 99.443
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p10-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p10-m1000-idempotent-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:50:38.544Z",
+        "endedAt": "2026-08-11T11:50:48.599Z",
+        "requests": 87,
+        "rps": 8.65316216383957,
+        "latencyMs": {
+          "average": 13.781402298850574,
+          "p95": 20.7864,
+          "p99": 79.18449999999996,
+          "max": 114.767
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p10-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p10-m1000-idempotent-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:50:49.489Z",
+        "endedAt": "2026-08-11T11:50:59.629Z",
+        "requests": 850,
+        "rps": 83.83459021109846,
+        "latencyMs": {
+          "average": 17.591979999999992,
+          "p95": 30.68244999999999,
+          "p99": 171.7703,
+          "max": 177.204
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p10-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p10-m1000-idempotent-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:51:00.532Z",
+        "endedAt": "2026-08-11T11:51:10.691Z",
+        "requests": 4503,
+        "rps": 443.2603605833948,
+        "latencyMs": {
+          "average": 10.7026662225183,
+          "p95": 20.178799999999978,
+          "p99": 83.62661999999999,
+          "max": 94.178
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p10-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p10-m1000-new-participant-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:51:11.966Z",
+        "endedAt": "2026-08-11T11:51:22.101Z",
+        "requests": 1,
+        "rps": 0.0986773290809983,
+        "latencyMs": {
+          "average": 5.612,
+          "p95": 5.612,
+          "p99": 5.612,
+          "max": 5.612
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p10-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p10-m1000-new-participant-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:51:23.330Z",
+        "endedAt": "2026-08-11T11:51:33.510Z",
+        "requests": 10,
+        "rps": 0.9824451783309927,
+        "latencyMs": {
+          "average": 9.1625,
+          "p95": 10.895599999999998,
+          "p99": 12.09512,
+          "max": 12.395
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p10-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p10-m1000-new-participant-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:51:35.060Z",
+        "endedAt": "2026-08-11T11:51:45.582Z",
+        "requests": 50,
+        "rps": 4.752262647291628,
+        "latencyMs": {
+          "average": 22.487259999999996,
+          "p95": 46.2581,
+          "p99": 46.66287,
+          "max": 47.024
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p10-m100000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p10-m100000-idempotent-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:52:55.692Z",
+        "endedAt": "2026-08-11T11:53:05.796Z",
+        "requests": 88,
+        "rps": 8.710046989713732,
+        "latencyMs": {
+          "average": 13.154886363636365,
+          "p95": 17.7613,
+          "p99": 35.72751999999996,
+          "max": 72.445
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p10-m100000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p10-m100000-idempotent-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:53:07.138Z",
+        "endedAt": "2026-08-11T11:53:17.304Z",
+        "requests": 844,
+        "rps": 83.0259945141853,
+        "latencyMs": {
+          "average": 18.14252369668245,
+          "p95": 55.747199999999985,
+          "p99": 164.62654999999995,
+          "max": 188.398
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p10-m100000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p10-m100000-idempotent-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:53:18.170Z",
+        "endedAt": "2026-08-11T11:53:28.322Z",
+        "requests": 4549,
+        "rps": 448.11791460955027,
+        "latencyMs": {
+          "average": 9.844069905473726,
+          "p95": 18.826199999999993,
+          "p99": 37.119839999999996,
+          "max": 72.376
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p10-m100000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p10-m100000-new-participant-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:53:29.496Z",
+        "endedAt": "2026-08-11T11:53:39.624Z",
+        "requests": 1,
+        "rps": 0.09874567321146406,
+        "latencyMs": {
+          "average": 5.599,
+          "p95": 5.599,
+          "p99": 5.599,
+          "max": 5.599
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p10-m100000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p10-m100000-new-participant-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:53:41.626Z",
+        "endedAt": "2026-08-11T11:53:51.873Z",
+        "requests": 10,
+        "rps": 0.9759877728251819,
+        "latencyMs": {
+          "average": 21.1646,
+          "p95": 21.4361,
+          "p99": 21.465619999999998,
+          "max": 21.473
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p10-m100000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p10-m100000-new-participant-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:53:53.069Z",
+        "endedAt": "2026-08-11T11:54:03.492Z",
+        "requests": 50,
+        "rps": 4.7975326097886555,
+        "latencyMs": {
+          "average": 9.77388,
+          "p95": 14.4575,
+          "p99": 14.577530000000001,
+          "max": 14.579
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p500-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p500-m1000-idempotent-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:51:46.508Z",
+        "endedAt": "2026-08-11T11:51:56.627Z",
+        "requests": 83,
+        "rps": 8.202848740655178,
+        "latencyMs": {
+          "average": 19.631168674698795,
+          "p95": 30.514399999999995,
+          "p99": 37.26257999999999,
+          "max": 46.308
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p500-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p500-m1000-idempotent-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:51:57.641Z",
+        "endedAt": "2026-08-11T11:52:07.777Z",
+        "requests": 774,
+        "rps": 76.36471590993739,
+        "latencyMs": {
+          "average": 27.92410981912145,
+          "p95": 106.41475,
+          "p99": 193.25229999999993,
+          "max": 277.808
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p500-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p500-m1000-idempotent-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:52:08.739Z",
+        "endedAt": "2026-08-11T11:52:19.105Z",
+        "requests": 3323,
+        "rps": 320.5921045776655,
+        "latencyMs": {
+          "average": 47.999174541077245,
+          "p95": 217.02309999999986,
+          "p99": 346.15538,
+          "max": 366.761
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p500-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p500-m1000-new-participant-vu1",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:52:20.406Z",
+        "endedAt": "2026-08-11T11:52:30.540Z",
+        "requests": 1,
+        "rps": 0.09868331783182883,
+        "latencyMs": {
+          "average": 9.696,
+          "p95": 9.696,
+          "p99": 9.696,
+          "max": 9.696
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p500-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p500-m1000-new-participant-vu10",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:52:32.139Z",
+        "endedAt": "2026-08-11T11:52:42.413Z",
+        "requests": 10,
+        "rps": 0.9734245367229273,
+        "latencyMs": {
+          "average": 81.2053,
+          "p95": 83.65065,
+          "p99": 83.83892999999999,
+          "max": 83.886
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "A",
+      "repeat": 3,
+      "case": "p500-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-A-r3-join-p500-m1000-new-participant-vu50",
+        "commit": "A",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:52:44.086Z",
+        "endedAt": "2026-08-11T11:52:54.668Z",
+        "requests": 50,
+        "rps": 4.725025264710091,
+        "latencyMs": {
+          "average": 124.31847999999998,
+          "p95": 182.51575,
+          "p99": 183.21268,
+          "max": 183.736
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p10-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p10-m1000-idempotent-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:23:05.806Z",
+        "endedAt": "2026-08-11T11:23:15.902Z",
+        "requests": 88,
+        "rps": 8.716957900560313,
+        "latencyMs": {
+          "average": 12.671545454545459,
+          "p95": 23.75939999999997,
+          "p99": 31.498179999999998,
+          "max": 34.27
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p10-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p10-m1000-idempotent-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:23:16.605Z",
+        "endedAt": "2026-08-11T11:23:26.714Z",
+        "requests": 880,
+        "rps": 87.05223618894016,
+        "latencyMs": {
+          "average": 13.418982954545472,
+          "p95": 22.138550000000002,
+          "p99": 40.14657,
+          "max": 42.094
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p10-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p10-m1000-idempotent-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:23:27.625Z",
+        "endedAt": "2026-08-11T11:23:37.782Z",
+        "requests": 4624,
+        "rps": 455.2766504713945,
+        "latencyMs": {
+          "average": 7.868852724913482,
+          "p95": 13.436,
+          "p99": 30.462789999999995,
+          "max": 58.033
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p10-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p10-m1000-new-participant-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:23:39.055Z",
+        "endedAt": "2026-08-11T11:23:49.275Z",
+        "requests": 1,
+        "rps": 0.09785470201139361,
+        "latencyMs": {
+          "average": 47.964,
+          "p95": 47.964,
+          "p99": 47.964,
+          "max": 47.964
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p10-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p10-m1000-new-participant-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:23:50.382Z",
+        "endedAt": "2026-08-11T11:24:00.569Z",
+        "requests": 10,
+        "rps": 0.9817167044398531,
+        "latencyMs": {
+          "average": 16.268099999999997,
+          "p95": 18.481949999999998,
+          "p99": 19.118789999999997,
+          "max": 19.278
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p10-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p10-m1000-new-participant-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:24:01.980Z",
+        "endedAt": "2026-08-11T11:24:12.406Z",
+        "requests": 50,
+        "rps": 4.795776187263934,
+        "latencyMs": {
+          "average": 30.893100000000004,
+          "p95": 45.73704999999999,
+          "p99": 48.55146,
+          "max": 48.672
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p10-m100000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p10-m100000-idempotent-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:25:21.395Z",
+        "endedAt": "2026-08-11T11:25:31.496Z",
+        "requests": 90,
+        "rps": 8.910236495497063,
+        "latencyMs": {
+          "average": 10.712388888888889,
+          "p95": 15.981649999999995,
+          "p99": 19.40958,
+          "max": 24.641
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p10-m100000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p10-m100000-idempotent-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:25:32.234Z",
+        "endedAt": "2026-08-11T11:25:42.277Z",
+        "requests": 880,
+        "rps": 87.62609070833845,
+        "latencyMs": {
+          "average": 12.687069318181798,
+          "p95": 22.293749999999996,
+          "p99": 28.26177,
+          "max": 30.817
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p10-m100000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p10-m100000-idempotent-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:25:42.906Z",
+        "endedAt": "2026-08-11T11:25:53.004Z",
+        "requests": 4470,
+        "rps": 442.67221508918067,
+        "latencyMs": {
+          "average": 10.820319463087245,
+          "p95": 18.458449999999992,
+          "p99": 112.23182,
+          "max": 251.855
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p10-m100000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p10-m100000-new-participant-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:25:54.162Z",
+        "endedAt": "2026-08-11T11:26:04.288Z",
+        "requests": 1,
+        "rps": 0.09876283744051761,
+        "latencyMs": {
+          "average": 4.707,
+          "p95": 4.707,
+          "p99": 4.707,
+          "max": 4.707
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p10-m100000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p10-m100000-new-participant-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:26:05.769Z",
+        "endedAt": "2026-08-11T11:26:15.948Z",
+        "requests": 10,
+        "rps": 0.982419890780451,
+        "latencyMs": {
+          "average": 14.3276,
+          "p95": 15.5076,
+          "p99": 16.08072,
+          "max": 16.224
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p10-m100000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p10-m100000-new-participant-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:26:17.063Z",
+        "endedAt": "2026-08-11T11:26:27.456Z",
+        "requests": 50,
+        "rps": 4.811094769425877,
+        "latencyMs": {
+          "average": 16.48108,
+          "p95": 28.256349999999998,
+          "p99": 30.77099,
+          "max": 30.795
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p500-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p500-m1000-idempotent-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:24:13.584Z",
+        "endedAt": "2026-08-11T11:24:23.621Z",
+        "requests": 84,
+        "rps": 8.369669155945768,
+        "latencyMs": {
+          "average": 17.068380952380952,
+          "p95": 24.33525,
+          "p99": 41.611679999999986,
+          "max": 55.808
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p500-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p500-m1000-idempotent-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:24:24.416Z",
+        "endedAt": "2026-08-11T11:24:34.535Z",
+        "requests": 830,
+        "rps": 82.02934674002528,
+        "latencyMs": {
+          "average": 19.805942168674722,
+          "p95": 30.801849999999998,
+          "p99": 53.79391,
+          "max": 61.891
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p500-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p500-m1000-idempotent-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:24:35.371Z",
+        "endedAt": "2026-08-11T11:24:45.658Z",
+        "requests": 4491,
+        "rps": 436.5792137549575,
+        "latencyMs": {
+          "average": 10.863496103317745,
+          "p95": 18.610999999999994,
+          "p99": 98.8183,
+          "max": 186.619
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p500-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p500-m1000-new-participant-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:24:47.115Z",
+        "endedAt": "2026-08-11T11:24:57.294Z",
+        "requests": 1,
+        "rps": 0.09824741351402998,
+        "latencyMs": {
+          "average": 27.174,
+          "p95": 27.174,
+          "p99": 27.174,
+          "max": 27.174
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p500-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p500-m1000-new-participant-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:24:58.572Z",
+        "endedAt": "2026-08-11T11:25:08.757Z",
+        "requests": 10,
+        "rps": 0.9819293576453807,
+        "latencyMs": {
+          "average": 23.333000000000002,
+          "p95": 28.3749,
+          "p99": 28.43178,
+          "max": 28.446
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 1,
+      "case": "p500-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r1-join-p500-m1000-new-participant-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:25:10.054Z",
+        "endedAt": "2026-08-11T11:25:20.485Z",
+        "requests": 50,
+        "rps": 4.793808240575541,
+        "latencyMs": {
+          "average": 52.79371999999999,
+          "p95": 75.4236,
+          "p99": 78.56482,
+          "max": 79.634
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p10-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p10-m1000-idempotent-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:36:59.767Z",
+        "endedAt": "2026-08-11T11:37:09.815Z",
+        "requests": 86,
+        "rps": 8.559226413135745,
+        "latencyMs": {
+          "average": 15.384732558139538,
+          "p95": 34.10499999999999,
+          "p99": 73.38049999999997,
+          "max": 103.785
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p10-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p10-m1000-idempotent-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:37:11.330Z",
+        "endedAt": "2026-08-11T11:37:21.525Z",
+        "requests": 872,
+        "rps": 85.53239205851357,
+        "latencyMs": {
+          "average": 14.840650229357786,
+          "p95": 27.758499999999998,
+          "p99": 46.50176999999999,
+          "max": 140.147
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p10-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p10-m1000-idempotent-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:37:22.578Z",
+        "endedAt": "2026-08-11T11:37:32.730Z",
+        "requests": 4592,
+        "rps": 452.3448940683518,
+        "latencyMs": {
+          "average": 8.848833841463426,
+          "p95": 17.550849999999993,
+          "p99": 27.57078999999998,
+          "max": 54.854
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p10-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p10-m1000-new-participant-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:37:33.747Z",
+        "endedAt": "2026-08-11T11:37:43.896Z",
+        "requests": 1,
+        "rps": 0.09853353524825377,
+        "latencyMs": {
+          "average": 28.492,
+          "p95": 28.492,
+          "p99": 28.492,
+          "max": 28.492
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p10-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p10-m1000-new-participant-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:37:45.236Z",
+        "endedAt": "2026-08-11T11:37:55.526Z",
+        "requests": 10,
+        "rps": 0.9718572493310464,
+        "latencyMs": {
+          "average": 62.1394,
+          "p95": 65.20700000000001,
+          "p99": 65.4662,
+          "max": 65.531
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p10-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p10-m1000-new-participant-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:37:56.861Z",
+        "endedAt": "2026-08-11T11:38:07.299Z",
+        "requests": 50,
+        "rps": 4.790299834447238,
+        "latencyMs": {
+          "average": 32.647459999999995,
+          "p95": 53.7359,
+          "p99": 54.21768,
+          "max": 54.251
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p10-m100000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p10-m100000-idempotent-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:39:19.787Z",
+        "endedAt": "2026-08-11T11:39:29.895Z",
+        "requests": 85,
+        "rps": 8.409369699932913,
+        "latencyMs": {
+          "average": 16.12345882352942,
+          "p95": 45.48019999999999,
+          "p99": 74.11655999999995,
+          "max": 142.233
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p10-m100000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p10-m100000-idempotent-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:39:30.753Z",
+        "endedAt": "2026-08-11T11:39:40.815Z",
+        "requests": 860,
+        "rps": 85.47141060823445,
+        "latencyMs": {
+          "average": 15.387265116279064,
+          "p95": 23.845699999999997,
+          "p99": 77.71409,
+          "max": 81.904
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p10-m100000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p10-m100000-idempotent-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:39:41.482Z",
+        "endedAt": "2026-08-11T11:39:51.705Z",
+        "requests": 4507,
+        "rps": 440.8844570669807,
+        "latencyMs": {
+          "average": 11.568266696250252,
+          "p95": 26.645399999999977,
+          "p99": 107.56294,
+          "max": 162.887
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p10-m100000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p10-m100000-new-participant-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:39:53.195Z",
+        "endedAt": "2026-08-11T11:40:03.329Z",
+        "requests": 1,
+        "rps": 0.09868320097120058,
+        "latencyMs": {
+          "average": 8.176,
+          "p95": 8.176,
+          "p99": 8.176,
+          "max": 8.176
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p10-m100000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p10-m100000-new-participant-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:40:04.577Z",
+        "endedAt": "2026-08-11T11:40:14.763Z",
+        "requests": 10,
+        "rps": 0.9818201276071619,
+        "latencyMs": {
+          "average": 21.420800000000003,
+          "p95": 21.50115,
+          "p99": 21.520229999999998,
+          "max": 21.525
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p10-m100000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p10-m100000-new-participant-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:40:15.949Z",
+        "endedAt": "2026-08-11T11:40:26.375Z",
+        "requests": 50,
+        "rps": 4.795940409097553,
+        "latencyMs": {
+          "average": 17.75006000000001,
+          "p95": 27.8239,
+          "p99": 28.5505,
+          "max": 28.575
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p500-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p500-m1000-idempotent-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:38:08.765Z",
+        "endedAt": "2026-08-11T11:38:18.883Z",
+        "requests": 84,
+        "rps": 8.302845088481641,
+        "latencyMs": {
+          "average": 18.219297619047627,
+          "p95": 26.85265,
+          "p99": 45.49597999999996,
+          "max": 86.576
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p500-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p500-m1000-idempotent-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:38:21.725Z",
+        "endedAt": "2026-08-11T11:38:31.950Z",
+        "requests": 740,
+        "rps": 72.37486581308663,
+        "latencyMs": {
+          "average": 33.5194283783784,
+          "p95": 105.37405,
+          "p99": 362.11813,
+          "max": 390.063
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p500-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p500-m1000-idempotent-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:38:32.976Z",
+        "endedAt": "2026-08-11T11:38:43.576Z",
+        "requests": 4159,
+        "rps": 392.3698174683156,
+        "latencyMs": {
+          "average": 20.382619139216175,
+          "p95": 62.55729999999986,
+          "p99": 313.19488,
+          "max": 340.804
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p500-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p500-m1000-new-participant-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:38:44.775Z",
+        "endedAt": "2026-08-11T11:38:54.907Z",
+        "requests": 1,
+        "rps": 0.09870023632784586,
+        "latencyMs": {
+          "average": 9.072,
+          "p95": 9.072,
+          "p99": 9.072,
+          "max": 9.072
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p500-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p500-m1000-new-participant-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:38:56.603Z",
+        "endedAt": "2026-08-11T11:39:06.789Z",
+        "requests": 10,
+        "rps": 0.9818205131956186,
+        "latencyMs": {
+          "average": 25.9817,
+          "p95": 28.27975,
+          "p99": 28.28875,
+          "max": 28.291
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 2,
+      "case": "p500-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r2-join-p500-m1000-new-participant-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:39:08.193Z",
+        "endedAt": "2026-08-11T11:39:18.668Z",
+        "requests": 50,
+        "rps": 4.7735927901945825,
+        "latencyMs": {
+          "average": 68.56521999999998,
+          "p95": 101.85489999999999,
+          "p99": 105.01913,
+          "max": 105.491
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p10-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p10-m1000-idempotent-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:57:05.703Z",
+        "endedAt": "2026-08-11T11:57:15.732Z",
+        "requests": 87,
+        "rps": 8.675419932704667,
+        "latencyMs": {
+          "average": 13.473448275862065,
+          "p95": 17.6864,
+          "p99": 31.387879999999992,
+          "max": 38.863
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p10-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p10-m1000-idempotent-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:57:16.381Z",
+        "endedAt": "2026-08-11T11:57:26.524Z",
+        "requests": 870,
+        "rps": 85.78073831974464,
+        "latencyMs": {
+          "average": 14.695296551724153,
+          "p95": 20.95565,
+          "p99": 26.81775,
+          "max": 27.203
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p10-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p10-m1000-idempotent-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:57:27.213Z",
+        "endedAt": "2026-08-11T11:57:37.337Z",
+        "requests": 4457,
+        "rps": 440.2480561225891,
+        "latencyMs": {
+          "average": 11.22211128561814,
+          "p95": 37.58039999999996,
+          "p99": 80.57332,
+          "max": 129.564
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p10-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p10-m1000-new-participant-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:57:38.475Z",
+        "endedAt": "2026-08-11T11:57:48.618Z",
+        "requests": 1,
+        "rps": 0.09859726654854056,
+        "latencyMs": {
+          "average": 21.011,
+          "p95": 21.011,
+          "p99": 21.011,
+          "max": 21.011
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p10-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p10-m1000-new-participant-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:57:49.758Z",
+        "endedAt": "2026-08-11T11:57:59.945Z",
+        "requests": 10,
+        "rps": 0.9816956947538967,
+        "latencyMs": {
+          "average": 15.2511,
+          "p95": 17.4327,
+          "p99": 18.02814,
+          "max": 18.177
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p10-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p10-m1000-new-participant-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:58:02.884Z",
+        "endedAt": "2026-08-11T11:58:13.354Z",
+        "requests": 50,
+        "rps": 4.775966572054769,
+        "latencyMs": {
+          "average": 17.89442,
+          "p95": 34.815200000000004,
+          "p99": 35.061299999999996,
+          "max": 35.272
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p10-m100000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p10-m100000-idempotent-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:59:22.507Z",
+        "endedAt": "2026-08-11T11:59:32.564Z",
+        "requests": 89,
+        "rps": 8.849965833165616,
+        "latencyMs": {
+          "average": 11.366505617977527,
+          "p95": 17.34839999999999,
+          "p99": 22.315559999999998,
+          "max": 23.801
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p10-m100000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p10-m100000-idempotent-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:59:33.306Z",
+        "endedAt": "2026-08-11T11:59:43.438Z",
+        "requests": 860,
+        "rps": 84.8845323602539,
+        "latencyMs": {
+          "average": 16.104804651162777,
+          "p95": 25.647599999999986,
+          "p99": 95.8607,
+          "max": 103.549
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p10-m100000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p10-m100000-idempotent-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:59:44.420Z",
+        "endedAt": "2026-08-11T11:59:54.581Z",
+        "requests": 4580,
+        "rps": 450.78505003861693,
+        "latencyMs": {
+          "average": 9.019684934497812,
+          "p95": 16.0521,
+          "p99": 19.60846,
+          "max": 25.461
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p10-m100000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p10-m100000-new-participant-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:59:55.666Z",
+        "endedAt": "2026-08-11T12:00:05.793Z",
+        "requests": 1,
+        "rps": 0.09875490799548375,
+        "latencyMs": {
+          "average": 4.181,
+          "p95": 4.181,
+          "p99": 4.181,
+          "max": 4.181
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p10-m100000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p10-m100000-new-participant-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:00:06.858Z",
+        "endedAt": "2026-08-11T12:00:17.029Z",
+        "requests": 10,
+        "rps": 0.983231672094597,
+        "latencyMs": {
+          "average": 12.5672,
+          "p95": 13.2507,
+          "p99": 13.40694,
+          "max": 13.446
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p10-m100000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p10-m100000-new-participant-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:00:18.278Z",
+        "endedAt": "2026-08-11T12:00:28.692Z",
+        "requests": 50,
+        "rps": 4.80168512258366,
+        "latencyMs": {
+          "average": 15.10044,
+          "p95": 23.978299999999997,
+          "p99": 25.13638,
+          "max": 25.743
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p500-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p500-m1000-idempotent-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:58:14.279Z",
+        "endedAt": "2026-08-11T11:58:24.385Z",
+        "requests": 83,
+        "rps": 8.213213437569237,
+        "latencyMs": {
+          "average": 19.15625301204819,
+          "p95": 25.666,
+          "p99": 39.304079999999956,
+          "max": 87.648
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p500-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p500-m1000-idempotent-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:58:25.262Z",
+        "endedAt": "2026-08-11T11:58:35.428Z",
+        "requests": 850,
+        "rps": 83.61628428120096,
+        "latencyMs": {
+          "average": 16.708037647058827,
+          "p95": 30.511949999999988,
+          "p99": 44.29482,
+          "max": 48.886
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p500-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p500-m1000-idempotent-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:58:36.747Z",
+        "endedAt": "2026-08-11T11:58:47.059Z",
+        "requests": 4429,
+        "rps": 429.5171476647757,
+        "latencyMs": {
+          "average": 12.350907202528782,
+          "p95": 29.573799999999924,
+          "p99": 122.25179999999997,
+          "max": 186.105
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p500-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p500-m1000-new-participant-vu1",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:58:48.203Z",
+        "endedAt": "2026-08-11T11:58:58.332Z",
+        "requests": 1,
+        "rps": 0.0987305326838049,
+        "latencyMs": {
+          "average": 6.523,
+          "p95": 6.523,
+          "p99": 6.523,
+          "max": 6.523
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p500-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p500-m1000-new-participant-vu10",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:58:59.417Z",
+        "endedAt": "2026-08-11T11:59:09.609Z",
+        "requests": 10,
+        "rps": 0.9811649685644555,
+        "latencyMs": {
+          "average": 25.429799999999997,
+          "p95": 26.68425,
+          "p99": 26.696849999999998,
+          "max": 26.7
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "B",
+      "repeat": 3,
+      "case": "p500-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-B-r3-join-p500-m1000-new-participant-vu50",
+        "commit": "B",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T11:59:11.051Z",
+        "endedAt": "2026-08-11T11:59:21.428Z",
+        "requests": 50,
+        "rps": 4.818632456689167,
+        "latencyMs": {
+          "average": 47.68264000000001,
+          "p95": 71.40055,
+          "p99": 72.22576,
+          "max": 72.557
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p10-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p10-m1000-idempotent-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:07:01.356Z",
+        "endedAt": "2026-08-11T12:07:11.387Z",
+        "requests": 88,
+        "rps": 8.772883018589539,
+        "latencyMs": {
+          "average": 12.401363636363635,
+          "p95": 16.08805,
+          "p99": 29.162639999999968,
+          "max": 61.29
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p10-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p10-m1000-idempotent-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:07:12.228Z",
+        "endedAt": "2026-08-11T12:07:22.372Z",
+        "requests": 854,
+        "rps": 84.19148179373994,
+        "latencyMs": {
+          "average": 17.0396475409836,
+          "p95": 32.678899999999985,
+          "p99": 63.326989999999995,
+          "max": 111.75
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p10-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p10-m1000-idempotent-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:07:23.316Z",
+        "endedAt": "2026-08-11T12:07:33.469Z",
+        "requests": 4603,
+        "rps": 453.38975079126504,
+        "latencyMs": {
+          "average": 8.01567803606346,
+          "p95": 16.847199999999994,
+          "p99": 25.20682,
+          "max": 43.915
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p10-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p10-m1000-new-participant-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:07:34.604Z",
+        "endedAt": "2026-08-11T12:07:44.745Z",
+        "requests": 1,
+        "rps": 0.09861627559067697,
+        "latencyMs": {
+          "average": 20.923,
+          "p95": 20.923,
+          "p99": 20.923,
+          "max": 20.923
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p10-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p10-m1000-new-participant-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:07:45.891Z",
+        "endedAt": "2026-08-11T12:07:56.065Z",
+        "requests": 10,
+        "rps": 0.9829777738895545,
+        "latencyMs": {
+          "average": 14.311100000000001,
+          "p95": 15.52695,
+          "p99": 15.918989999999999,
+          "max": 16.017
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p10-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p10-m1000-new-participant-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:07:57.432Z",
+        "endedAt": "2026-08-11T12:08:07.871Z",
+        "requests": 50,
+        "rps": 4.790118101319811,
+        "latencyMs": {
+          "average": 15.649160000000002,
+          "p95": 26.13635,
+          "p99": 26.52418,
+          "max": 26.876
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p10-m100000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p10-m100000-idempotent-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:09:16.839Z",
+        "endedAt": "2026-08-11T12:09:26.871Z",
+        "requests": 86,
+        "rps": 8.57320957739161,
+        "latencyMs": {
+          "average": 15.061872093023254,
+          "p95": 25.60975,
+          "p99": 93.29249999999999,
+          "max": 109.145
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p10-m100000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p10-m100000-idempotent-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:09:27.838Z",
+        "endedAt": "2026-08-11T12:09:37.924Z",
+        "requests": 860,
+        "rps": 85.27317410055392,
+        "latencyMs": {
+          "average": 15.760033720930211,
+          "p95": 26.263599999999993,
+          "p99": 110.3807,
+          "max": 113.771
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p10-m100000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p10-m100000-idempotent-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:09:38.682Z",
+        "endedAt": "2026-08-11T12:09:48.772Z",
+        "requests": 4550,
+        "rps": 450.9732150653599,
+        "latencyMs": {
+          "average": 9.215249890109902,
+          "p95": 15.054199999999998,
+          "p99": 22.53016,
+          "max": 30.465
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p10-m100000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p10-m100000-new-participant-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:09:49.914Z",
+        "endedAt": "2026-08-11T12:10:00.043Z",
+        "requests": 1,
+        "rps": 0.09873204360322987,
+        "latencyMs": {
+          "average": 7.423,
+          "p95": 7.423,
+          "p99": 7.423,
+          "max": 7.423
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p10-m100000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p10-m100000-new-participant-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:10:01.289Z",
+        "endedAt": "2026-08-11T12:10:11.490Z",
+        "requests": 10,
+        "rps": 0.9803503478037947,
+        "latencyMs": {
+          "average": 13.405200000000002,
+          "p95": 13.72115,
+          "p99": 13.733030000000001,
+          "max": 13.736
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p10-m100000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p10-m100000-new-participant-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:10:12.671Z",
+        "endedAt": "2026-08-11T12:10:23.085Z",
+        "requests": 50,
+        "rps": 4.8015080576507465,
+        "latencyMs": {
+          "average": 11.202839999999998,
+          "p95": 22.14125,
+          "p99": 22.24467,
+          "max": 22.253
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p500-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p500-m1000-idempotent-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:08:08.819Z",
+        "endedAt": "2026-08-11T12:08:18.884Z",
+        "requests": 83,
+        "rps": 8.246674528496383,
+        "latencyMs": {
+          "average": 18.671265060240962,
+          "p95": 27.519,
+          "p99": 32.32756,
+          "max": 33.387
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p500-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p500-m1000-idempotent-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:08:19.762Z",
+        "endedAt": "2026-08-11T12:08:29.906Z",
+        "requests": 810,
+        "rps": 79.86277012596035,
+        "latencyMs": {
+          "average": 22.622527160493814,
+          "p95": 47.300599999999974,
+          "p99": 95.23088,
+          "max": 102.184
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p500-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p500-m1000-idempotent-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:08:31.168Z",
+        "endedAt": "2026-08-11T12:08:41.475Z",
+        "requests": 4331,
+        "rps": 420.23973944553967,
+        "latencyMs": {
+          "average": 14.826391133687373,
+          "p95": 44.9605,
+          "p99": 113.12859999999999,
+          "max": 164.608
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p500-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p500-m1000-new-participant-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:08:42.697Z",
+        "endedAt": "2026-08-11T12:08:52.867Z",
+        "requests": 1,
+        "rps": 0.09833151092266423,
+        "latencyMs": {
+          "average": 11.897,
+          "p95": 11.897,
+          "p99": 11.897,
+          "max": 11.897
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p500-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p500-m1000-new-participant-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:08:53.881Z",
+        "endedAt": "2026-08-11T12:09:04.057Z",
+        "requests": 10,
+        "rps": 0.9827279663545392,
+        "latencyMs": {
+          "average": 20.877900000000004,
+          "p95": 22.74315,
+          "p99": 23.259030000000003,
+          "max": 23.388
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 1,
+      "case": "p500-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r1-join-p500-m1000-new-participant-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:09:05.330Z",
+        "endedAt": "2026-08-11T12:09:15.806Z",
+        "requests": 50,
+        "rps": 4.773211818816135,
+        "latencyMs": {
+          "average": 27.551360000000003,
+          "p95": 45.47855,
+          "p99": 52.91834,
+          "max": 58.374
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p10-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p10-m1000-idempotent-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:12:56.794Z",
+        "endedAt": "2026-08-11T12:13:06.904Z",
+        "requests": 86,
+        "rps": 8.506603448755083,
+        "latencyMs": {
+          "average": 15.505197674418605,
+          "p95": 20.5015,
+          "p99": 24.60814999999999,
+          "max": 32.752
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p10-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p10-m1000-idempotent-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:13:07.671Z",
+        "endedAt": "2026-08-11T12:13:17.813Z",
+        "requests": 840,
+        "rps": 82.83170845131922,
+        "latencyMs": {
+          "average": 18.975719047619048,
+          "p95": 30.41229999999999,
+          "p99": 37.032869999999996,
+          "max": 38.708
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p10-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p10-m1000-idempotent-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:13:18.662Z",
+        "endedAt": "2026-08-11T12:13:28.762Z",
+        "requests": 4528,
+        "rps": 448.3509241098729,
+        "latencyMs": {
+          "average": 9.557416961130768,
+          "p95": 22.42059999999998,
+          "p99": 39.932900000000004,
+          "max": 97.363
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p10-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p10-m1000-new-participant-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:13:29.816Z",
+        "endedAt": "2026-08-11T12:13:39.943Z",
+        "requests": 1,
+        "rps": 0.09875402052306054,
+        "latencyMs": {
+          "average": 4.291,
+          "p95": 4.291,
+          "p99": 4.291,
+          "max": 4.291
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p10-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p10-m1000-new-participant-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:13:40.939Z",
+        "endedAt": "2026-08-11T12:13:51.094Z",
+        "requests": 10,
+        "rps": 0.9847940898961407,
+        "latencyMs": {
+          "average": 7.4566,
+          "p95": 8.72045,
+          "p99": 8.943290000000001,
+          "max": 8.999
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p10-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p10-m1000-new-participant-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:13:52.583Z",
+        "endedAt": "2026-08-11T12:14:03.069Z",
+        "requests": 50,
+        "rps": 4.768653087259389,
+        "latencyMs": {
+          "average": 8.41032,
+          "p95": 13.2492,
+          "p99": 13.38036,
+          "max": 13.496
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p10-m100000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p10-m100000-idempotent-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:15:11.301Z",
+        "endedAt": "2026-08-11T12:15:21.347Z",
+        "requests": 90,
+        "rps": 8.959607401949789,
+        "latencyMs": {
+          "average": 10.184577777777776,
+          "p95": 16.008049999999987,
+          "p99": 17.993679999999998,
+          "max": 19.318
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p10-m100000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p10-m100000-idempotent-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:15:22.103Z",
+        "endedAt": "2026-08-11T12:15:32.261Z",
+        "requests": 876,
+        "rps": 86.24199898714876,
+        "latencyMs": {
+          "average": 13.888086757990871,
+          "p95": 21.979,
+          "p99": 30.370749999999994,
+          "max": 56.062
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p10-m100000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p10-m100000-idempotent-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:15:33.286Z",
+        "endedAt": "2026-08-11T12:15:43.401Z",
+        "requests": 4485,
+        "rps": 443.4060624730966,
+        "latencyMs": {
+          "average": 11.053289186176155,
+          "p95": 26.261599999999987,
+          "p99": 100.78992,
+          "max": 139.015
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p10-m100000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p10-m100000-new-participant-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:15:44.630Z",
+        "endedAt": "2026-08-11T12:15:54.757Z",
+        "requests": 1,
+        "rps": 0.09875263570784704,
+        "latencyMs": {
+          "average": 5.024,
+          "p95": 5.024,
+          "p99": 5.024,
+          "max": 5.024
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p10-m100000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p10-m100000-new-participant-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:15:55.826Z",
+        "endedAt": "2026-08-11T12:16:06.012Z",
+        "requests": 10,
+        "rps": 0.9817582445848424,
+        "latencyMs": {
+          "average": 7.4916,
+          "p95": 8.7407,
+          "p99": 9.134540000000001,
+          "max": 9.233
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p10-m100000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p10-m100000-new-participant-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:16:07.264Z",
+        "endedAt": "2026-08-11T12:16:18.030Z",
+        "requests": 50,
+        "rps": 4.6445135754487294,
+        "latencyMs": {
+          "average": 91.94112,
+          "p95": 117.25265,
+          "p99": 137.03704,
+          "max": 139.146
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p500-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p500-m1000-idempotent-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:14:04.013Z",
+        "endedAt": "2026-08-11T12:14:14.132Z",
+        "requests": 84,
+        "rps": 8.301478878814121,
+        "latencyMs": {
+          "average": 17.957785714285713,
+          "p95": 25.163999999999994,
+          "p99": 37.55797,
+          "max": 41.078
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p500-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p500-m1000-idempotent-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:14:14.970Z",
+        "endedAt": "2026-08-11T12:14:25.099Z",
+        "requests": 850,
+        "rps": 83.9252034889978,
+        "latencyMs": {
+          "average": 16.718567058823517,
+          "p95": 24.968449999999994,
+          "p99": 50.990649999999995,
+          "max": 62.083
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p500-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p500-m1000-idempotent-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:14:26.047Z",
+        "endedAt": "2026-08-11T12:14:36.289Z",
+        "requests": 4334,
+        "rps": 423.1856938629384,
+        "latencyMs": {
+          "average": 14.450723350253874,
+          "p95": 36.14949999999998,
+          "p99": 93.65975999999999,
+          "max": 147.242
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p500-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p500-m1000-new-participant-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:14:37.473Z",
+        "endedAt": "2026-08-11T12:14:47.615Z",
+        "requests": 1,
+        "rps": 0.09860471371945559,
+        "latencyMs": {
+          "average": 7.267,
+          "p95": 7.267,
+          "p99": 7.267,
+          "max": 7.267
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p500-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p500-m1000-new-participant-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:14:48.630Z",
+        "endedAt": "2026-08-11T12:14:58.799Z",
+        "requests": 10,
+        "rps": 0.9834165484026316,
+        "latencyMs": {
+          "average": 16.029,
+          "p95": 21.337600000000002,
+          "p99": 21.370720000000002,
+          "max": 21.379
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 2,
+      "case": "p500-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r2-join-p500-m1000-new-participant-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:14:59.906Z",
+        "endedAt": "2026-08-11T12:15:10.304Z",
+        "requests": 50,
+        "rps": 4.809439891668329,
+        "latencyMs": {
+          "average": 27.62983999999999,
+          "p95": 48.78874999999999,
+          "p99": 50.66093,
+          "max": 51.613
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p10-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p10-m1000-idempotent-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:18:26.448Z",
+        "endedAt": "2026-08-11T12:18:36.569Z",
+        "requests": 81,
+        "rps": 8.003561090638353,
+        "latencyMs": {
+          "average": 22.712012345679014,
+          "p95": 32.98,
+          "p99": 347.25819999999993,
+          "max": 417.523
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p10-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p10-m1000-idempotent-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:18:37.543Z",
+        "endedAt": "2026-08-11T12:18:47.800Z",
+        "requests": 850,
+        "rps": 82.87860604814915,
+        "latencyMs": {
+          "average": 17.096354117647067,
+          "p95": 33.84739999999999,
+          "p99": 70.41281000000001,
+          "max": 72.772
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p10-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p10-m1000-idempotent-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:18:48.546Z",
+        "endedAt": "2026-08-11T12:18:58.693Z",
+        "requests": 4403,
+        "rps": 433.9637388454909,
+        "latencyMs": {
+          "average": 13.21485373608903,
+          "p95": 38.25069999999996,
+          "p99": 85.08056,
+          "max": 141.278
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p10-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p10-m1000-new-participant-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:19:00.120Z",
+        "endedAt": "2026-08-11T12:19:10.256Z",
+        "requests": 1,
+        "rps": 0.09866647328037903,
+        "latencyMs": {
+          "average": 6.361,
+          "p95": 6.361,
+          "p99": 6.361,
+          "max": 6.361
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p10-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p10-m1000-new-participant-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:19:11.625Z",
+        "endedAt": "2026-08-11T12:19:21.801Z",
+        "requests": 10,
+        "rps": 0.9827352095648438,
+        "latencyMs": {
+          "average": 9.8098,
+          "p95": 10.327599999999999,
+          "p99": 10.648719999999999,
+          "max": 10.729
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p10-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p10-m1000-new-participant-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m1000",
+          "roomId": "6a7b05246bc7820cc59c8b64",
+          "participants": 10,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:19:22.889Z",
+        "endedAt": "2026-08-11T12:19:33.321Z",
+        "requests": 50,
+        "rps": 4.793154761476802,
+        "latencyMs": {
+          "average": 17.826100000000004,
+          "p95": 28.6331,
+          "p99": 29.58509,
+          "max": 29.908
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p10-m100000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p10-m100000-idempotent-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:20:41.879Z",
+        "endedAt": "2026-08-11T12:20:52.008Z",
+        "requests": 89,
+        "rps": 8.786658259118155,
+        "latencyMs": {
+          "average": 12.012438202247191,
+          "p95": 17.5554,
+          "p99": 19.731959999999997,
+          "max": 22.401
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p10-m100000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p10-m100000-idempotent-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:20:52.760Z",
+        "endedAt": "2026-08-11T12:21:02.921Z",
+        "requests": 880,
+        "rps": 86.61255350539705,
+        "latencyMs": {
+          "average": 13.83307613636365,
+          "p95": 21.1877,
+          "p99": 26.334509999999998,
+          "max": 40.758
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p10-m100000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p10-m100000-idempotent-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:21:03.663Z",
+        "endedAt": "2026-08-11T12:21:13.808Z",
+        "requests": 4500,
+        "rps": 443.58150864436857,
+        "latencyMs": {
+          "average": 10.812462444444419,
+          "p95": 25.31964999999997,
+          "p99": 74.44112,
+          "max": 105.35
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p10-m100000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p10-m100000-new-participant-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:21:14.869Z",
+        "endedAt": "2026-08-11T12:21:24.999Z",
+        "requests": 1,
+        "rps": 0.09873529954808853,
+        "latencyMs": {
+          "average": 4.646,
+          "p95": 4.646,
+          "p99": 4.646,
+          "max": 4.646
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p10-m100000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p10-m100000-new-participant-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:21:26.312Z",
+        "endedAt": "2026-08-11T12:21:36.476Z",
+        "requests": 10,
+        "rps": 0.9839023732709146,
+        "latencyMs": {
+          "average": 8.727100000000002,
+          "p95": 10.473,
+          "p99": 10.653,
+          "max": 10.698
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p10-m100000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p10-m100000-new-participant-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p10-m100000",
+          "roomId": "6a7b05246bc7820cc59c8f4d",
+          "participants": 10,
+          "messages": 100000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:21:37.448Z",
+        "endedAt": "2026-08-11T12:21:47.912Z",
+        "requests": 50,
+        "rps": 4.778721309751937,
+        "latencyMs": {
+          "average": 56.57572000000001,
+          "p95": 108.70414999999998,
+          "p99": 114.25431999999999,
+          "max": 115.495
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p500-m1000-idempotent",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p500-m1000-idempotent-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:19:34.335Z",
+        "endedAt": "2026-08-11T12:19:44.359Z",
+        "requests": 80,
+        "rps": 7.981110308122736,
+        "latencyMs": {
+          "average": 22.652825,
+          "p95": 26.654999999999983,
+          "p99": 174.99487999999997,
+          "max": 197.927
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p500-m1000-idempotent",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p500-m1000-idempotent-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:19:45.331Z",
+        "endedAt": "2026-08-11T12:19:55.441Z",
+        "requests": 820,
+        "rps": 81.1126599452628,
+        "latencyMs": {
+          "average": 20.86717560975609,
+          "p95": 39.17209999999997,
+          "p99": 102.09235,
+          "max": 122.522
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p500-m1000-idempotent",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p500-m1000-idempotent-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "idempotent",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:19:56.358Z",
+        "endedAt": "2026-08-11T12:20:06.687Z",
+        "requests": 4243,
+        "rps": 410.8071222317235,
+        "latencyMs": {
+          "average": 16.509769738392656,
+          "p95": 50.1729,
+          "p99": 107.07554,
+          "max": 130.954
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p500-m1000-new-participant",
+      "vus": 1,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p500-m1000-new-participant-vu1",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 1,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:20:07.785Z",
+        "endedAt": "2026-08-11T12:20:17.915Z",
+        "requests": 1,
+        "rps": 0.09872132194958026,
+        "latencyMs": {
+          "average": 6.226,
+          "p95": 6.226,
+          "p99": 6.226,
+          "max": 6.226
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p500-m1000-new-participant",
+      "vus": 10,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p500-m1000-new-participant-vu10",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 10,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:20:19.168Z",
+        "endedAt": "2026-08-11T12:20:29.352Z",
+        "requests": 10,
+        "rps": 0.9820203851719636,
+        "latencyMs": {
+          "average": 25.2824,
+          "p95": 27.29995,
+          "p99": 27.33919,
+          "max": 27.349
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    },
+    {
+      "variant": "H",
+      "repeat": 3,
+      "case": "p500-m1000-new-participant",
+      "vus": 50,
+      "result": {
+        "schemaVersion": 1,
+        "testId": "ab-H-r3-join-p500-m1000-new-participant-vu50",
+        "commit": "H",
+        "fixture": {
+          "id": "perf-join-ab-20260811-p500-m1000",
+          "roomId": "6a7b05256bc7820cc59e19d7",
+          "participants": 500,
+          "messages": 1000
+        },
+        "mode": "new-participant",
+        "vus": 50,
+        "configuredDuration": "10s",
+        "startedAt": "2026-08-11T12:20:30.471Z",
+        "endedAt": "2026-08-11T12:20:40.966Z",
+        "requests": 50,
+        "rps": 4.764226074342508,
+        "latencyMs": {
+          "average": 42.980779999999996,
+          "p95": 64.50789999999999,
+          "p99": 67.91365,
+          "max": 69.048
+        },
+        "errorRate": 0,
+        "timeoutCount": 0,
+        "thresholdsPassed": true
+      }
+    }
+  ],
+  "medians": [
+    {
+      "case": "p10-m1000-idempotent",
+      "vus": 1,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 20.7864,
+          "p99Ms": 79.18449999999996,
+          "requests": 260,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 23.75939999999997,
+          "p99Ms": 31.498179999999998,
+          "requests": 261,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 20.5015,
+          "p99Ms": 29.162639999999968,
+          "requests": 255,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p10-m1000-idempotent",
+      "vus": 10,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 30.68244999999999,
+          "p99Ms": 86.61279999999998,
+          "requests": 2550,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 22.138550000000002,
+          "p99Ms": 40.14657,
+          "requests": 2622,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 32.678899999999985,
+          "p99Ms": 63.326989999999995,
+          "requests": 2544,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p10-m1000-idempotent",
+      "vus": 50,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 15.112,
+          "p99Ms": 27.066259999999996,
+          "requests": 13680,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 17.550849999999993,
+          "p99Ms": 30.462789999999995,
+          "requests": 13673,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 22.42059999999998,
+          "p99Ms": 39.932900000000004,
+          "requests": 13534,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p10-m1000-new-participant",
+      "vus": 1,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 18.501,
+          "p99Ms": 18.501,
+          "requests": 3,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 28.492,
+          "p99Ms": 28.492,
+          "requests": 3,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 6.361,
+          "p99Ms": 6.361,
+          "requests": 3,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p10-m1000-new-participant",
+      "vus": 10,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 19.97335,
+          "p99Ms": 19.979470000000003,
+          "requests": 30,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 18.481949999999998,
+          "p99Ms": 19.118789999999997,
+          "requests": 30,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 10.327599999999999,
+          "p99Ms": 10.648719999999999,
+          "requests": 30,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p10-m1000-new-participant",
+      "vus": 50,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 30.717999999999996,
+          "p99Ms": 31.32956,
+          "requests": 150,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 45.73704999999999,
+          "p99Ms": 48.55146,
+          "requests": 150,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 26.13635,
+          "p99Ms": 26.52418,
+          "requests": 150,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p10-m100000-idempotent",
+      "vus": 1,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 22.11904999999999,
+          "p99Ms": 35.72751999999996,
+          "requests": 263,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 17.34839999999999,
+          "p99Ms": 22.315559999999998,
+          "requests": 264,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 17.5554,
+          "p99Ms": 19.731959999999997,
+          "requests": 265,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p10-m100000-idempotent",
+      "vus": 10,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 26.3506,
+          "p99Ms": 157.8937599999999,
+          "requests": 2574,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 23.845699999999997,
+          "p99Ms": 77.71409,
+          "requests": 2600,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 21.979,
+          "p99Ms": 30.370749999999994,
+          "requests": 2616,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p10-m100000-idempotent",
+      "vus": 50,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 18.826199999999993,
+          "p99Ms": 37.119839999999996,
+          "requests": 13701,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 18.458449999999992,
+          "p99Ms": 107.56294,
+          "requests": 13557,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 25.31964999999997,
+          "p99Ms": 74.44112,
+          "requests": 13535,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p10-m100000-new-participant",
+      "vus": 1,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 5.599,
+          "p99Ms": 5.599,
+          "requests": 3,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 4.707,
+          "p99Ms": 4.707,
+          "requests": 3,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 5.024,
+          "p99Ms": 5.024,
+          "requests": 3,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p10-m100000-new-participant",
+      "vus": 10,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 12.85755,
+          "p99Ms": 12.85791,
+          "requests": 30,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 15.5076,
+          "p99Ms": 16.08072,
+          "requests": 30,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 10.473,
+          "p99Ms": 10.653,
+          "requests": 30,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p10-m100000-new-participant",
+      "vus": 50,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 21.81825,
+          "p99Ms": 22.095979999999997,
+          "requests": 150,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 27.8239,
+          "p99Ms": 28.5505,
+          "requests": 150,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 108.70414999999998,
+          "p99Ms": 114.25431999999999,
+          "requests": 150,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p500-m1000-idempotent",
+      "vus": 1,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 37.115249999999996,
+          "p99Ms": 50.44589999999999,
+          "requests": 245,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 25.666,
+          "p99Ms": 41.611679999999986,
+          "requests": 251,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 26.654999999999983,
+          "p99Ms": 37.55797,
+          "requests": 247,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p500-m1000-idempotent",
+      "vus": 10,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 26.60199999999999,
+          "p99Ms": 132.42194999999998,
+          "requests": 2485,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 30.801849999999998,
+          "p99Ms": 53.79391,
+          "requests": 2420,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 39.17209999999997,
+          "p99Ms": 95.23088,
+          "requests": 2480,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p500-m1000-idempotent",
+      "vus": 50,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 61.18139999999998,
+          "p99Ms": 242.1282699999998,
+          "requests": 11948,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 29.573799999999924,
+          "p99Ms": 122.25179999999997,
+          "requests": 13079,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 44.9605,
+          "p99Ms": 107.07554,
+          "requests": 12908,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p500-m1000-new-participant",
+      "vus": 1,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 7.67,
+          "p99Ms": 7.67,
+          "requests": 3,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 9.072,
+          "p99Ms": 9.072,
+          "requests": 3,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 7.267,
+          "p99Ms": 7.267,
+          "requests": 3,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p500-m1000-new-participant",
+      "vus": 10,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 57.24725,
+          "p99Ms": 58.167049999999996,
+          "requests": 30,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 28.27975,
+          "p99Ms": 28.28875,
+          "requests": 30,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 22.74315,
+          "p99Ms": 23.259030000000003,
+          "requests": 30,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    },
+    {
+      "case": "p500-m1000-new-participant",
+      "vus": 50,
+      "variants": {
+        "A": {
+          "runs": 3,
+          "p95Ms": 124.78345,
+          "p99Ms": 132.3475,
+          "requests": 150,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "B": {
+          "runs": 3,
+          "p95Ms": 75.4236,
+          "p99Ms": 78.56482,
+          "requests": 150,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        },
+        "H": {
+          "runs": 3,
+          "p95Ms": 48.78874999999999,
+          "p99Ms": 52.91834,
+          "requests": 150,
+          "maxErrorRate": 0,
+          "timeouts": 0
+        }
+      }
+    }
+  ],
+  "rechecks": [
+    {
+      "schemaVersion": 1,
+      "testId": "ab-BC-r1-join-p10-m100000-new-participant-vu50",
+      "commit": "BC",
+      "fixture": {
+        "id": "perf-join-ab-20260811-p10-m100000",
+        "roomId": "6a7b05246bc7820cc59c8f4d",
+        "participants": 10,
+        "messages": 100000
+      },
+      "mode": "new-participant",
+      "vus": 50,
+      "configuredDuration": "10s",
+      "startedAt": "2026-08-11T12:26:06.399Z",
+      "endedAt": "2026-08-11T12:26:17.422Z",
+      "requests": 50,
+      "rps": 4.536281359766668,
+      "latencyMs": {
+        "average": 102.6513,
+        "p95": 139.2774,
+        "p99": 140.78824,
+        "max": 140.849
+      },
+      "errorRate": 0,
+      "timeoutCount": 0,
+      "thresholdsPassed": true
+    },
+    {
+      "schemaVersion": 1,
+      "testId": "ab-BC-r2-join-p10-m100000-new-participant-vu50",
+      "commit": "BC",
+      "fixture": {
+        "id": "perf-join-ab-20260811-p10-m100000",
+        "roomId": "6a7b05246bc7820cc59c8f4d",
+        "participants": 10,
+        "messages": 100000
+      },
+      "mode": "new-participant",
+      "vus": 50,
+      "configuredDuration": "10s",
+      "startedAt": "2026-08-11T12:26:18.800Z",
+      "endedAt": "2026-08-11T12:26:29.451Z",
+      "requests": 50,
+      "rps": 4.694497588765204,
+      "latencyMs": {
+        "average": 49.280459999999984,
+        "p95": 87.56335,
+        "p99": 92.23216,
+        "max": 93.563
+      },
+      "errorRate": 0,
+      "timeoutCount": 0,
+      "thresholdsPassed": true
+    },
+    {
+      "schemaVersion": 1,
+      "testId": "ab-BC-r3-join-p10-m100000-new-participant-vu50",
+      "commit": "BC",
+      "fixture": {
+        "id": "perf-join-ab-20260811-p10-m100000",
+        "roomId": "6a7b05246bc7820cc59c8f4d",
+        "participants": 10,
+        "messages": 100000
+      },
+      "mode": "new-participant",
+      "vus": 50,
+      "configuredDuration": "10s",
+      "startedAt": "2026-08-11T12:26:30.711Z",
+      "endedAt": "2026-08-11T12:26:41.248Z",
+      "requests": 50,
+      "rps": 4.745522314964493,
+      "latencyMs": {
+        "average": 22.45268,
+        "p95": 41.548899999999996,
+        "p99": 42.35779,
+        "max": 42.421
+      },
+      "errorRate": 0,
+      "timeoutCount": 0,
+      "thresholdsPassed": true
+    },
+    {
+      "schemaVersion": 1,
+      "testId": "ab-HC-r1-join-p10-m100000-new-participant-vu50",
+      "commit": "HC",
+      "fixture": {
+        "id": "perf-join-ab-20260811-p10-m100000",
+        "roomId": "6a7b05246bc7820cc59c8f4d",
+        "participants": 10,
+        "messages": 100000
+      },
+      "mode": "new-participant",
+      "vus": 50,
+      "configuredDuration": "10s",
+      "startedAt": "2026-08-11T12:24:15.245Z",
+      "endedAt": "2026-08-11T12:24:26.290Z",
+      "requests": 50,
+      "rps": 4.527336556132951,
+      "latencyMs": {
+        "average": 98.85051999999997,
+        "p95": 133.721,
+        "p99": 135.45457,
+        "max": 135.899
+      },
+      "errorRate": 0,
+      "timeoutCount": 0,
+      "thresholdsPassed": true
+    },
+    {
+      "schemaVersion": 1,
+      "testId": "ab-HC-r2-join-p10-m100000-new-participant-vu50",
+      "commit": "HC",
+      "fixture": {
+        "id": "perf-join-ab-20260811-p10-m100000",
+        "roomId": "6a7b05246bc7820cc59c8f4d",
+        "participants": 10,
+        "messages": 100000
+      },
+      "mode": "new-participant",
+      "vus": 50,
+      "configuredDuration": "10s",
+      "startedAt": "2026-08-11T12:24:28.169Z",
+      "endedAt": "2026-08-11T12:24:38.905Z",
+      "requests": 50,
+      "rps": 4.657551651782063,
+      "latencyMs": {
+        "average": 57.76200000000001,
+        "p95": 87.38935,
+        "p99": 90.66364,
+        "max": 93.439
+      },
+      "errorRate": 0,
+      "timeoutCount": 0,
+      "thresholdsPassed": true
+    },
+    {
+      "schemaVersion": 1,
+      "testId": "ab-HC-r3-join-p10-m100000-new-participant-vu50",
+      "commit": "HC",
+      "fixture": {
+        "id": "perf-join-ab-20260811-p10-m100000",
+        "roomId": "6a7b05246bc7820cc59c8f4d",
+        "participants": 10,
+        "messages": 100000
+      },
+      "mode": "new-participant",
+      "vus": 50,
+      "configuredDuration": "10s",
+      "startedAt": "2026-08-11T12:24:40.084Z",
+      "endedAt": "2026-08-11T12:24:50.631Z",
+      "requests": 50,
+      "rps": 4.740865253421056,
+      "latencyMs": {
+        "average": 41.98907999999999,
+        "p95": 67.17049999999999,
+        "p99": 70.02429,
+        "max": 70.798
+      },
+      "errorRate": 0,
+      "timeoutCount": 0,
+      "thresholdsPassed": true
+    }
+  ]
+}

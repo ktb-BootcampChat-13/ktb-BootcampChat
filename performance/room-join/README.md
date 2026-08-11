@@ -75,3 +75,22 @@ node performance/room-join/compare.js \
 ```
 
 최종 채택은 양쪽 3회 이상, p95 중앙값 10% 이상 개선, 오류율 1% 이하, timeout 0, p99와 Mongo pool 비회귀가 모두 필요하다. 생성된 JSON의 요약 수치를 기존 Notion 성능 병목 페이지의 Join API 전용 표로 옮긴다. 이 도구는 외부 문서를 자동 수정하지 않는다.
+
+## 5. 매 요청 atomic mutation 측정
+
+`new-participant` matrix는 VU당 첫 요청의 동시 가입을 측정한다. 지속적으로 모든 요청이
+`findAndModify`를 실행하는 경로는 VU와 iteration마다 별도 Room을 만드는 fixture와 전용
+스크립트로 측정한다.
+
+```sh
+FIXTURE_ID=room-join-mutation-20260811 ACTION=create \
+  CREATOR_EMAIL=creator@test.com ACCOUNT_PREFIX=loadtest \
+  mongosh --quiet mongodb://localhost:27017/bootcamp-chat \
+  performance/room-join/mutation-fixture.js
+
+API_BASE_URL=http://localhost:5001 FIXTURE_ID=room-join-mutation-20260811 \
+  ACCOUNT_PREFIX=loadtest VUS=10 DURATION=30s \
+  k6 run performance/room-join/room-join-mutation.js
+```
+
+fixture는 동일 prefix의 Room만 명시적으로 정리하며 사용자나 기존 성능 결과를 삭제하지 않는다.

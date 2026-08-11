@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface RoomRepository extends MongoRepository<Room, String> {
+public interface RoomRepository extends MongoRepository<Room, String>, RoomRepositoryCustom {
 
     // 가장 최근에 생성된 방 조회 (Health Check용)
     @Query(value = "{}", sort = "{ 'createdAt': -1 }")
