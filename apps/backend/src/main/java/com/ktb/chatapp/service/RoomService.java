@@ -8,7 +8,6 @@ import com.ktb.chatapp.model.User;
 import com.ktb.chatapp.repository.RoomRepository;
 import com.ktb.chatapp.repository.UserRepository;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -34,69 +33,66 @@ public class RoomService {
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
 
-    public RoomsResponse getAllRooms(String name) {
+    public RoomsResponse getAllRooms(String name, int pageSize, String encodedCursor) {
+        RoomCursorCodec.Cursor cursor = RoomCursorCodec.decode(encodedCursor);
+        List<Room> page = roomRepository.findPage(
+            cursor == null ? null : cursor.createdAt(),
+            cursor == null ? null : cursor.id(),
+            pageSize + 1
+        );
+        boolean hasMore = page.size() > pageSize;
+        List<Room> rooms = hasMore ? page.subList(0, pageSize) : page;
+        Set<String> userIds = rooms.stream()
+            .flatMap(room -> {
+                Set<String> ids = new LinkedHashSet<>();
+                if (room.getCreator() != null) {
+                    ids.add(room.getCreator());
+                }
+                if (room.getParticipantIds() != null) {
+                    ids.addAll(room.getParticipantIds());
+                }
+                return ids.stream();
+            })
+            .collect(Collectors.toSet());
+        Map<String, User> usersById = userIds.isEmpty()
+            ? Map.of()
+            : userRepository.findSummariesByIdIn(userIds).stream()
+                .filter(user -> user != null && user.getId() != null)
+                .collect(Collectors.toMap(User::getId, Function.identity()));
+        Set<String> roomIds = rooms.stream()
+            .map(Room::getId)
+            .filter(java.util.Objects::nonNull)
+            .collect(Collectors.toSet());
+        Map<String, Integer> recentMessageCounts = roomIds.isEmpty()
+            ? Map.of()
+            : recentMessageCounter.countRecentMessages(roomIds);
 
-        try {
-            List<Room> rooms = roomRepository.findAll();
-            Set<String> userIds = rooms.stream()
-                .flatMap(room -> {
-                    Set<String> ids = new LinkedHashSet<>();
-                    if (room.getCreator() != null) {
-                        ids.add(room.getCreator());
-                    }
-                    if (room.getParticipantIds() != null) {
-                        ids.addAll(room.getParticipantIds());
-                    }
-                    return ids.stream();
-                })
-                .collect(Collectors.toSet());
-            Map<String, User> usersById = userIds.isEmpty()
-                ? Map.of()
-                : userRepository.findSummariesByIdIn(userIds).stream()
-                    .filter(user -> user != null && user.getId() != null)
-                    .collect(Collectors.toMap(User::getId, Function.identity()));
-            Set<String> roomIds = rooms.stream()
-                .map(Room::getId)
-                .filter(java.util.Objects::nonNull)
-                .collect(Collectors.toSet());
-            Map<String, Integer> recentMessageCounts = roomIds.isEmpty()
-                ? Map.of()
-                : recentMessageCounter.countRecentMessages(roomIds);
+        List<RoomResponse> roomResponses = rooms.stream()
+            .map(room -> mapToRoomResponse(
+                room,
+                name,
+                usersById,
+                recentMessageCounts.getOrDefault(room.getId(), 0)))
+            .collect(Collectors.toList());
 
-            // 전체 방을 조회해 최신순으로 정렬한다
-            List<RoomResponse> roomResponses = rooms.stream()
-                .map(room -> mapToRoomResponse(
-                    room,
-                    name,
-                    usersById,
-                    recentMessageCounts.getOrDefault(room.getId(), 0)))
-                .sorted(Comparator.comparing(
-                    RoomResponse::getCreatedAtDateTime,
-                    Comparator.nullsLast(Comparator.reverseOrder())))
-                .collect(Collectors.toList());
+        String nextCursor = hasMore && !rooms.isEmpty()
+            ? RoomCursorCodec.encode(
+                rooms.get(rooms.size() - 1).getCreatedAt(),
+                rooms.get(rooms.size() - 1).getId())
+            : null;
 
-            PageMetadata metadata = PageMetadata.builder()
-                .total(roomResponses.size())
-                .page(0)
-                .pageSize(roomResponses.size())
-                .totalPages(1)
-                .hasMore(false)
-                .currentCount(roomResponses.size())
-                .build();
+        PageMetadata metadata = PageMetadata.builder()
+            .pageSize(pageSize)
+            .hasMore(hasMore)
+            .currentCount(roomResponses.size())
+            .nextCursor(nextCursor)
+            .build();
 
-            return RoomsResponse.builder()
-                .success(true)
-                .data(roomResponses)
-                .metadata(metadata)
-                .build();
-
-        } catch (Exception e) {
-            log.error("방 목록 조회 에러", e);
-            return RoomsResponse.builder()
-                .success(false)
-                .data(List.of())
-                .build();
-        }
+        return RoomsResponse.builder()
+            .success(true)
+            .data(roomResponses)
+            .metadata(metadata)
+            .build();
     }
 
     public HealthResponse getHealthStatus() {

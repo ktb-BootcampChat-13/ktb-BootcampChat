@@ -4,6 +4,7 @@ const {
     sendMessageAction,
     sendMultipleMessagesAction,
     uploadFileAction,
+    waitForChatRoomReady,
 } = require('../../actions/chat.actions');
 const { bannedWordSafeText } = require('../../utils/bannedWordSafeText');
 const { expect } = require('@playwright/test');
@@ -58,12 +59,7 @@ async function chatRoomCreationScenario(page, vuContext) {
 async function massMessageScenario(page, vuContext) {
     const observe = vuContext.vars.observation.action;
     try {
-        // 1. 랜덤 채팅방 입장
-        await observe('room_join', async () => {
-            await joinRandomChatRoomAction(page);
-            await expect(page).toHaveURL(new RegExp(`${BASE_URL}/chat/\\w+`));
-            await expect(page.getByTestId('chat-message-input')).toBeVisible();
-        });
+        await waitForChatRoomReady(page);
 
         // 2. 여러 메시지 연속 전송 (10개)
         console.log(`Sending ${MASS_MESSAGE_COUNT} messages...`);
@@ -83,12 +79,7 @@ async function massMessageScenario(page, vuContext) {
 async function fileUploadScenario(page, vuContext) {
     const observe = vuContext.vars.observation.action;
     try {
-        // 1. 랜덤 채팅방 입장
-        await observe('room_join_for_file', async () => {
-            await joinRandomChatRoomAction(page);
-            await expect(page).toHaveURL(new RegExp(`${BASE_URL}/chat/\\w+`));
-            await expect(page.getByTestId('chat-message-input')).toBeVisible();
-        });
+        await waitForChatRoomReady(page);
 
         // 2. 이미지 파일 업로드
         const filePath = path.resolve(__dirname, '../../fixtures/images/profile.jpg');
@@ -126,12 +117,7 @@ async function forbiddenWordScenario(page, vuContext) {
         : ['b3sig78jv', '9c0hej6x', 'lbl276sz'];
 
     try {
-        // 1. 랜덤 채팅방 입장
-        await observe('room_join_for_forbidden_word', async () => {
-            await joinRandomChatRoomAction(page);
-            await expect(page).toHaveURL(new RegExp(`${BASE_URL}/chat/\\w+`));
-            await expect(page.getByTestId('chat-message-input')).toBeVisible();
-        });
+        await waitForChatRoomReady(page);
 
         // 2. 금칙어 메시지 전송 시도
         const forbiddenWord = FORBIDDEN_WORDS[Math.floor(Math.random() * FORBIDDEN_WORDS.length)];
@@ -150,10 +136,16 @@ async function forbiddenWordScenario(page, vuContext) {
     }
 }
 
+async function randomRoomJoinScenario(page, vuContext) {
+    const observe = vuContext.vars.observation.action;
+    await observe('room_join', () => joinRandomChatRoomAction(page));
+}
+
 module.exports = {
     gotoChatPage,
     chatRoomCreationScenario,
     massMessageScenario,
     fileUploadScenario,
     forbiddenWordScenario,
+    randomRoomJoinScenario,
 };

@@ -37,6 +37,7 @@ function createRunMetadata(environment = process.env) {
             loadGenerator: environment.LOAD_IMAGE_DIGEST || null,
         },
         workload: {
+            profile: environment.LOAD_PROFILE || null,
             durationSeconds: numberFromEnvironment(environment.PHASE1_DURATION),
             arrivalCount: numberFromEnvironment(environment.PHASE1_ARRIVAL_COUNT),
             virtualUsersPerPod: numberFromEnvironment(environment.VUS_PER_POD),
@@ -147,6 +148,58 @@ function normalizeDocumentPath(rawUrl) {
     return url.pathname;
 }
 
+function classifyHttpOutcome({ action, method, normalizedPath, status, requestSucceeded = true }) {
+    const expectedFailure = action === 'failed_login' &&
+        method === 'POST' && normalizedPath === '/api/auth/login' && status === 401;
+    if (expectedFailure) return 'expected_failure';
+    if (!requestSucceeded || status === null || status >= 400) return 'unexpected_failure';
+    return 'success';
+}
+
+function enrichHttpSample(sample) {
+    if (sample.outcome) return sample;
+    const separator = sample.name?.indexOf(' ') ?? -1;
+    const method = sample.method || (separator > 0 ? sample.name.slice(0, separator) : null);
+    const normalizedPath = sample.normalizedPath || (separator > 0 ? sample.name.slice(separator + 1) : null);
+    const outcome = classifyHttpOutcome({
+        action: sample.action,
+        method,
+        normalizedPath,
+        status: sample.status ?? null,
+        requestSucceeded: sample.status !== null && sample.status !== undefined,
+    });
+    return { ...sample, method, normalizedPath, outcome, success: outcome !== 'unexpected_failure' };
+}
+
+function summarizeHttpFailures(samples) {
+    const groups = new Map();
+    for (const original of samples.filter((item) => item.status >= 400)) {
+        const sample = enrichHttpSample(original);
+        const key = [sample.status, sample.method, sample.normalizedPath, sample.action].join('|');
+        const group = groups.get(key) || {
+            status: sample.status,
+            method: sample.method,
+            path: sample.normalizedPath,
+            action: sample.action || null,
+            outcome: sample.outcome,
+            count: 0,
+            urls: new Set(),
+            pageUrls: new Set(),
+        };
+        group.count += 1;
+        if (sample.url) group.urls.add(sample.url);
+        if (sample.pageUrl) group.pageUrls.add(sample.pageUrl);
+        groups.set(key, group);
+    }
+    return [...groups.values()]
+        .map((group) => ({
+            ...group,
+            urls: [...group.urls].slice(0, 10),
+            pageUrls: [...group.pageUrls].slice(0, 10),
+        }))
+        .sort((left, right) => right.count - left.count);
+}
+
 function parseSocketEvent(payload) {
     const text = Buffer.isBuffer(payload) ? payload.toString('utf8') : String(payload);
     const arrayStart = text.indexOf('[');
@@ -230,6 +283,7 @@ function createObservation(page, vuContext) {
     const vuId = vuContext?._uid || vuContext?.vars?.$uuid || randomUUID();
     const artifactPrefix = `${process.pid}-${sanitizeArtifactSegment(vuId)}-${randomUUID()}`;
     const runMetadata = createRunMetadata();
+    runMetadata.workload.profile = vuContext?.vars?.loadProfile || runMetadata.workload.profile;
     let currentAction = null;
     let socketSequence = 0;
 
@@ -274,26 +328,47 @@ function createObservation(page, vuContext) {
         });
     };
 
-    const recordHttp = async (request, success) => {
+    const recordHttp = async (request, requestSucceeded) => {
         const started = startedRequests.get(request);
         startedRequests.delete(request);
         if (!started) return;
         const response = await request.response().catch(() => null);
-        samples.http.push({
-            name: `${request.method()} ${started.path}`,
+        const status = response?.status() ?? null;
+        const outcome = classifyHttpOutcome({
             action: started.action,
+            method: started.method,
+            normalizedPath: started.path,
+            status,
+            requestSucceeded,
+        });
+        samples.http.push({
+            name: `${started.method} ${started.path}`,
+            method: started.method,
+            normalizedPath: started.path,
+            url: started.url,
+            action: started.action,
+            pageUrl: started.pageUrl,
+            resourceType: started.resourceType,
             durationMs: performance.now() - started.at,
             startedAt: started.wallStartedAt,
             endedAt: new Date().toISOString(),
-            success: success && response !== null && response.status() < 400,
-            status: response?.status() ?? null,
+            success: outcome !== 'unexpected_failure',
+            outcome,
+            status,
         });
     };
 
     const onRequest = (request) => {
         const apiPath = normalizeApiPath(request.url());
         if (apiPath) startedRequests.set(request, {
-            at: performance.now(), wallStartedAt: new Date().toISOString(), path: apiPath, action: currentAction,
+            at: performance.now(),
+            wallStartedAt: new Date().toISOString(),
+            path: apiPath,
+            url: request.url(),
+            method: request.method(),
+            resourceType: request.resourceType(),
+            pageUrl: page.url(),
+            action: currentAction,
         });
     };
     const onRequestFinished = (request) => { void recordHttp(request, true); };
@@ -301,6 +376,29 @@ function createObservation(page, vuContext) {
     const onResponse = (response) => {
         const request = response.request();
         const resourceType = request.resourceType();
+        const apiPath = normalizeApiPath(response.url());
+        if (response.status() >= 400 && !apiPath) {
+            const responseUrl = new URL(response.url(), page.url());
+            const targetUrl = new URL(process.env.BASE_URL || page.url());
+            if (responseUrl.origin === targetUrl.origin) {
+                const normalizedPath = normalizeDocumentPath(response.url());
+                samples.http.push({
+                    name: `${request.method()} ${normalizedPath}`,
+                    method: request.method(),
+                    normalizedPath,
+                    url: response.url(),
+                    action: currentAction,
+                    pageUrl: page.url(),
+                    resourceType,
+                    durationMs: Math.max(request.timing()?.responseStart || 0, 0),
+                    startedAt: new Date(Date.now() - Math.max(request.timing()?.responseStart || 0, 0)).toISOString(),
+                    endedAt: new Date().toISOString(),
+                    success: false,
+                    outcome: 'unexpected_failure',
+                    status: response.status(),
+                });
+            }
+        }
         if (!RESOURCE_TYPES.has(resourceType)) return;
         const timing = request.timing();
         const ttfbMs = timing?.responseStart;
@@ -442,6 +540,9 @@ function createObservation(page, vuContext) {
             '[data-testid="login-submit-button"]',
             '[data-testid="chat-room-name-input"]', '[data-testid="chat-message-input"]',
             '[data-testid="message-submission-status"]', '[data-testid="file-message-container"]',
+            '[data-testid="rooms-content-slot"]', '[data-testid="join-chat-room-button"]',
+            '[data-testid="rooms-empty"]', '[data-testid="rooms-load-error"]',
+            '[data-testid="rooms-socket-error"]',
         ];
         const ui = {};
         for (const selector of selectors) {
@@ -453,17 +554,34 @@ function createObservation(page, vuContext) {
             visibilityState: document.visibilityState,
             url: window.location.href,
         })).catch(() => null);
+        const roomList = await page.locator('[data-testid="rooms-content-slot"]').first().evaluate((element) => ({
+            state: element.dataset.state || null,
+            joiningRoomId: element.dataset.joiningRoomId || null,
+            navigationTarget: element.dataset.navigationTarget || null,
+        })).catch(() => null);
         return {
             url: page.url(),
             document: documentState,
+            roomList,
             ui,
-            recentHttp: samples.http.slice(-10).map(({ name, status, success, action, startedAt, endedAt }) =>
-                ({ name, status, success, action, startedAt, endedAt })),
+            recentHttp: samples.http.slice(-10).map(({
+                name, method, normalizedPath, url, status, success, outcome, action, pageUrl, startedAt, endedAt,
+            }) => ({
+                name, method, normalizedPath, url, status, success, outcome, action, pageUrl, startedAt, endedAt,
+            })),
             recentDocuments: samples.documents.slice(-10),
             recentResources: samples.resources.slice(-20),
             recentBrowserErrors: samples.browser.slice(-10),
             recentEventLoopLag: samples.runtime.slice(-10),
             pendingSocketEvents: [...pendingSocketEvents.keys()].map(String),
+            pendingRequests: [...startedRequests.values()].map((request) => ({
+                method: request.method,
+                path: request.path,
+                url: request.url,
+                action: request.action,
+                pageUrl: request.pageUrl,
+                startedAt: request.wallStartedAt,
+            })),
         };
     }
 
@@ -570,6 +688,7 @@ function createObservation(page, vuContext) {
                 documents: summarizeSamples(samples.documents),
                 resources: summarizeSamples(samples.resources),
                 http: summarizeSamples(samples.http),
+                httpFailures: summarizeHttpFailures(samples.http),
                 socket: summarizeSamples(samples.socket),
                 runtime: summarizeSamples(samples.runtime),
                 cls: {
@@ -612,6 +731,9 @@ module.exports = {
     inspectLocator,
     normalizeApiPath,
     normalizeDocumentPath,
+    classifyHttpOutcome,
+    enrichHttpSample,
+    summarizeHttpFailures,
     parseSocketEvent,
     serializeError,
     summarizeSamples,

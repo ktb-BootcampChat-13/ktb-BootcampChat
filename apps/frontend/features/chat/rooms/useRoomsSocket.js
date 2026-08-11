@@ -11,6 +11,7 @@ export const useRoomsSocket = ({
   currentUser,
   setConnectionStatus,
   setRooms,
+  onRoomCreated,
 }) => {
   const socketRef = useRef(null);
 
@@ -47,7 +48,7 @@ export const useRoomsSocket = ({
             setConnectionStatus(CONNECTION_STATUS.ERROR);
           },
           roomCreated: (newRoom) => {
-            setRooms((prev) => [newRoom, ...prev]);
+            onRoomCreated?.(newRoom);
           },
           roomUpdated: (updatedRoom) => {
             setRooms((prev) =>

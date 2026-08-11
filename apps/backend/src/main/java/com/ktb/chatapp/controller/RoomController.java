@@ -7,6 +7,7 @@ import com.ktb.chatapp.model.User;
 import com.ktb.chatapp.repository.UserRepository;
 import com.ktb.chatapp.service.RecentMessageCounter;
 import com.ktb.chatapp.service.RoomService;
+import com.ktb.chatapp.exception.InvalidRoomCursorException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -86,8 +87,8 @@ public class RoomController {
         }
     }
 
-    // 전체 채팅방 목록 조회
-    @Operation(summary = "채팅방 목록 조회", description = "전체 채팅방 목록을 최신순으로 조회합니다. Rate Limit이 적용됩니다.")
+    // 채팅방 목록 조회
+    @Operation(summary = "채팅방 목록 조회", description = "채팅방 목록을 최신순 커서 페이지로 조회합니다. Rate Limit이 적용됩니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "채팅방 목록 조회 성공",
             content = @Content(schema = @Schema(implementation = RoomsResponse.class))),
@@ -101,10 +102,22 @@ public class RoomController {
     })
     @GetMapping
     @RateLimit
-    public ResponseEntity<?> getAllRooms(Principal principal) {
+    public ResponseEntity<?> getAllRooms(
+            Principal principal,
+            @RequestParam(defaultValue = "30") String size,
+            @RequestParam(required = false) String cursor) {
 
         try {
-            RoomsResponse response = roomService.getAllRooms(principal.getName());
+            int pageSize;
+            try {
+                pageSize = Integer.parseInt(size);
+            } catch (NumberFormatException exception) {
+                return invalidPageRequest("INVALID_PAGE_SIZE", "size는 1에서 100 사이의 정수여야 합니다.");
+            }
+            if (pageSize < 1 || pageSize > 100) {
+                return invalidPageRequest("INVALID_PAGE_SIZE", "size는 1에서 100 사이의 정수여야 합니다.");
+            }
+            RoomsResponse response = roomService.getAllRooms(principal.getName(), pageSize, cursor);
 
             // 캐시 설정
             return ResponseEntity.ok()
@@ -112,6 +125,8 @@ public class RoomController {
                 .header("Last-Modified", java.time.Instant.now().toString())
                 .body(response);
 
+        } catch (InvalidRoomCursorException exception) {
+            return invalidPageRequest("INVALID_CURSOR", "유효하지 않은 채팅방 페이지 커서입니다.");
         } catch (Exception e) {
             log.error("방 목록 조회 에러", e);
 
@@ -132,6 +147,14 @@ public class RoomController {
 
             return ResponseEntity.status(500).body(errorResponse);
         }
+    }
+
+    private ResponseEntity<StandardResponse<Object>> invalidPageRequest(String code, String message) {
+        return ResponseEntity.badRequest().body(StandardResponse.builder()
+            .success(false)
+            .code(code)
+            .message(message)
+            .build());
     }
 
     @Operation(summary = "채팅방 생성", description = "새로운 채팅방을 생성합니다. 비밀번호를 설정하여 비공개 방을 만들 수 있습니다.")

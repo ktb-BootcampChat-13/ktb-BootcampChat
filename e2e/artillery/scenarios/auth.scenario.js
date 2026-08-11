@@ -1,5 +1,6 @@
 const { loginAction, openLoginAction, registerAction, logoutAction } = require('../../actions/auth.actions');
 const { expect } = require('@playwright/test');
+const { waitForRoomListReady } = require('../../actions/chat.actions');
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 
@@ -27,10 +28,7 @@ async function loginScenario(page, vuContext) {
 
         // URL 만으로는 완주를 판정할 수 없다. 방 목록이 실제로 그려져야
         // 로그인이 쓸모 있는 상태로 끝난 것이다(목록이 비어 있는 경우 포함).
-        await observe('room_list_display', () => expect(
-                page.getByTestId('join-chat-room-button').first()
-                    .or(page.getByTestId('rooms-empty'))
-            ).toBeVisible());
+        await observe('room_list_display', () => waitForRoomListReady(page));
 
         // 컨텍스트에 사용자 정보 저장 (다른 시나리오에서 사용 가능)
         vuContext.vars.testUser = testUser;
@@ -54,8 +52,8 @@ async function failedLoginScenario(page, vuContext) {
         }, false, false));
 
         await page.waitForTimeout(500);
-        const errorElement = page.getByTestId('login-error-message');
-        await expect(errorElement).toBeVisible();
+        await observe('failed_login_error_display', () =>
+            expect(page.getByTestId('login-error-message')).toBeVisible());
     } catch (error) {
         console.error('Failed login scenario failed:', error.message);
         throw error;
