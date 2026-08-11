@@ -17,7 +17,6 @@ vi.mock('@/contexts/AuthContext', () => ({
     user: {
       id: 'user-1',
       token: 'token-1',
-      sessionId: 'session-1',
     },
   }),
 }));

@@ -56,8 +56,7 @@ const Profile = () => {
         await authService.changePassword(
           '',
           formData.newPassword,
-          user.token,
-          user.sessionId
+          user.token
         );
       }
 

@@ -30,7 +30,6 @@ const roomId = 'room-1';
 
 const currentUser = {
   token: 'token-1',
-  sessionId: 'session-1',
 };
 
 describe('useMessageHandling', () => {

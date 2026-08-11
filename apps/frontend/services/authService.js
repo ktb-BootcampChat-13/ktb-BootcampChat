@@ -51,8 +51,7 @@ class AuthService {
           name: response.data.user.name,
           email: response.data.user.email,
           profileImage: response.data.user.profileImage,
-          token: response.data.token,
-          sessionId: response.data.sessionId
+          token: response.data.token
         };
 
         return userData;
@@ -83,11 +82,11 @@ class AuthService {
    * 로그아웃 API 호출
    * 상태 관리와 리다이렉션은 AuthContext에서 처리
    */
-  async logout(token, sessionId) {
+  async logout(token) {
     try {
       if (token) {
         await api.post('/api/auth/logout', null, {
-          headers: getAuthHeaders({ token, sessionId })
+          headers: getAuthHeaders({ token })
         });
       }
     } catch (error) {
@@ -117,7 +116,7 @@ class AuthService {
    * 프로필 업데이트 API 호출
    * 상태 업데이트는 AuthContext에서 처리
    */
-  async updateProfile(data, token, sessionId) {
+  async updateProfile(data, token) {
     try {
       if (!token) {
         throw new Error('인증 정보가 없습니다.');
@@ -127,7 +126,7 @@ class AuthService {
         '/api/users/profile',
         data,
         {
-          headers: getAuthHeaders({ token, sessionId })
+          headers: getAuthHeaders({ token })
         }
       );
 
@@ -149,7 +148,7 @@ class AuthService {
   /**
    * 비밀번호 변경 API 호출
    */
-  async changePassword(currentPassword, newPassword, token, sessionId) {
+  async changePassword(currentPassword, newPassword, token) {
     try {
       if (!token) {
         throw new Error('인증 정보가 없습니다.');
@@ -162,7 +161,7 @@ class AuthService {
           newPassword
         },
         {
-          headers: getAuthHeaders({ token, sessionId })
+          headers: getAuthHeaders({ token })
         }
       );
 

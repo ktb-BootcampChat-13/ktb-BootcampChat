@@ -9,7 +9,6 @@ const authMocks = vi.hoisted(() => ({
   user: {
     id: 'user-1',
     token: 'token-1',
-    sessionId: 'session-1',
     name: 'Tester',
     email: 'tester@example.com',
   },

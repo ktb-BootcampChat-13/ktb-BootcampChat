@@ -10,7 +10,6 @@ import org.springframework.util.StringUtils;
 public class CustomBearerTokenResolver implements BearerTokenResolver {
     
     private static final String CUSTOM_HEADER = "x-auth-token";
-    private static final String SESSION_HEADER = "x-session-id";
     
     @Override
     public String resolve(HttpServletRequest request) {

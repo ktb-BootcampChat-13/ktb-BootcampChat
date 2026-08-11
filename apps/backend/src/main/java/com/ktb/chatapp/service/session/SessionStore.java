@@ -24,6 +24,13 @@ public interface SessionStore {
      * @return the saved session
      */
     Session save(Session session);
+
+    /**
+     * Refresh session activity only if the stored session ID still matches.
+     *
+     * @return true when the current session was refreshed
+     */
+    boolean touch(String userId, String sessionId, long lastActivity);
     
     /**
      * Delete all sessions for a user
