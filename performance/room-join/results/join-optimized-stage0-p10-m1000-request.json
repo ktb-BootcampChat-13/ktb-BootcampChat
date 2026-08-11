@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "testId": "join-optimized-stage0-p10-m1000",
+  "commit": "unknown",
+  "fixture": {
+    "id": "perf-join-join-optimized-20260811-p10-m1000",
+    "roomId": "6a7ad40fb251831cf4448e70",
+    "participants": 10,
+    "messages": 1000
+  },
+  "mode": "idempotent",
+  "vus": 1,
+  "configuredDuration": "30s",
+  "startedAt": "2026-08-11T07:53:44.200Z",
+  "endedAt": "2026-08-11T07:53:45.027Z",
+  "requests": 1,
+  "rps": 1.209625717610457,
+  "latencyMs": {
+    "average": 83.951,
+    "p95": 83.951,
+    "p99": 83.951,
+    "max": 83.951
+  },
+  "errorRate": 0,
+  "timeoutCount": 0,
+  "thresholdsPassed": true
+}

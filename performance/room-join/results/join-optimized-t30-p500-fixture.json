@@ -1,0 +1,1 @@
+{"action":"subset","testId":"join-optimized-t30-20260811","prefix":"perf-join-join-optimized-t30-20260811","fixtures":[{"id":"perf-join-join-optimized-t30-20260811-p500-m1000","roomId":"6a7ad7c6be4bb5b2f9f5793e","axis":"participants","participants":500,"messages":1000,"valid":true}]}

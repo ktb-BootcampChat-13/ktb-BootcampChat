@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "testId": "join-after-smoke-idempotent-perf-join-join-bottleneck-20260811-p10-m1000-idempotent-1vu",
+  "commit": "ce107855630f5ca543228d08ba6330a6fe96ad95",
+  "fixture": {
+    "id": "perf-join-join-bottleneck-20260811-p10-m1000",
+    "roomId": "6a7ab11f2b7cb8fe4cc46bdb",
+    "participants": 10,
+    "messages": 1000
+  },
+  "mode": "idempotent",
+  "vus": 1,
+  "configuredDuration": "30s",
+  "startedAt": "2026-08-11T05:42:48.358Z",
+  "endedAt": "2026-08-11T05:42:48.364Z",
+  "requests": 0,
+  "rps": 0,
+  "latencyMs": {
+    "average": 0,
+    "p95": 0,
+    "p99": 0,
+    "max": 0
+  },
+  "errorRate": 0,
+  "timeoutCount": 0,
+  "thresholdsPassed": true,
+  "observability": {
+    "processCpu": {
+      "error": "Unexpected end of JSON input"
+    },
+    "heapUsed": {
+      "error": "Unexpected end of JSON input"
+    },
+    "gcPauseRate": {
+      "error": "Unexpected end of JSON input"
+    },
+    "httpAverage": {
+      "error": "Unexpected end of JSON input"
+    },
+    "httpMax": {
+      "error": "Unexpected end of JSON input"
+    },
+    "mongoCommandRate": {
+      "error": "Unexpected end of JSON input"
+    },
+    "mongoCommandMax": {
+      "error": "Unexpected end of JSON input"
+    },
+    "mongoCheckedOut": {
+      "error": "Unexpected end of JSON input"
+    },
+    "mongoWaitQueue": {
+      "error": "Unexpected end of JSON input"
+    },
+    "mongoCheckoutFailures": {
+      "error": "Unexpected end of JSON input"
+    }
+  },
+  "waitQueueDetected": false,
+  "checkoutFailureDetected": false
+}

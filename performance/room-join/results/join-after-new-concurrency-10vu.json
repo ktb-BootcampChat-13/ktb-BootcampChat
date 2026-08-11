@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "testId": "join-after-new-concurrency-10vu",
+  "commit": "unknown",
+  "fixture": {
+    "id": "perf-join-join-bottleneck-20260811-p500-m1000",
+    "roomId": "6a7ab1202b7cb8fe4cc6215f",
+    "participants": 500,
+    "messages": 1000
+  },
+  "mode": "new-participant",
+  "vus": 10,
+  "configuredDuration": "30s",
+  "startedAt": "2026-08-11T06:00:40.698Z",
+  "endedAt": "2026-08-11T06:01:10.942Z",
+  "requests": 10,
+  "rps": 0.3306445101339567,
+  "latencyMs": {
+    "average": 86.21589999999999,
+    "p95": 89.41414999999999,
+    "p99": 89.87243,
+    "max": 89.987
+  },
+  "errorRate": 0,
+  "timeoutCount": 0,
+  "thresholdsPassed": true
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "testId": "join-after-smoke-new-p100-m1000",
+  "commit": "unknown",
+  "fixture": {
+    "id": "perf-join-join-bottleneck-20260811-p100-m1000",
+    "roomId": "6a7ab1202b7cb8fe4cc61d76",
+    "participants": 100,
+    "messages": 1000
+  },
+  "mode": "new-participant",
+  "vus": 1,
+  "configuredDuration": "30s",
+  "startedAt": "2026-08-11T05:56:21.464Z",
+  "endedAt": "2026-08-11T05:56:51.519Z",
+  "requests": 1,
+  "rps": 0.03327276470156276,
+  "latencyMs": {
+    "average": 18.229,
+    "p95": 18.229,
+    "p99": 18.229,
+    "max": 18.229
+  },
+  "errorRate": 0,
+  "timeoutCount": 0,
+  "thresholdsPassed": true
+}

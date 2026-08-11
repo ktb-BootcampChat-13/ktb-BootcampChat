@@ -1,0 +1,969 @@
+{
+  "schemaVersion": 1,
+  "runId": "e2e-api-priority-20260811-profiler-confirm",
+  "vuId": "838c94cc-d8b7-49e9-8422-33be701f6bdc",
+  "generatedAt": "2026-08-11T01:56:22.990Z",
+  "samples": {
+    "http": [
+      {
+        "name": "GET /api/health",
+        "action": "failed_login",
+        "durationMs": 13.578666999999768,
+        "startedAt": "2026-08-11T01:56:01.141Z",
+        "endedAt": "2026-08-11T01:56:01.155Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "POST /api/auth/login",
+        "action": "failed_login",
+        "durationMs": 49.73383400000057,
+        "startedAt": "2026-08-11T01:56:01.592Z",
+        "endedAt": "2026-08-11T01:56:01.642Z",
+        "success": false,
+        "status": 401
+      },
+      {
+        "name": "POST /api/auth/register",
+        "action": "register",
+        "durationMs": 27.38837500000045,
+        "startedAt": "2026-08-11T01:56:03.950Z",
+        "endedAt": "2026-08-11T01:56:03.978Z",
+        "success": true,
+        "status": 201
+      },
+      {
+        "name": "GET /api/health",
+        "action": null,
+        "durationMs": 5.317042000000583,
+        "startedAt": "2026-08-11T01:56:05.295Z",
+        "endedAt": "2026-08-11T01:56:05.300Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/health",
+        "action": "login",
+        "durationMs": 6.440333000000464,
+        "startedAt": "2026-08-11T01:56:06.348Z",
+        "endedAt": "2026-08-11T01:56:06.355Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "POST /api/auth/login",
+        "action": "login",
+        "durationMs": 36.737874999998894,
+        "startedAt": "2026-08-11T01:56:06.691Z",
+        "endedAt": "2026-08-11T01:56:06.728Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/health",
+        "action": "login",
+        "durationMs": 19.06512499999917,
+        "startedAt": "2026-08-11T01:56:06.923Z",
+        "endedAt": "2026-08-11T01:56:06.942Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/rooms",
+        "action": "login",
+        "durationMs": 88.95187500000065,
+        "startedAt": "2026-08-11T01:56:06.940Z",
+        "endedAt": "2026-08-11T01:56:07.028Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "POST /api/rooms",
+        "action": "room_create",
+        "durationMs": 55.10120800000004,
+        "startedAt": "2026-08-11T01:56:08.212Z",
+        "endedAt": "2026-08-11T01:56:08.267Z",
+        "success": true,
+        "status": 201
+      },
+      {
+        "name": "POST /api/rooms/{roomId}/join",
+        "action": "room_create",
+        "durationMs": 49.63812500000131,
+        "startedAt": "2026-08-11T01:56:08.266Z",
+        "endedAt": "2026-08-11T01:56:08.316Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/rooms/{roomId}",
+        "action": "room_create",
+        "durationMs": 34.10145899999952,
+        "startedAt": "2026-08-11T01:56:08.617Z",
+        "endedAt": "2026-08-11T01:56:08.651Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/rooms/{roomId}",
+        "action": "room_create",
+        "durationMs": 57.91450000000077,
+        "startedAt": "2026-08-11T01:56:08.617Z",
+        "endedAt": "2026-08-11T01:56:08.675Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/health",
+        "action": "room_join",
+        "durationMs": 19.822582999997394,
+        "startedAt": "2026-08-11T01:56:09.654Z",
+        "endedAt": "2026-08-11T01:56:09.674Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/rooms",
+        "action": "room_join",
+        "durationMs": 63.09141699999964,
+        "startedAt": "2026-08-11T01:56:09.673Z",
+        "endedAt": "2026-08-11T01:56:09.737Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "POST /api/rooms/{roomId}/join",
+        "action": "room_join",
+        "durationMs": 256.6290829999998,
+        "startedAt": "2026-08-11T01:56:10.188Z",
+        "endedAt": "2026-08-11T01:56:10.444Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/rooms/{roomId}",
+        "action": "room_join",
+        "durationMs": 31.09624999999869,
+        "startedAt": "2026-08-11T01:56:10.807Z",
+        "endedAt": "2026-08-11T01:56:10.838Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/rooms/{roomId}",
+        "action": "room_join",
+        "durationMs": 45.66858299999876,
+        "startedAt": "2026-08-11T01:56:10.807Z",
+        "endedAt": "2026-08-11T01:56:10.853Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/health",
+        "action": "room_join_for_file",
+        "durationMs": 18.865249999998923,
+        "startedAt": "2026-08-11T01:56:14.553Z",
+        "endedAt": "2026-08-11T01:56:14.572Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/rooms",
+        "action": "room_join_for_file",
+        "durationMs": 5.3084579999995185,
+        "startedAt": "2026-08-11T01:56:14.571Z",
+        "endedAt": "2026-08-11T01:56:14.577Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "POST /api/rooms/{roomId}/join",
+        "action": "room_join_for_file",
+        "durationMs": 236.5001250000023,
+        "startedAt": "2026-08-11T01:56:15.043Z",
+        "endedAt": "2026-08-11T01:56:15.280Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/rooms/{roomId}",
+        "action": "room_join_for_file",
+        "durationMs": 22.17095799999879,
+        "startedAt": "2026-08-11T01:56:15.596Z",
+        "endedAt": "2026-08-11T01:56:15.618Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/rooms/{roomId}",
+        "action": "room_join_for_file",
+        "durationMs": 41.732332999999926,
+        "startedAt": "2026-08-11T01:56:15.596Z",
+        "endedAt": "2026-08-11T01:56:15.638Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "POST /api/files/upload",
+        "action": "file_upload",
+        "durationMs": 44.23370899999645,
+        "startedAt": "2026-08-11T01:56:15.941Z",
+        "endedAt": "2026-08-11T01:56:15.985Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/files/view/{filename}",
+        "action": "file_upload",
+        "durationMs": 26.858166999998502,
+        "startedAt": "2026-08-11T01:56:16.037Z",
+        "endedAt": "2026-08-11T01:56:16.064Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/health",
+        "action": "room_join_for_forbidden_word",
+        "durationMs": 28.00812500000029,
+        "startedAt": "2026-08-11T01:56:17.258Z",
+        "endedAt": "2026-08-11T01:56:17.286Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/rooms",
+        "action": "room_join_for_forbidden_word",
+        "durationMs": 6.085416999998415,
+        "startedAt": "2026-08-11T01:56:17.283Z",
+        "endedAt": "2026-08-11T01:56:17.289Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "POST /api/rooms/{roomId}/join",
+        "action": "room_join_for_forbidden_word",
+        "durationMs": 239.79875000000175,
+        "startedAt": "2026-08-11T01:56:17.725Z",
+        "endedAt": "2026-08-11T01:56:17.965Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/rooms/{roomId}",
+        "action": "room_join_for_forbidden_word",
+        "durationMs": 50.080582999999024,
+        "startedAt": "2026-08-11T01:56:18.326Z",
+        "endedAt": "2026-08-11T01:56:18.376Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/rooms/{roomId}",
+        "action": "room_join_for_forbidden_word",
+        "durationMs": 74.20458399999916,
+        "startedAt": "2026-08-11T01:56:18.326Z",
+        "endedAt": "2026-08-11T01:56:18.400Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "POST /api/users/profile-image",
+        "action": "profile_image_change",
+        "durationMs": 68.0916670000006,
+        "startedAt": "2026-08-11T01:56:19.477Z",
+        "endedAt": "2026-08-11T01:56:19.545Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "GET /api/files/profiles/{filename}",
+        "action": "profile_image_change",
+        "durationMs": 17.04395800000202,
+        "startedAt": "2026-08-11T01:56:19.540Z",
+        "endedAt": "2026-08-11T01:56:19.557Z",
+        "success": true,
+        "status": 200
+      },
+      {
+        "name": "PUT /api/users/profile",
+        "action": "profile_name_change",
+        "durationMs": 107.15154199999961,
+        "startedAt": "2026-08-11T01:56:21.812Z",
+        "endedAt": "2026-08-11T01:56:21.919Z",
+        "success": true,
+        "status": 200
+      }
+    ],
+    "socket": [
+      {
+        "name": "connection",
+        "action": "login",
+        "durationMs": 16.341707999999926,
+        "startedAt": "2026-08-11T01:56:06.931Z",
+        "endedAt": "2026-08-11T01:56:06.948Z",
+        "success": true
+      },
+      {
+        "name": "connection",
+        "action": "room_create",
+        "durationMs": 29.935499999999593,
+        "startedAt": "2026-08-11T01:56:08.587Z",
+        "endedAt": "2026-08-11T01:56:08.617Z",
+        "success": true
+      },
+      {
+        "name": "room_join",
+        "action": "room_create",
+        "durationMs": 32.033041999999114,
+        "startedAt": "2026-08-11T01:56:08.650Z",
+        "endedAt": "2026-08-11T01:56:08.682Z",
+        "success": true
+      },
+      {
+        "name": "room_join",
+        "action": "room_create",
+        "durationMs": 41.0216249999994,
+        "startedAt": "2026-08-11T01:56:08.674Z",
+        "endedAt": "2026-08-11T01:56:08.715Z",
+        "success": true
+      },
+      {
+        "name": "message_send",
+        "action": "message_send",
+        "durationMs": 7.891917000000831,
+        "startedAt": "2026-08-11T01:56:08.913Z",
+        "endedAt": "2026-08-11T01:56:08.921Z",
+        "success": true
+      },
+      {
+        "name": "connection",
+        "action": "room_join",
+        "durationMs": 18.190874999996595,
+        "startedAt": "2026-08-11T01:56:09.658Z",
+        "endedAt": "2026-08-11T01:56:09.676Z",
+        "success": true
+      },
+      {
+        "name": "connection",
+        "action": "room_join",
+        "durationMs": 16.689084000001458,
+        "startedAt": "2026-08-11T01:56:10.791Z",
+        "endedAt": "2026-08-11T01:56:10.807Z",
+        "success": true
+      },
+      {
+        "name": "room_join",
+        "action": "room_join",
+        "durationMs": 18.567541000000347,
+        "startedAt": "2026-08-11T01:56:10.838Z",
+        "endedAt": "2026-08-11T01:56:10.857Z",
+        "success": true
+      },
+      {
+        "name": "room_join",
+        "action": "room_join",
+        "durationMs": 27.577915999998368,
+        "startedAt": "2026-08-11T01:56:10.853Z",
+        "endedAt": "2026-08-11T01:56:10.880Z",
+        "success": true
+      },
+      {
+        "name": "message_send",
+        "action": "mass_message_send",
+        "durationMs": 23.13929200000348,
+        "startedAt": "2026-08-11T01:56:11.017Z",
+        "endedAt": "2026-08-11T01:56:11.040Z",
+        "success": true
+      },
+      {
+        "name": "message_send",
+        "action": "mass_message_send",
+        "durationMs": 34.79437500000131,
+        "startedAt": "2026-08-11T01:56:11.360Z",
+        "endedAt": "2026-08-11T01:56:11.395Z",
+        "success": true
+      },
+      {
+        "name": "message_send",
+        "action": "mass_message_send",
+        "durationMs": 11.367792000000918,
+        "startedAt": "2026-08-11T01:56:11.717Z",
+        "endedAt": "2026-08-11T01:56:11.728Z",
+        "success": true
+      },
+      {
+        "name": "message_send",
+        "action": "mass_message_send",
+        "durationMs": 11.776458000000275,
+        "startedAt": "2026-08-11T01:56:12.048Z",
+        "endedAt": "2026-08-11T01:56:12.060Z",
+        "success": true
+      },
+      {
+        "name": "message_send",
+        "action": "mass_message_send",
+        "durationMs": 15.105124999998225,
+        "startedAt": "2026-08-11T01:56:12.392Z",
+        "endedAt": "2026-08-11T01:56:12.407Z",
+        "success": true
+      },
+      {
+        "name": "message_send",
+        "action": "mass_message_send",
+        "durationMs": 12.829042000001209,
+        "startedAt": "2026-08-11T01:56:12.732Z",
+        "endedAt": "2026-08-11T01:56:12.745Z",
+        "success": true
+      },
+      {
+        "name": "message_send",
+        "action": "mass_message_send",
+        "durationMs": 13.579207999999198,
+        "startedAt": "2026-08-11T01:56:13.064Z",
+        "endedAt": "2026-08-11T01:56:13.078Z",
+        "success": true
+      },
+      {
+        "name": "message_send",
+        "action": "mass_message_send",
+        "durationMs": 11.299167000001034,
+        "startedAt": "2026-08-11T01:56:13.416Z",
+        "endedAt": "2026-08-11T01:56:13.428Z",
+        "success": true
+      },
+      {
+        "name": "message_send",
+        "action": "mass_message_send",
+        "durationMs": 25.876499999998487,
+        "startedAt": "2026-08-11T01:56:13.759Z",
+        "endedAt": "2026-08-11T01:56:13.785Z",
+        "success": true
+      },
+      {
+        "name": "message_send",
+        "action": "mass_message_send",
+        "durationMs": 22.089374999999563,
+        "startedAt": "2026-08-11T01:56:14.120Z",
+        "endedAt": "2026-08-11T01:56:14.142Z",
+        "success": true
+      },
+      {
+        "name": "connection",
+        "action": "room_join_for_file",
+        "durationMs": 11.007041999997455,
+        "startedAt": "2026-08-11T01:56:14.558Z",
+        "endedAt": "2026-08-11T01:56:14.569Z",
+        "success": true
+      },
+      {
+        "name": "connection",
+        "action": "room_join_for_file",
+        "durationMs": 15.719625000001543,
+        "startedAt": "2026-08-11T01:56:15.580Z",
+        "endedAt": "2026-08-11T01:56:15.596Z",
+        "success": true
+      },
+      {
+        "name": "room_join",
+        "action": "room_join_for_file",
+        "durationMs": 24.201082999999926,
+        "startedAt": "2026-08-11T01:56:15.618Z",
+        "endedAt": "2026-08-11T01:56:15.642Z",
+        "success": true
+      },
+      {
+        "name": "room_join",
+        "action": "room_join_for_file",
+        "durationMs": 25.510667000002286,
+        "startedAt": "2026-08-11T01:56:15.637Z",
+        "endedAt": "2026-08-11T01:56:15.663Z",
+        "success": true
+      },
+      {
+        "name": "message_send",
+        "action": "file_upload",
+        "durationMs": 36.22191700000258,
+        "startedAt": "2026-08-11T01:56:15.982Z",
+        "endedAt": "2026-08-11T01:56:16.019Z",
+        "success": true
+      },
+      {
+        "name": "connection",
+        "action": "room_join_for_forbidden_word",
+        "durationMs": 20.72583300000042,
+        "startedAt": "2026-08-11T01:56:17.258Z",
+        "endedAt": "2026-08-11T01:56:17.279Z",
+        "success": true
+      },
+      {
+        "name": "connection",
+        "action": "room_join_for_forbidden_word",
+        "durationMs": 26.78979199999958,
+        "startedAt": "2026-08-11T01:56:18.299Z",
+        "endedAt": "2026-08-11T01:56:18.326Z",
+        "success": true
+      },
+      {
+        "name": "room_join",
+        "action": "room_join_for_forbidden_word",
+        "durationMs": 27.338042000003043,
+        "startedAt": "2026-08-11T01:56:18.374Z",
+        "endedAt": "2026-08-11T01:56:18.401Z",
+        "success": true
+      },
+      {
+        "name": "room_join",
+        "action": "room_join_for_forbidden_word",
+        "durationMs": 21.286624999997002,
+        "startedAt": "2026-08-11T01:56:18.400Z",
+        "endedAt": "2026-08-11T01:56:18.421Z",
+        "success": true
+      }
+    ],
+    "actions": [
+      {
+        "name": "failed_login",
+        "durationMs": 3013.0250419999993,
+        "startedAt": "2026-08-11T01:55:59.685Z",
+        "endedAt": "2026-08-11T01:56:02.698Z",
+        "success": true
+      },
+      {
+        "name": "register",
+        "durationMs": 1831.5987499999992,
+        "startedAt": "2026-08-11T01:56:03.222Z",
+        "endedAt": "2026-08-11T01:56:05.053Z",
+        "success": true
+      },
+      {
+        "name": "login",
+        "durationMs": 1739.9916670000002,
+        "startedAt": "2026-08-11T01:56:06.056Z",
+        "endedAt": "2026-08-11T01:56:07.796Z",
+        "success": true
+      },
+      {
+        "name": "room_list_display",
+        "durationMs": 5.07220899999993,
+        "startedAt": "2026-08-11T01:56:07.806Z",
+        "endedAt": "2026-08-11T01:56:07.811Z",
+        "success": true
+      },
+      {
+        "name": "room_create",
+        "durationMs": 965.1639589999995,
+        "startedAt": "2026-08-11T01:56:07.812Z",
+        "endedAt": "2026-08-11T01:56:08.777Z",
+        "success": true
+      },
+      {
+        "name": "message_send",
+        "durationMs": 741.9095420000012,
+        "startedAt": "2026-08-11T01:56:08.777Z",
+        "endedAt": "2026-08-11T01:56:09.519Z",
+        "success": true
+      },
+      {
+        "name": "room_join",
+        "durationMs": 1352.4542089999995,
+        "startedAt": "2026-08-11T01:56:09.520Z",
+        "endedAt": "2026-08-11T01:56:10.872Z",
+        "success": true
+      },
+      {
+        "name": "mass_message_send",
+        "durationMs": 3454.0964160000003,
+        "startedAt": "2026-08-11T01:56:10.872Z",
+        "endedAt": "2026-08-11T01:56:14.326Z",
+        "success": true
+      },
+      {
+        "name": "room_join_for_file",
+        "durationMs": 1337.8375840000008,
+        "startedAt": "2026-08-11T01:56:14.327Z",
+        "endedAt": "2026-08-11T01:56:15.665Z",
+        "success": true
+      },
+      {
+        "name": "file_upload",
+        "durationMs": 1383.7719589999979,
+        "startedAt": "2026-08-11T01:56:15.666Z",
+        "endedAt": "2026-08-11T01:56:17.049Z",
+        "success": true
+      },
+      {
+        "name": "room_join_for_forbidden_word",
+        "durationMs": 1431.585541999997,
+        "startedAt": "2026-08-11T01:56:17.050Z",
+        "endedAt": "2026-08-11T01:56:18.482Z",
+        "success": true
+      },
+      {
+        "name": "forbidden_message_send",
+        "durationMs": 239.58141700000124,
+        "startedAt": "2026-08-11T01:56:18.482Z",
+        "endedAt": "2026-08-11T01:56:18.721Z",
+        "success": true
+      },
+      {
+        "name": "profile_open",
+        "durationMs": 236.60254200000054,
+        "startedAt": "2026-08-11T01:56:18.721Z",
+        "endedAt": "2026-08-11T01:56:18.958Z",
+        "success": true
+      },
+      {
+        "name": "profile_image_change",
+        "durationMs": 1124.5189580000006,
+        "startedAt": "2026-08-11T01:56:19.460Z",
+        "endedAt": "2026-08-11T01:56:20.584Z",
+        "success": true
+      },
+      {
+        "name": "profile_name_change",
+        "durationMs": 1279.4945000000007,
+        "startedAt": "2026-08-11T01:56:21.709Z",
+        "endedAt": "2026-08-11T01:56:22.989Z",
+        "success": true
+      }
+    ]
+  },
+  "summary": {
+    "actions": [
+      {
+        "name": "mass_message_send",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 3454.1,
+        "p95Ms": 3454.1,
+        "p99Ms": 3454.1,
+        "totalDurationMs": 3454.1,
+        "contributionPct": 17.2
+      },
+      {
+        "name": "failed_login",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 3013,
+        "p95Ms": 3013,
+        "p99Ms": 3013,
+        "totalDurationMs": 3013,
+        "contributionPct": 15
+      },
+      {
+        "name": "register",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 1831.6,
+        "p95Ms": 1831.6,
+        "p99Ms": 1831.6,
+        "totalDurationMs": 1831.6,
+        "contributionPct": 9.1
+      },
+      {
+        "name": "login",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 1740,
+        "p95Ms": 1740,
+        "p99Ms": 1740,
+        "totalDurationMs": 1740,
+        "contributionPct": 8.6
+      },
+      {
+        "name": "room_join_for_forbidden_word",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 1431.6,
+        "p95Ms": 1431.6,
+        "p99Ms": 1431.6,
+        "totalDurationMs": 1431.6,
+        "contributionPct": 7.1
+      },
+      {
+        "name": "file_upload",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 1383.8,
+        "p95Ms": 1383.8,
+        "p99Ms": 1383.8,
+        "totalDurationMs": 1383.8,
+        "contributionPct": 6.9
+      },
+      {
+        "name": "room_join",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 1352.5,
+        "p95Ms": 1352.5,
+        "p99Ms": 1352.5,
+        "totalDurationMs": 1352.5,
+        "contributionPct": 6.7
+      },
+      {
+        "name": "room_join_for_file",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 1337.8,
+        "p95Ms": 1337.8,
+        "p99Ms": 1337.8,
+        "totalDurationMs": 1337.8,
+        "contributionPct": 6.6
+      },
+      {
+        "name": "profile_name_change",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 1279.5,
+        "p95Ms": 1279.5,
+        "p99Ms": 1279.5,
+        "totalDurationMs": 1279.5,
+        "contributionPct": 6.4
+      },
+      {
+        "name": "profile_image_change",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 1124.5,
+        "p95Ms": 1124.5,
+        "p99Ms": 1124.5,
+        "totalDurationMs": 1124.5,
+        "contributionPct": 5.6
+      },
+      {
+        "name": "room_create",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 965.2,
+        "p95Ms": 965.2,
+        "p99Ms": 965.2,
+        "totalDurationMs": 965.2,
+        "contributionPct": 4.8
+      },
+      {
+        "name": "message_send",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 741.9,
+        "p95Ms": 741.9,
+        "p99Ms": 741.9,
+        "totalDurationMs": 741.9,
+        "contributionPct": 3.7
+      },
+      {
+        "name": "forbidden_message_send",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 239.6,
+        "p95Ms": 239.6,
+        "p99Ms": 239.6,
+        "totalDurationMs": 239.6,
+        "contributionPct": 1.2
+      },
+      {
+        "name": "profile_open",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 236.6,
+        "p95Ms": 236.6,
+        "p99Ms": 236.6,
+        "totalDurationMs": 236.6,
+        "contributionPct": 1.2
+      },
+      {
+        "name": "room_list_display",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 5.1,
+        "p95Ms": 5.1,
+        "p99Ms": 5.1,
+        "totalDurationMs": 5.1,
+        "contributionPct": 0
+      }
+    ],
+    "http": [
+      {
+        "name": "POST /api/rooms/{roomId}/join",
+        "count": 4,
+        "success": 4,
+        "failure": 0,
+        "averageMs": 195.6,
+        "p95Ms": 256.6,
+        "p99Ms": 256.6,
+        "totalDurationMs": 782.6,
+        "contributionPct": 42.4
+      },
+      {
+        "name": "GET /api/rooms/{roomId}",
+        "count": 8,
+        "success": 8,
+        "failure": 0,
+        "averageMs": 44.6,
+        "p95Ms": 74.2,
+        "p99Ms": 74.2,
+        "totalDurationMs": 357,
+        "contributionPct": 19.3
+      },
+      {
+        "name": "GET /api/rooms",
+        "count": 4,
+        "success": 4,
+        "failure": 0,
+        "averageMs": 40.9,
+        "p95Ms": 89,
+        "p99Ms": 89,
+        "totalDurationMs": 163.4,
+        "contributionPct": 8.9
+      },
+      {
+        "name": "GET /api/health",
+        "count": 7,
+        "success": 7,
+        "failure": 0,
+        "averageMs": 15.9,
+        "p95Ms": 28,
+        "p99Ms": 28,
+        "totalDurationMs": 111.1,
+        "contributionPct": 6
+      },
+      {
+        "name": "PUT /api/users/profile",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 107.2,
+        "p95Ms": 107.2,
+        "p99Ms": 107.2,
+        "totalDurationMs": 107.2,
+        "contributionPct": 5.8
+      },
+      {
+        "name": "POST /api/auth/login",
+        "count": 2,
+        "success": 1,
+        "failure": 1,
+        "averageMs": 43.2,
+        "p95Ms": 49.7,
+        "p99Ms": 49.7,
+        "totalDurationMs": 86.5,
+        "contributionPct": 4.7
+      },
+      {
+        "name": "POST /api/users/profile-image",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 68.1,
+        "p95Ms": 68.1,
+        "p99Ms": 68.1,
+        "totalDurationMs": 68.1,
+        "contributionPct": 3.7
+      },
+      {
+        "name": "POST /api/rooms",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 55.1,
+        "p95Ms": 55.1,
+        "p99Ms": 55.1,
+        "totalDurationMs": 55.1,
+        "contributionPct": 3
+      },
+      {
+        "name": "POST /api/files/upload",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 44.2,
+        "p95Ms": 44.2,
+        "p99Ms": 44.2,
+        "totalDurationMs": 44.2,
+        "contributionPct": 2.4
+      },
+      {
+        "name": "POST /api/auth/register",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 27.4,
+        "p95Ms": 27.4,
+        "p99Ms": 27.4,
+        "totalDurationMs": 27.4,
+        "contributionPct": 1.5
+      },
+      {
+        "name": "GET /api/files/view/{filename}",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 26.9,
+        "p95Ms": 26.9,
+        "p99Ms": 26.9,
+        "totalDurationMs": 26.9,
+        "contributionPct": 1.5
+      },
+      {
+        "name": "GET /api/files/profiles/{filename}",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 17,
+        "p95Ms": 17,
+        "p99Ms": 17,
+        "totalDurationMs": 17,
+        "contributionPct": 0.9
+      }
+    ],
+    "socket": [
+      {
+        "name": "message_send",
+        "count": 12,
+        "success": 12,
+        "failure": 0,
+        "averageMs": 18.8,
+        "p95Ms": 36.2,
+        "p99Ms": 36.2,
+        "totalDurationMs": 226,
+        "contributionPct": 37.7
+      },
+      {
+        "name": "room_join",
+        "count": 8,
+        "success": 8,
+        "failure": 0,
+        "averageMs": 27.2,
+        "p95Ms": 41,
+        "p99Ms": 41,
+        "totalDurationMs": 217.5,
+        "contributionPct": 36.3
+      },
+      {
+        "name": "connection",
+        "count": 8,
+        "success": 8,
+        "failure": 0,
+        "averageMs": 19.4,
+        "p95Ms": 29.9,
+        "p99Ms": 29.9,
+        "totalDurationMs": 155.4,
+        "contributionPct": 25.9
+      }
+    ]
+  }
+}

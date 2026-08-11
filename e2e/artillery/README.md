@@ -41,8 +41,15 @@ HTTP의 4xx/5xx는 실패로 집계되므로 의도된 로그인 실패 시나�
 서로 섞이지 않습니다. 해당 실행이 `fetchPreviousMessages`를 보내지 않았다면 과거 메시지 행은
 생성되지 않습니다.
 
+관측 JSON은 Next.js 문서 TTFB(`/`, `/login`, `/chat/{roomId}`)를 API 시간과 분리한다.
+실패한 action에는 마지막 URL, 주요 selector의 존재·표시·활성 상태, 최근 HTTP
+응답, 대기 중인 Socket 이벤트가 포함된다. `layoutShifts`는 이동 요소의 selector,
+이전/현재 rect, 이미지의 natural/rendered 크기를 저장한다.
+
 `PHASE1_ARRIVAL_COUNT`는 지속 동시 VU가 아니라 phase 동안 생성할 총 사용자 수입니다.
 Stage 0을 3회 완료하고 Mongo profiler/실행계획 근거까지 확보하기 전에는 VU를 올리지 않습니다.
+`aggregate-observations.js`를 실행할 때 전체 기대치 `EXPECTED_VUS` 또는 회차당 `PHASE1_ARRIVAL_COUNT`를 주면
+목표 VU 미달 시 `validity.targetReached=false`, `validity.adoptable=false`로 판정한다.
 
 ## 환경 변수
 

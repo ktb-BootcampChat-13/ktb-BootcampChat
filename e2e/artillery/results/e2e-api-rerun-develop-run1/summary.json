@@ -1,0 +1,344 @@
+{
+  "schemaVersion": 1,
+  "runId": "e2e-api-rerun-develop-run1",
+  "generatedAt": "2026-08-11T04:27:43.663Z",
+  "virtualUsers": 1,
+  "summary": {
+    "actions": [
+      {
+        "name": "mass_message_send",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 3381.4,
+        "p95Ms": 3381.4,
+        "p99Ms": 3381.4,
+        "totalDurationMs": 3381.4,
+        "contributionPct": 18.7
+      },
+      {
+        "name": "failed_login",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 2020.2,
+        "p95Ms": 2020.2,
+        "p99Ms": 2020.2,
+        "totalDurationMs": 2020.2,
+        "contributionPct": 11.2
+      },
+      {
+        "name": "register",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 1810.2,
+        "p95Ms": 1810.2,
+        "p99Ms": 1810.2,
+        "totalDurationMs": 1810.2,
+        "contributionPct": 10
+      },
+      {
+        "name": "login",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 1530.1,
+        "p95Ms": 1530.1,
+        "p99Ms": 1530.1,
+        "totalDurationMs": 1530.1,
+        "contributionPct": 8.5
+      },
+      {
+        "name": "file_upload",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 1364.3,
+        "p95Ms": 1364.3,
+        "p99Ms": 1364.3,
+        "totalDurationMs": 1364.3,
+        "contributionPct": 7.6
+      },
+      {
+        "name": "room_join_for_file",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 1354.3,
+        "p95Ms": 1354.3,
+        "p99Ms": 1354.3,
+        "totalDurationMs": 1354.3,
+        "contributionPct": 7.5
+      },
+      {
+        "name": "room_create",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 1189.7,
+        "p95Ms": 1189.7,
+        "p99Ms": 1189.7,
+        "totalDurationMs": 1189.7,
+        "contributionPct": 6.6
+      },
+      {
+        "name": "profile_name_change",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 1151.1,
+        "p95Ms": 1151.1,
+        "p99Ms": 1151.1,
+        "totalDurationMs": 1151.1,
+        "contributionPct": 6.4
+      },
+      {
+        "name": "profile_image_change",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 1120.2,
+        "p95Ms": 1120.2,
+        "p99Ms": 1120.2,
+        "totalDurationMs": 1120.2,
+        "contributionPct": 6.2
+      },
+      {
+        "name": "room_join_for_forbidden_word",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 1082.7,
+        "p95Ms": 1082.7,
+        "p99Ms": 1082.7,
+        "totalDurationMs": 1082.7,
+        "contributionPct": 6
+      },
+      {
+        "name": "room_join",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 914.3,
+        "p95Ms": 914.3,
+        "p99Ms": 914.3,
+        "totalDurationMs": 914.3,
+        "contributionPct": 5.1
+      },
+      {
+        "name": "message_send",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 740.8,
+        "p95Ms": 740.8,
+        "p99Ms": 740.8,
+        "totalDurationMs": 740.8,
+        "contributionPct": 4.1
+      },
+      {
+        "name": "forbidden_message_send",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 252.7,
+        "p95Ms": 252.7,
+        "p99Ms": 252.7,
+        "totalDurationMs": 252.7,
+        "contributionPct": 1.4
+      },
+      {
+        "name": "profile_open",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 146,
+        "p95Ms": 146,
+        "p99Ms": 146,
+        "totalDurationMs": 146,
+        "contributionPct": 0.8
+      },
+      {
+        "name": "room_list_display",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 8.8,
+        "p95Ms": 8.8,
+        "p99Ms": 8.8,
+        "totalDurationMs": 8.8,
+        "contributionPct": 0
+      }
+    ],
+    "http": [
+      {
+        "name": "POST /api/rooms/{roomId}/join",
+        "count": 4,
+        "success": 4,
+        "failure": 0,
+        "averageMs": 157.9,
+        "p95Ms": 336.5,
+        "p99Ms": 336.5,
+        "totalDurationMs": 631.7,
+        "contributionPct": 24.2
+      },
+      {
+        "name": "POST /api/auth/login",
+        "count": 2,
+        "success": 1,
+        "failure": 1,
+        "averageMs": 272.3,
+        "p95Ms": 403.3,
+        "p99Ms": 403.3,
+        "totalDurationMs": 544.7,
+        "contributionPct": 20.9
+      },
+      {
+        "name": "POST /api/auth/register",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 356.8,
+        "p95Ms": 356.8,
+        "p99Ms": 356.8,
+        "totalDurationMs": 356.8,
+        "contributionPct": 13.7
+      },
+      {
+        "name": "POST /api/rooms",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 346.8,
+        "p95Ms": 346.8,
+        "p99Ms": 346.8,
+        "totalDurationMs": 346.8,
+        "contributionPct": 13.3
+      },
+      {
+        "name": "GET /api/rooms",
+        "count": 4,
+        "success": 4,
+        "failure": 0,
+        "averageMs": 65.1,
+        "p95Ms": 177.7,
+        "p99Ms": 177.7,
+        "totalDurationMs": 260.3,
+        "contributionPct": 10
+      },
+      {
+        "name": "GET /api/rooms/{roomId}",
+        "count": 4,
+        "success": 4,
+        "failure": 0,
+        "averageMs": 29.4,
+        "p95Ms": 43.8,
+        "p99Ms": 43.8,
+        "totalDurationMs": 117.8,
+        "contributionPct": 4.5
+      },
+      {
+        "name": "POST /api/files/upload",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 110.6,
+        "p95Ms": 110.6,
+        "p99Ms": 110.6,
+        "totalDurationMs": 110.6,
+        "contributionPct": 4.2
+      },
+      {
+        "name": "GET /api/health",
+        "count": 7,
+        "success": 7,
+        "failure": 0,
+        "averageMs": 13.6,
+        "p95Ms": 25.4,
+        "p99Ms": 25.4,
+        "totalDurationMs": 95.5,
+        "contributionPct": 3.7
+      },
+      {
+        "name": "POST /api/users/profile-image",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 59.9,
+        "p95Ms": 59.9,
+        "p99Ms": 59.9,
+        "totalDurationMs": 59.9,
+        "contributionPct": 2.3
+      },
+      {
+        "name": "GET /api/files/view/{filename}",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 37.1,
+        "p95Ms": 37.1,
+        "p99Ms": 37.1,
+        "totalDurationMs": 37.1,
+        "contributionPct": 1.4
+      },
+      {
+        "name": "PUT /api/users/profile",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 34.9,
+        "p95Ms": 34.9,
+        "p99Ms": 34.9,
+        "totalDurationMs": 34.9,
+        "contributionPct": 1.3
+      },
+      {
+        "name": "GET /api/files/profiles/{filename}",
+        "count": 1,
+        "success": 1,
+        "failure": 0,
+        "averageMs": 15.8,
+        "p95Ms": 15.8,
+        "p99Ms": 15.8,
+        "totalDurationMs": 15.8,
+        "contributionPct": 0.6
+      }
+    ],
+    "socket": [
+      {
+        "name": "connection",
+        "count": 8,
+        "success": 8,
+        "failure": 0,
+        "averageMs": 39.7,
+        "p95Ms": 128,
+        "p99Ms": 128,
+        "totalDurationMs": 317.8,
+        "contributionPct": 44.7
+      },
+      {
+        "name": "message_send",
+        "count": 12,
+        "success": 12,
+        "failure": 0,
+        "averageMs": 17.5,
+        "p95Ms": 30.9,
+        "p99Ms": 30.9,
+        "totalDurationMs": 209.9,
+        "contributionPct": 29.5
+      },
+      {
+        "name": "room_join",
+        "count": 4,
+        "success": 4,
+        "failure": 0,
+        "averageMs": 45.7,
+        "p95Ms": 92.2,
+        "p99Ms": 92.2,
+        "totalDurationMs": 182.7,
+        "contributionPct": 25.7
+      }
+    ]
+  }
+}

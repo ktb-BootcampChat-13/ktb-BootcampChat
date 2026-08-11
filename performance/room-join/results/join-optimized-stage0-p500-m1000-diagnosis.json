@@ -1,0 +1,1762 @@
+{
+  "schemaVersion": 1,
+  "testId": "join-optimized-stage0-p500-m1000",
+  "fixture": "perf-join-join-optimized-20260811-p500-m1000",
+  "roomId": "6a7ad410b251831cf44643f4",
+  "mode": "idempotent",
+  "startedAt": "2026-08-11T07:54:09.870Z",
+  "endedAt": "2026-08-11T07:54:12.336Z",
+  "profiler": {
+    "commandCount": 5,
+    "commands": {
+      "bootcamp-chat.users:query": 2,
+      "bootcamp-chat.rooms:query": 1,
+      "bootcamp-chat.users:getmore": 1,
+      "bootcamp-chat.messages:command": 1
+    },
+    "rows": [
+      {
+        "ts": {
+          "$date": "2026-08-11T07:54:10.910Z"
+        },
+        "op": "query",
+        "ns": "bootcamp-chat.users",
+        "millis": 0,
+        "docsExamined": 1,
+        "keysExamined": 1,
+        "nreturned": 1,
+        "command": {
+          "find": "users",
+          "filter": {
+            "email": "perf-join-join-optimized-20260811-member-0@perf-join.test"
+          },
+          "limit": 2,
+          "$db": "bootcamp-chat",
+          "lsid": {
+            "id": {
+              "$binary": {
+                "base64": "CdnfzZldTEWA8d9V7ZosMg==",
+                "subType": "04"
+              }
+            }
+          }
+        }
+      },
+      {
+        "ts": {
+          "$date": "2026-08-11T07:54:10.929Z"
+        },
+        "op": "query",
+        "ns": "bootcamp-chat.rooms",
+        "millis": 0,
+        "docsExamined": 1,
+        "keysExamined": 1,
+        "nreturned": 1,
+        "command": {
+          "find": "rooms",
+          "filter": {
+            "_id": {
+              "$oid": "6a7ad410b251831cf44643f4"
+            }
+          },
+          "limit": 1,
+          "singleBatch": true,
+          "$db": "bootcamp-chat",
+          "lsid": {
+            "id": {
+              "$binary": {
+                "base64": "CdnfzZldTEWA8d9V7ZosMg==",
+                "subType": "04"
+              }
+            }
+          }
+        }
+      },
+      {
+        "ts": {
+          "$date": "2026-08-11T07:54:10.936Z"
+        },
+        "op": "query",
+        "ns": "bootcamp-chat.users",
+        "millis": 1,
+        "docsExamined": 101,
+        "keysExamined": 101,
+        "nreturned": 101,
+        "command": {
+          "find": "users",
+          "filter": {
+            "_id": {
+              "$in": [
+                {
+                  "$oid": "6a7ad40fb251831cf4448c18"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c19"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c1a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c1b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c1c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c1d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c1e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c1f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c20"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c21"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c22"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c23"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c24"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c25"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c26"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c27"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c28"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c29"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c2a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c2b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c2c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c2d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c2e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c2f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c30"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c31"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c32"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c33"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c34"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c35"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c36"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c37"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c38"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c39"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c3a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c3b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c3c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c3d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c3e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c3f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c40"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c41"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c42"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c43"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c44"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c45"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c46"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c47"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c48"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c49"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c4a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c4b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c4c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c4d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c4e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c4f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c50"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c51"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c52"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c53"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c54"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c55"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c56"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c57"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c58"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c59"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c5a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c5b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c5c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c5d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c5e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c5f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c60"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c61"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c62"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c63"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c64"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c65"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c66"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c67"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c68"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c69"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c6a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c6b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c6c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c6d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c6e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c6f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c70"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c71"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c72"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c73"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c74"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c75"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c76"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c77"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c78"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c79"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c7a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c7b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c7c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c7d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c7e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c7f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c80"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c81"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c82"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c83"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c84"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c85"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c86"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c87"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c88"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c89"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c8a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c8b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c8c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c8d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c8e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c8f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c90"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c91"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c92"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c93"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c94"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c95"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c96"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c97"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c98"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c99"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c9a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c9b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c9c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c9d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c9e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c9f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ca0"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ca1"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ca2"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ca3"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ca4"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ca5"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ca6"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ca7"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ca8"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ca9"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448caa"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cab"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cac"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cad"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cae"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448caf"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cb0"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cb1"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cb2"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cb3"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cb4"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cb5"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cb6"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cb7"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cb8"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cb9"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cba"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cbb"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cbc"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cbd"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cbe"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cbf"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cc0"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cc1"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cc2"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cc3"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cc4"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cc5"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cc6"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cc7"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cc8"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cc9"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cca"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ccb"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ccc"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ccd"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cce"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ccf"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cd0"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cd1"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cd2"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cd3"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cd4"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cd5"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cd6"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cd7"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cd8"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cd9"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cda"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cdb"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cdc"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cdd"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cde"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cdf"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ce0"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ce1"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ce2"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ce3"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ce4"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ce5"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ce6"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ce7"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ce8"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ce9"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cea"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ceb"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cec"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ced"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cee"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cef"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cf0"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cf1"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cf2"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cf3"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cf4"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cf5"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cf6"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cf7"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cf8"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cf9"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cfa"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cfb"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cfc"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cfd"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cfe"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448cff"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d00"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d01"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d02"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d03"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d04"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d05"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d06"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d07"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d08"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d09"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d0a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d0b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d0c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d0d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d0e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d0f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d10"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d11"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d12"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d13"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d14"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d15"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d16"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d17"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d18"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d19"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d1a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d1b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d1c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d1d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d1e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d1f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d20"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d21"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d22"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d23"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d24"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d25"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d26"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d27"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d28"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d29"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d2a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d2b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d2c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d2d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d2e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d2f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d30"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d31"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d32"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d33"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d34"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d35"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d36"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d37"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d38"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d39"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d3a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d3b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d3c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d3d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d3e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d3f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d40"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d41"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d42"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d43"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d44"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d45"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d46"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d47"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d48"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d49"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d4a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d4b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d4c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d4d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d4e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d4f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d50"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d51"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d52"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d53"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d54"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d55"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d56"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d57"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d58"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d59"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d5a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d5b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d5c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d5d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d5e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d5f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d60"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d61"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d62"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d63"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d64"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d65"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d66"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d67"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d68"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d69"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d6a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d6b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d6c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d6d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d6e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d6f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d70"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d71"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d72"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d73"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d74"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d75"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d76"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d77"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d78"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d79"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d7a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d7b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d7c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d7d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d7e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d7f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d80"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d81"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d82"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d83"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d84"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d85"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d86"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d87"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d88"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d89"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d8a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d8b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d8c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d8d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d8e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d8f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d90"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d91"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d92"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d93"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d94"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d95"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d96"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d97"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d98"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d99"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d9a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d9b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d9c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d9d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d9e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448d9f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448da0"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448da1"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448da2"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448da3"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448da4"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448da5"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448da6"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448da7"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448da8"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448da9"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448daa"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dab"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dac"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dad"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dae"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448daf"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448db0"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448db1"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448db2"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448db3"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448db4"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448db5"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448db6"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448db7"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448db8"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448db9"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dba"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dbb"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dbc"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dbd"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dbe"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dbf"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dc0"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dc1"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dc2"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dc3"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dc4"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dc5"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dc6"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dc7"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dc8"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dc9"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dca"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dcb"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dcc"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dcd"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dce"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dcf"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dd0"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dd1"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dd2"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dd3"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dd4"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dd5"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dd6"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dd7"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dd8"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dd9"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dda"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ddb"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ddc"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ddd"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dde"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ddf"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448de0"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448de1"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448de2"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448de3"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448de4"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448de5"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448de6"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448de7"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448de8"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448de9"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dea"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448deb"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dec"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448ded"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dee"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448def"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448df0"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448df1"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448df2"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448df3"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448df4"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448df5"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448df6"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448df7"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448df8"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448df9"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dfa"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dfb"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dfc"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dfd"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dfe"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448dff"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448e00"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448e01"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448e02"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448e03"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448e04"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448e05"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448e06"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448e07"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448e08"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448e09"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448e0a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448e0b"
+                }
+              ]
+            }
+          },
+          "projection": {
+            "name": 1,
+            "_id": 1,
+            "profileImage": 1,
+            "email": 1
+          },
+          "$db": "bootcamp-chat",
+          "lsid": {
+            "id": {
+              "$binary": {
+                "base64": "CdnfzZldTEWA8d9V7ZosMg==",
+                "subType": "04"
+              }
+            }
+          }
+        }
+      },
+      {
+        "ts": {
+          "$date": "2026-08-11T07:54:10.963Z"
+        },
+        "op": "getmore",
+        "ns": "bootcamp-chat.users",
+        "millis": 0,
+        "docsExamined": 399,
+        "keysExamined": 400,
+        "nreturned": 399,
+        "command": {
+          "getMore": 7336050411272190000,
+          "collection": "users",
+          "$db": "bootcamp-chat",
+          "lsid": {
+            "id": {
+              "$binary": {
+                "base64": "CdnfzZldTEWA8d9V7ZosMg==",
+                "subType": "04"
+              }
+            }
+          }
+        }
+      },
+      {
+        "ts": {
+          "$date": "2026-08-11T07:54:10.980Z"
+        },
+        "op": "command",
+        "ns": "bootcamp-chat.messages",
+        "millis": 0,
+        "docsExamined": 0,
+        "keysExamined": 1000,
+        "nreturned": 1,
+        "command": {
+          "aggregate": "messages",
+          "pipeline": [
+            {
+              "$match": {
+                "room": "6a7ad410b251831cf44643f4",
+                "timestamp": {
+                  "$gte": {
+                    "$date": "2026-08-11T07:24:10.977Z"
+                  }
+                }
+              }
+            },
+            {
+              "$group": {
+                "_id": 1,
+                "n": {
+                  "$sum": 1
+                }
+              }
+            }
+          ],
+          "cursor": {},
+          "$db": "bootcamp-chat",
+          "lsid": {
+            "id": {
+              "$binary": {
+                "base64": "CdnfzZldTEWA8d9V7ZosMg==",
+                "subType": "04"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "explain": {
+    "history": {
+      "winningPlan": {
+        "isCached": false,
+        "stage": "LIMIT",
+        "limitAmount": 30,
+        "inputStage": {
+          "stage": "FETCH",
+          "nss": "bootcamp-chat.messages",
+          "inputStage": {
+            "stage": "IXSCAN",
+            "nss": "bootcamp-chat.messages",
+            "keyPattern": {
+              "room": 1,
+              "timestamp": 1
+            },
+            "indexName": "room_timestamp_idx",
+            "isMultiKey": false,
+            "multiKeyPaths": {
+              "room": [],
+              "timestamp": []
+            },
+            "isUnique": false,
+            "isSparse": false,
+            "isPartial": false,
+            "indexVersion": 2,
+            "direction": "backward",
+            "indexBounds": {
+              "room": [
+                "[\"6a7ad410b251831cf44643f4\", \"6a7ad410b251831cf44643f4\"]"
+              ],
+              "timestamp": [
+                "[MaxKey, MinKey]"
+              ]
+            }
+          }
+        }
+      },
+      "nReturned": 30,
+      "totalDocsExamined": 30,
+      "totalKeysExamined": 30,
+      "executionTimeMillis": 0
+    },
+    "recentCount": {
+      "winningPlan": {
+        "isCached": false,
+        "stage": "FETCH",
+        "nss": "bootcamp-chat.messages",
+        "inputStage": {
+          "stage": "IXSCAN",
+          "nss": "bootcamp-chat.messages",
+          "keyPattern": {
+            "room": 1,
+            "timestamp": 1
+          },
+          "indexName": "room_timestamp_idx",
+          "isMultiKey": false,
+          "multiKeyPaths": {
+            "room": [],
+            "timestamp": []
+          },
+          "isUnique": false,
+          "isSparse": false,
+          "isPartial": false,
+          "indexVersion": 2,
+          "direction": "forward",
+          "indexBounds": {
+            "room": [
+              "[\"6a7ad410b251831cf44643f4\", \"6a7ad410b251831cf44643f4\"]"
+            ],
+            "timestamp": [
+              "[new Date(1786434252299), new Date(9223372036854775807)]"
+            ]
+          }
+        }
+      },
+      "nReturned": 324,
+      "totalDocsExamined": 324,
+      "totalKeysExamined": 324,
+      "executionTimeMillis": 0
+    }
+  }
+}

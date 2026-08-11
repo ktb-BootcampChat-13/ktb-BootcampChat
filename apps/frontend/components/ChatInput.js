@@ -76,7 +76,7 @@ const ChatInput = forwardRef(({
         fileInputRef.current.value = '';
       }
     }
-  }, [onFileSelect]);
+  }, [fileInputRef, onFileSelect]);
 
   const handleFileRemove = useCallback((fileToRemove) => {
     setFiles(prev => prev.filter(file => file.name !== fileToRemove.name));

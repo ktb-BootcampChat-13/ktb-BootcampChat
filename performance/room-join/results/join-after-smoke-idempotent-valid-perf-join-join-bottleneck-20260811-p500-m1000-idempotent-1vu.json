@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "testId": "join-after-smoke-idempotent-valid-perf-join-join-bottleneck-20260811-p500-m1000-idempotent-1vu",
+  "commit": "ce107855630f5ca543228d08ba6330a6fe96ad95",
+  "fixture": {
+    "id": "perf-join-join-bottleneck-20260811-p500-m1000",
+    "roomId": "6a7ab1202b7cb8fe4cc6215f",
+    "participants": 500,
+    "messages": 1000
+  },
+  "mode": "idempotent",
+  "vus": 1,
+  "configuredDuration": "30s",
+  "startedAt": "2026-08-11T05:45:12.231Z",
+  "endedAt": "2026-08-11T05:45:12.250Z",
+  "requests": 0,
+  "rps": 0,
+  "latencyMs": {
+    "average": 0,
+    "p95": 0,
+    "p99": 0,
+    "max": 0
+  },
+  "errorRate": 0,
+  "timeoutCount": 0,
+  "thresholdsPassed": true,
+  "observability": {
+    "processCpu": [
+      {
+        "metric": {
+          "__name__": "process_cpu_usage",
+          "application": "ktb-chat-backend",
+          "environment": "dev",
+          "instance": "host.docker.internal:5001",
+          "job": "spring-boot-app"
+        },
+        "values": [
+          [
+            1786427111.828,
+            0.004751580737397306
+          ]
+        ]
+      }
+    ],
+    "heapUsed": [
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "application": "ktb-chat-backend",
+          "area": "heap",
+          "environment": "dev",
+          "id": "G1 Eden Space",
+          "instance": "host.docker.internal:5001",
+          "job": "spring-boot-app"
+        },
+        "values": [
+          [
+            1786427111.828,
+            12582912
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "application": "ktb-chat-backend",
+          "area": "heap",
+          "environment": "dev",
+          "id": "G1 Old Gen",
+          "instance": "host.docker.internal:5001",
+          "job": "spring-boot-app"
+        },
+        "values": [
+          [
+            1786427111.828,
+            60899968
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "application": "ktb-chat-backend",
+          "area": "heap",
+          "environment": "dev",
+          "id": "G1 Survivor Space",
+          "instance": "host.docker.internal:5001",
+          "job": "spring-boot-app"
+        },
+        "values": [
+          [
+            1786427111.828,
+            4826848
+          ]
+        ]
+      }
+    ],
+    "gcPauseRate": [
+      {
+        "metric": {
+          "action": "end of minor GC",
+          "application": "ktb-chat-backend",
+          "cause": "G1 Evacuation Pause",
+          "environment": "dev",
+          "gc": "G1 Young Generation",
+          "instance": "host.docker.internal:5001",
+          "job": "spring-boot-app"
+        },
+        "values": [
+          [
+            1786427111.828,
+            0.0003559865064162329
+          ]
+        ]
+      }
+    ],
+    "httpAverage": [
+      {
+        "metric": {},
+        "values": [
+          [
+            1786427111.828,
+            null
+          ]
+        ]
+      }
+    ],
+    "httpMax": [
+      {
+        "metric": {},
+        "values": [
+          [
+            1786427111.828,
+            0
+          ]
+        ]
+      }
+    ],
+    "mongoCommandRate": [
+      {
+        "metric": {},
+        "values": [
+          [
+            1786427111.828,
+            0.067806953603092
+          ]
+        ]
+      }
+    ],
+    "mongoCommandMax": [
+      {
+        "metric": {},
+        "values": [
+          [
+            1786427111.828,
+            0.005742625
+          ]
+        ]
+      }
+    ],
+    "mongoCheckedOut": [
+      {
+        "metric": {},
+        "values": [
+          [
+            1786427111.828,
+            0
+          ]
+        ]
+      }
+    ],
+    "mongoWaitQueue": [
+      {
+        "metric": {},
+        "values": [
+          [
+            1786427111.828,
+            0
+          ]
+        ]
+      }
+    ],
+    "mongoCheckoutFailures": [
+      {
+        "metric": {},
+        "values": [
+          [
+            1786427111.828,
+            0
+          ]
+        ]
+      }
+    ]
+  },
+  "waitQueueDetected": false,
+  "checkoutFailureDetected": false
+}

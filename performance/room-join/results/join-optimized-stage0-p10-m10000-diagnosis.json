@@ -1,0 +1,267 @@
+{
+  "schemaVersion": 1,
+  "testId": "join-optimized-stage0-p10-m10000",
+  "fixture": "perf-join-join-optimized-20260811-p10-m10000",
+  "roomId": "6a7ad40fb251831cf4449259",
+  "mode": "idempotent",
+  "startedAt": "2026-08-11T07:53:50.652Z",
+  "endedAt": "2026-08-11T07:53:53.158Z",
+  "profiler": {
+    "commandCount": 4,
+    "commands": {
+      "bootcamp-chat.users:query": 2,
+      "bootcamp-chat.rooms:query": 1,
+      "bootcamp-chat.messages:command": 1
+    },
+    "rows": [
+      {
+        "ts": {
+          "$date": "2026-08-11T07:53:51.695Z"
+        },
+        "op": "query",
+        "ns": "bootcamp-chat.users",
+        "millis": 0,
+        "docsExamined": 1,
+        "keysExamined": 1,
+        "nreturned": 1,
+        "command": {
+          "find": "users",
+          "filter": {
+            "email": "perf-join-join-optimized-20260811-member-0@perf-join.test"
+          },
+          "limit": 2,
+          "$db": "bootcamp-chat",
+          "lsid": {
+            "id": {
+              "$binary": {
+                "base64": "CdnfzZldTEWA8d9V7ZosMg==",
+                "subType": "04"
+              }
+            }
+          }
+        }
+      },
+      {
+        "ts": {
+          "$date": "2026-08-11T07:53:51.723Z"
+        },
+        "op": "query",
+        "ns": "bootcamp-chat.rooms",
+        "millis": 0,
+        "docsExamined": 1,
+        "keysExamined": 1,
+        "nreturned": 1,
+        "command": {
+          "find": "rooms",
+          "filter": {
+            "_id": {
+              "$oid": "6a7ad40fb251831cf4449259"
+            }
+          },
+          "limit": 1,
+          "singleBatch": true,
+          "$db": "bootcamp-chat",
+          "lsid": {
+            "id": {
+              "$binary": {
+                "base64": "CdnfzZldTEWA8d9V7ZosMg==",
+                "subType": "04"
+              }
+            }
+          }
+        }
+      },
+      {
+        "ts": {
+          "$date": "2026-08-11T07:53:51.726Z"
+        },
+        "op": "query",
+        "ns": "bootcamp-chat.users",
+        "millis": 0,
+        "docsExamined": 10,
+        "keysExamined": 11,
+        "nreturned": 10,
+        "command": {
+          "find": "users",
+          "filter": {
+            "_id": {
+              "$in": [
+                {
+                  "$oid": "6a7ad40fb251831cf4448c18"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c19"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c1a"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c1b"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c1c"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c1d"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c1e"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c1f"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c20"
+                },
+                {
+                  "$oid": "6a7ad40fb251831cf4448c21"
+                }
+              ]
+            }
+          },
+          "projection": {
+            "name": 1,
+            "_id": 1,
+            "profileImage": 1,
+            "email": 1
+          },
+          "$db": "bootcamp-chat",
+          "lsid": {
+            "id": {
+              "$binary": {
+                "base64": "CdnfzZldTEWA8d9V7ZosMg==",
+                "subType": "04"
+              }
+            }
+          }
+        }
+      },
+      {
+        "ts": {
+          "$date": "2026-08-11T07:53:51.733Z"
+        },
+        "op": "command",
+        "ns": "bootcamp-chat.messages",
+        "millis": 1,
+        "docsExamined": 0,
+        "keysExamined": 1544,
+        "nreturned": 1,
+        "command": {
+          "aggregate": "messages",
+          "pipeline": [
+            {
+              "$match": {
+                "room": "6a7ad40fb251831cf4449259",
+                "timestamp": {
+                  "$gte": {
+                    "$date": "2026-08-11T07:23:51.728Z"
+                  }
+                }
+              }
+            },
+            {
+              "$group": {
+                "_id": 1,
+                "n": {
+                  "$sum": 1
+                }
+              }
+            }
+          ],
+          "cursor": {},
+          "$db": "bootcamp-chat",
+          "lsid": {
+            "id": {
+              "$binary": {
+                "base64": "CdnfzZldTEWA8d9V7ZosMg==",
+                "subType": "04"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "explain": {
+    "history": {
+      "winningPlan": {
+        "isCached": false,
+        "stage": "LIMIT",
+        "limitAmount": 30,
+        "inputStage": {
+          "stage": "FETCH",
+          "nss": "bootcamp-chat.messages",
+          "inputStage": {
+            "stage": "IXSCAN",
+            "nss": "bootcamp-chat.messages",
+            "keyPattern": {
+              "room": 1,
+              "timestamp": 1
+            },
+            "indexName": "room_timestamp_idx",
+            "isMultiKey": false,
+            "multiKeyPaths": {
+              "room": [],
+              "timestamp": []
+            },
+            "isUnique": false,
+            "isSparse": false,
+            "isPartial": false,
+            "indexVersion": 2,
+            "direction": "backward",
+            "indexBounds": {
+              "room": [
+                "[\"6a7ad40fb251831cf4449259\", \"6a7ad40fb251831cf4449259\"]"
+              ],
+              "timestamp": [
+                "[MaxKey, MinKey]"
+              ]
+            }
+          }
+        }
+      },
+      "nReturned": 30,
+      "totalDocsExamined": 30,
+      "totalKeysExamined": 30,
+      "executionTimeMillis": 0
+    },
+    "recentCount": {
+      "winningPlan": {
+        "isCached": false,
+        "stage": "FETCH",
+        "nss": "bootcamp-chat.messages",
+        "inputStage": {
+          "stage": "IXSCAN",
+          "nss": "bootcamp-chat.messages",
+          "keyPattern": {
+            "room": 1,
+            "timestamp": 1
+          },
+          "indexName": "room_timestamp_idx",
+          "isMultiKey": false,
+          "multiKeyPaths": {
+            "room": [],
+            "timestamp": []
+          },
+          "isUnique": false,
+          "isSparse": false,
+          "isPartial": false,
+          "indexVersion": 2,
+          "direction": "forward",
+          "indexBounds": {
+            "room": [
+              "[\"6a7ad40fb251831cf4449259\", \"6a7ad40fb251831cf4449259\"]"
+            ],
+            "timestamp": [
+              "[new Date(1786434233118), new Date(9223372036854775807)]"
+            ]
+          }
+        }
+      },
+      "nReturned": 342,
+      "totalDocsExamined": 342,
+      "totalKeysExamined": 342,
+      "executionTimeMillis": 0
+    }
+  }
+}
