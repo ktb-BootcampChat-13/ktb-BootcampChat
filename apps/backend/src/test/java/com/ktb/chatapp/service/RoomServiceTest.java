@@ -64,7 +64,7 @@ class RoomServiceTest {
 
         assertTrue(response.isSuccess());
         assertTrue(response.getData().isEmpty());
-        verify(userRepository, never()).findAllById(anySet());
+        verify(userRepository, never()).findSummariesByIdIn(anySet());
         verify(recentMessageCounter, never()).countRecentMessages(anySet());
     }
 
@@ -80,7 +80,7 @@ class RoomServiceTest {
         User participant = user("participant-1", null, null);
 
         when(roomRepository.findAll()).thenReturn(List.of(oldRoom, newRoom));
-        when(userRepository.findAllById(anySet())).thenReturn(List.of(creator, participant));
+        when(userRepository.findSummariesByIdIn(anySet())).thenReturn(List.of(creator, participant));
         when(recentMessageCounter.countRecentMessages(anySet()))
             .thenReturn(Map.of("room-old", 7));
 
@@ -99,7 +99,7 @@ class RoomServiceTest {
         assertEquals("", first.getParticipants().get(0).getEmail());
         assertEquals(7, second.getRecentMessageCount());
         assertEquals(2, second.getParticipantsCount());
-        verify(userRepository).findAllById(anySet());
+        verify(userRepository).findSummariesByIdIn(anySet());
         verify(recentMessageCounter).countRecentMessages(anySet());
 
         JsonNode json = new ObjectMapper().findAndRegisterModules().valueToTree(second);
@@ -125,7 +125,7 @@ class RoomServiceTest {
         User participant = user("user-1", "Participant", "participant@test.com");
         when(roomRepository.findById("room-1")).thenReturn(java.util.Optional.of(before));
         when(roomRepository.addParticipantAndReturn("room-1", "user-1")).thenReturn(after);
-        when(userRepository.findAllById(anySet())).thenReturn(List.of(participant, creator));
+        when(userRepository.findSummariesByIdIn(anySet())).thenReturn(List.of(participant, creator));
         when(recentMessageCounter.countRecentMessages("room-1")).thenReturn(4);
 
         RoomResponse response = roomService.joinRoom("room-1", null, "user-1");
@@ -136,7 +136,7 @@ class RoomServiceTest {
         assertEquals(4, response.getRecentMessageCount());
         verify(userRepository, never()).findByEmail(any());
         verify(roomRepository, never()).save(any());
-        verify(userRepository).findAllById(anySet());
+        verify(userRepository).findSummariesByIdIn(anySet());
         verify(recentMessageCounter).countRecentMessages("room-1");
         ArgumentCaptor<RoomUpdatedEvent> eventCaptor = ArgumentCaptor.forClass(RoomUpdatedEvent.class);
         verify(eventPublisher).publishEvent(eventCaptor.capture());
@@ -149,7 +149,7 @@ class RoomServiceTest {
             new java.util.LinkedHashSet<>(List.of("creator-1")));
         User creator = user("creator-1", "Creator", "creator@test.com");
         when(roomRepository.findById("room-1")).thenReturn(java.util.Optional.of(room));
-        when(userRepository.findAllById(anySet())).thenReturn(List.of(creator));
+        when(userRepository.findSummariesByIdIn(anySet())).thenReturn(List.of(creator));
 
         RoomResponse response = roomService.joinRoom("room-1", null, "creator-1");
 
@@ -157,6 +157,28 @@ class RoomServiceTest {
         verify(roomRepository, never()).addParticipantAndReturn(any(), any());
         verify(roomRepository, never()).save(any());
         verify(userRepository, never()).findByEmail(any());
+        verify(eventPublisher, never()).publishEvent(any(RoomUpdatedEvent.class));
+    }
+
+    @Test
+    void joinRoom_reloadsRoomWithoutPublishingWhenConcurrentRequestAlreadyAddedParticipant() {
+        Room before = room("room-1", "Room", "creator-1", LocalDateTime.now(),
+            new java.util.LinkedHashSet<>(List.of("creator-1")));
+        Room latest = room("room-1", "Room", "creator-1", before.getCreatedAt(),
+            new java.util.LinkedHashSet<>(List.of("creator-1", "user-1")));
+        User creator = user("creator-1", "Creator", "creator@test.com");
+        User participant = user("user-1", "Participant", "participant@test.com");
+        when(roomRepository.findById("room-1"))
+            .thenReturn(java.util.Optional.of(before), java.util.Optional.of(latest));
+        when(roomRepository.addParticipantAndReturn("room-1", "user-1")).thenReturn(null);
+        when(userRepository.findSummariesByIdIn(anySet()))
+            .thenReturn(List.of(creator, participant));
+
+        RoomResponse response = roomService.joinRoom("room-1", null, "user-1");
+
+        assertEquals(2, response.getParticipantsCount());
+        verify(roomRepository, never()).save(any());
+        verify(eventPublisher, never()).publishEvent(any(RoomUpdatedEvent.class));
     }
 
     private static Room room(

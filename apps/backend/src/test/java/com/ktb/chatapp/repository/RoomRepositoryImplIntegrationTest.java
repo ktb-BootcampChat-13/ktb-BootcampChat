@@ -2,6 +2,7 @@ package com.ktb.chatapp.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.ktb.chatapp.model.Room;
@@ -62,6 +63,18 @@ class RoomRepositoryImplIntegrationTest {
 
         assertNotNull(updated);
         assertEquals(Set.of("creator-1", "user-1"), updated.getParticipantIds());
+    }
+
+    @Test
+    void addParticipantAndReturnReturnsNullWhenParticipantAlreadyExists() {
+        assertNotNull(repository.addParticipantAndReturn("room-1", "user-1"));
+
+        Room duplicate = repository.addParticipantAndReturn("room-1", "user-1");
+
+        assertNull(duplicate);
+        Room stored = mongoTemplate.findById("room-1", Room.class);
+        assertNotNull(stored);
+        assertEquals(Set.of("creator-1", "user-1"), stored.getParticipantIds());
     }
 
     @Test

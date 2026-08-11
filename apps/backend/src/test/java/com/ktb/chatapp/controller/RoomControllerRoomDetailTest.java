@@ -59,7 +59,7 @@ class RoomControllerRoomDetailTest {
         User participant1 = user("participant-1", "Participant 1");
         User participant2 = user("participant-2", "Participant 2");
         when(roomService.findRoomById("room-1")).thenReturn(Optional.of(room));
-        when(userRepository.findAllById(anySet()))
+        when(userRepository.findSummariesByIdIn(anySet()))
             .thenReturn(List.of(participant1, creator, participant2));
         when(recentMessageCounter.countRecentMessages("room-1")).thenReturn(7);
 
@@ -72,7 +72,7 @@ class RoomControllerRoomDetailTest {
             .map(participant -> participant.getId()).toList());
         assertEquals(7, data.getRecentMessageCount());
         assertTrue((Boolean) ((Map<?, ?>) response.getBody()).get("success"));
-        verify(userRepository).findAllById(anySet());
+        verify(userRepository).findSummariesByIdIn(anySet());
         verify(userRepository, never()).findById(org.mockito.ArgumentMatchers.anyString());
     }
 
@@ -84,12 +84,12 @@ class RoomControllerRoomDetailTest {
             .participantIds(new LinkedHashSet<>())
             .build();
         when(roomService.findRoomById("room-1")).thenReturn(Optional.of(room));
-        when(userRepository.findAllById(anySet())).thenReturn(List.of());
+        when(userRepository.findSummariesByIdIn(anySet())).thenReturn(List.of());
 
         ResponseEntity<?> response = roomController.getRoomById("room-1", principal("viewer@test.com"));
 
         assertEquals(500, response.getStatusCode().value());
-        verify(userRepository).findAllById(anySet());
+        verify(userRepository).findSummariesByIdIn(anySet());
     }
 
     @Test
@@ -109,7 +109,7 @@ class RoomControllerRoomDetailTest {
 
         assertEquals(200, response.getStatusCode().value());
         assertSame(roomResponse, ((Map<?, ?>) response.getBody()).get("data"));
-        verify(userRepository, never()).findAllById(anySet());
+        verify(userRepository, never()).findSummariesByIdIn(anySet());
         verify(recentMessageCounter, never()).countRecentMessages(org.mockito.ArgumentMatchers.anyString());
     }
 

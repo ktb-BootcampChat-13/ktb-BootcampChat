@@ -52,7 +52,7 @@ public class RoomService {
                 .collect(Collectors.toSet());
             Map<String, User> usersById = userIds.isEmpty()
                 ? Map.of()
-                : userRepository.findAllById(userIds).stream()
+                : userRepository.findSummariesByIdIn(userIds).stream()
                     .filter(user -> user != null && user.getId() != null)
                     .collect(Collectors.toMap(User::getId, Function.identity()));
             Set<String> roomIds = rooms.stream()
@@ -191,21 +191,28 @@ public class RoomService {
             }
         }
 
-        // 이미 참여중인지 확인
-        if (!room.getParticipantIds().contains(userId)) {
-            room = roomRepository.addParticipantAndReturn(roomId, userId);
-            if (room == null) {
-                return null;
+        boolean participantAdded = false;
+        if (room.getParticipantIds() == null || !room.getParticipantIds().contains(userId)) {
+            Room updatedRoom = roomRepository.addParticipantAndReturn(roomId, userId);
+            if (updatedRoom != null) {
+                room = updatedRoom;
+                participantAdded = true;
+            } else {
+                room = roomRepository.findById(roomId).orElse(null);
+                if (room == null) {
+                    return null;
+                }
             }
         }
 
         RoomResponse roomResponse = mapToRoomResponse(room, userId);
 
-        // Publish event for room updated
-        try {
-            eventPublisher.publishEvent(new RoomUpdatedEvent(this, roomId, roomResponse));
-        } catch (Exception e) {
-            log.error("roomUpdate 이벤트 발행 실패", e);
+        if (participantAdded) {
+            try {
+                eventPublisher.publishEvent(new RoomUpdatedEvent(this, roomId, roomResponse));
+            } catch (Exception e) {
+                log.error("roomUpdate 이벤트 발행 실패", e);
+            }
         }
 
         return roomResponse;
@@ -223,7 +230,7 @@ public class RoomService {
         }
         Map<String, User> usersById = userIds.isEmpty()
             ? Map.of()
-            : userRepository.findAllById(userIds).stream()
+            : userRepository.findSummariesByIdIn(userIds).stream()
                 .filter(user -> user != null && user.getId() != null)
                 .collect(Collectors.toMap(User::getId, Function.identity()));
         User creator = room.getCreator() != null ? usersById.get(room.getCreator()) : null;

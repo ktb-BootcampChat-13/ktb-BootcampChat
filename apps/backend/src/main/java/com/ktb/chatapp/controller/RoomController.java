@@ -278,7 +278,7 @@ public class RoomController {
         Set<String> userIds = new LinkedHashSet<>();
         userIds.add(room.getCreator());
         userIds.addAll(room.getParticipantIds());
-        Map<String, User> usersById = userRepository.findAllById(userIds).stream()
+        Map<String, User> usersById = userRepository.findSummariesByIdIn(userIds).stream()
                 .collect(Collectors.toMap(User::getId, Function.identity()));
 
         User creator = usersById.get(room.getCreator());

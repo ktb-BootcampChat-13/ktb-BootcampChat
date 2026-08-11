@@ -15,7 +15,8 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom {
 
     @Override
     public Room addParticipantAndReturn(String roomId, String userId) {
-        Query query = Query.query(Criteria.where("_id").is(roomId));
+        Query query = Query.query(Criteria.where("_id").is(roomId)
+            .and("participantIds").ne(userId));
         Update update = new Update().addToSet("participantIds", userId);
         return mongoTemplate.findAndModify(
             query,
