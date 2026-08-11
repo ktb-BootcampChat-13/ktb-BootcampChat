@@ -1,36 +1,18 @@
 package com.ktb.chatapp.storage;
 
-import java.nio.file.Path;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.stereotype.Component;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("file.storage.type 스위치 단위 테스트")
+@DisplayName("S3 전용 스토리지 선택 단위 테스트")
 class StoragePortSelectionTest {
 
-    @TempDir
-    private Path uploadDir;
-
-    private final ApplicationContextRunner contextRunner =
-            new ApplicationContextRunner().withUserConfiguration(LocalStorage.class);
-
     @Test
-    @DisplayName("프로퍼티 미설정 시 LocalStorage 빈이 등록된다")
-    void localStorageIsRegisteredWhenPropertyMissing() {
-        contextRunner
-                .withPropertyValues("file.upload-dir=" + uploadDir)
-                .run(context -> assertThat(context).hasSingleBean(LocalStorage.class));
+    @DisplayName("S3Storage만 애플리케이션 빈으로 등록된다")
+    void onlyS3StorageIsApplicationComponent() {
+        assertThat(S3Storage.class).hasAnnotation(Component.class);
+        assertThat(LocalStorage.class.getAnnotation(Component.class)).isNull();
     }
-
-    @Test
-    @DisplayName("file.storage.type=local이면 LocalStorage 빈이 등록된다")
-    void localStorageIsRegisteredWhenPropertyIsLocal() {
-        contextRunner
-                .withPropertyValues("file.storage.type=local", "file.upload-dir=" + uploadDir)
-                .run(context -> assertThat(context).hasSingleBean(LocalStorage.class));
-    }
-
 }

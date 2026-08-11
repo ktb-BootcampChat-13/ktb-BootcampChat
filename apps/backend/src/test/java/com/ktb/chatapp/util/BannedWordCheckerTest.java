@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -45,6 +47,13 @@ class BannedWordCheckerTest {
         BannedWordChecker checker = new BannedWordChecker(BANNED_WORDS);
         String message = "prefix-" + LOADED_WORDS.getFirst() + "-suffix";
         assertTrue(checker.containsBannedWord(message));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"b3sig78jv", "9c0hej6x", "lbl276sz", "p4e84", "hy8m", "ikqy2y"})
+    void containsBannedWord_detectsLoadTestWords(String word) {
+        BannedWordChecker checker = new BannedWordChecker(BANNED_WORDS);
+        assertTrue(checker.containsBannedWord(word));
     }
 
     @Test

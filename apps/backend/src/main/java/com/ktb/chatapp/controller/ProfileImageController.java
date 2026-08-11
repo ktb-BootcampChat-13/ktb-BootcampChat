@@ -9,8 +9,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
@@ -39,18 +42,25 @@ public class ProfileImageController {
     })
     @SecurityRequirement(name = "")
     @GetMapping("/{filename:.+}")
-    public ResponseEntity<Resource> getProfileImage(
+    public ResponseEntity<?> getProfileImage(
             @Parameter(description = "조회할 프로필 이미지 파일명") @PathVariable String filename) {
 
         if (FileUtil.containsPathTraversal(filename)) {
             return ResponseEntity.badRequest().build();
         }
 
-        return storagePort.open(StorageKey.profile(filename))
+        String key = StorageKey.profile(filename);
+        ContentDisposition disposition = ContentDisposition.inline()
+                .filename(filename, StandardCharsets.UTF_8)
+                .build();
+
+        return storagePort.offloadUrl(key, Duration.ofMinutes(5), disposition)
+                .<ResponseEntity<?>>map(uri -> ResponseEntity.status(HttpStatus.FOUND).location(uri).build())
+                .orElseGet(() -> storagePort.open(key)
                 .map(resource -> ResponseEntity.ok()
                         .contentType(contentTypeOf(filename))
                         .body(resource))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseGet(() -> ResponseEntity.notFound().build()));
     }
 
     private MediaType contentTypeOf(String filename) {

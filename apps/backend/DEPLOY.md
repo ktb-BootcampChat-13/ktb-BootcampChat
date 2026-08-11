@@ -117,6 +117,13 @@ tail -f logs/app.log
    REDIS_HOST=localhost
    REDIS_PORT=6379
 
+   # 파일 저장소 (AWS 자격 증명은 IAM Role 또는 AWS 기본 환경 변수 사용)
+   FILE_STORAGE_TYPE=s3
+   S3_BUCKET=your-s3-bucket
+   AWS_REGION=ap-northeast-2
+   S3_ENDPOINT=
+   S3_PATH_STYLE_ACCESS=false
+
    # 서버 포트
    PORT=5001
    WS_PORT=5002
