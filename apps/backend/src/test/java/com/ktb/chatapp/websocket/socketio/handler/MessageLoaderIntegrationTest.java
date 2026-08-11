@@ -67,8 +67,7 @@ class MessageLoaderIntegrationTest {
         messageLoader = new MessageLoader(
                 messageRepository,
                 userRepository,
-                new MessageResponseMapper(fileRepository),
-                messageReadStatusService
+                new MessageResponseMapper(fileRepository)
         );
 
         // 테스트 사용자 생성 및 저장

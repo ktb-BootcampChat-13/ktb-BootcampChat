@@ -3,12 +3,9 @@ package com.ktb.chatapp.websocket.socketio.handler;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.ktb.chatapp.dto.FetchMessagesRequest;
 import com.ktb.chatapp.dto.FetchMessagesResponse;
-import com.ktb.chatapp.model.Room;
-import com.ktb.chatapp.repository.RoomRepository;
 import com.ktb.chatapp.websocket.socketio.SocketUser;
+import com.ktb.chatapp.websocket.socketio.UserRooms;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,15 +23,15 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MessageFetchHandlerTest {
 
-    @Mock private RoomRepository roomRepository;
-    @Mock private MessageLoader messageLoader;
+    @Mock private UserRooms userRooms;
+    @Mock private MessageFetchDispatcher messageFetchDispatcher;
     @Mock private SocketIOClient client;
 
     private MessageFetchHandler handler;
 
     @BeforeEach
     void setUp() {
-        handler = new MessageFetchHandler(roomRepository, messageLoader);
+        handler = new MessageFetchHandler(userRooms, messageFetchDispatcher);
     }
 
     @Test
@@ -45,26 +42,19 @@ class MessageFetchHandlerTest {
         handler.handleFetchMessages(client, request);
 
         verify(client).sendEvent(eq(ERROR), any());
-        verify(messageLoader, never()).loadMessages(any(), any());
+        verify(messageFetchDispatcher, never()).request(any(), any(), any());
     }
 
     @Test
     void handleFetchMessages_loadsMessagesForParticipant() {
         FetchMessagesRequest request = new FetchMessagesRequest("room-1", 30, null);
-        FetchMessagesResponse response = FetchMessagesResponse.builder()
-                .messages(List.of())
-                .hasMore(false)
-                .build();
-        Room room = Room.builder().id("room-1").participantIds(Set.of("user-1")).build();
-
         when(client.get("user"))
                 .thenReturn(new SocketUser("user-1", "tester", "session-1", "socket-1"));
-        when(roomRepository.findById("room-1")).thenReturn(Optional.of(room));
-        when(messageLoader.loadMessages(request, "user-1")).thenReturn(response);
+        when(userRooms.isInRoom("user-1", "room-1")).thenReturn(true);
 
         handler.handleFetchMessages(client, request);
 
         verify(client, never()).sendEvent(eq("messageLoadStart"));
-        verify(client).sendEvent(PREVIOUS_MESSAGES_LOADED, response);
+        verify(messageFetchDispatcher).request(client, request, "user-1");
     }
 }

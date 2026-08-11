@@ -6,6 +6,8 @@ const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const chalk = require('chalk');
 const Table = require('cli-table3');
+const fs = require('fs');
+const path = require('path');
 const { CLIENT_EMIT, SERVER_EMIT } = require('./socket-contract');
 
 // Parse command line arguments
@@ -59,6 +61,16 @@ const argv = yargs(hideBin(process.argv))
     description: 'Delay between batches in milliseconds',
     type: 'number',
     default: 1000
+  })
+  .option('start-index', {
+    description: 'Starting index for loadtest user identities',
+    type: 'number',
+    default: 0
+  })
+  .option('result-path', {
+    description: 'Write final machine-readable metrics to this JSON file',
+    type: 'string',
+    default: null
   })
   .help()
   .alias('help', 'h')
@@ -262,16 +274,27 @@ class LoadTester {
           this.recordOperation('joinRoom', Date.now() - (socket.__loadtestJoinStart || Date.now()));
           this.log('info', `User ${userId} joined room ${roomId} with ${data.participants?.length || 0} participants`);
 
-          // Fetch previous messages before starting to send
-          socket.__loadtestPreviousStart = Date.now();
-          socket.emit(CLIENT_EMIT.FETCH_PREVIOUS_MESSAGES, { roomId: roomId, limit: 30 });
-
-          // Start sending messages
-          this.sendMessages(socket, userId, roomId);
+          if (Array.isArray(data.messages)) {
+            socket.__roomReadyRecorded = true;
+            this.recordOperation('roomReady', Date.now() - socket.__loadtestJoinStart);
+            socket.__messagesStarted = true;
+            this.sendMessages(socket, userId, roomId);
+          } else {
+            socket.__loadtestPreviousStart = Date.now();
+            socket.emit(CLIENT_EMIT.FETCH_PREVIOUS_MESSAGES, { roomId: roomId, limit: 30 });
+          }
         });
 
         socket.on(SERVER_EMIT.PREVIOUS_MESSAGES_LOADED, (data) => {
           this.recordOperation('fetchPreviousMessages', Date.now() - (socket.__loadtestPreviousStart || Date.now()));
+          if (!socket.__roomReadyRecorded) {
+            socket.__roomReadyRecorded = true;
+            this.recordOperation('roomReady', Date.now() - socket.__loadtestJoinStart);
+          }
+          if (!socket.__messagesStarted) {
+            socket.__messagesStarted = true;
+            this.sendMessages(socket, userId, roomId);
+          }
           this.metrics.previousMessagesFetched++;
           if (data.messages?.length) {
             this.metrics.messagesReceived += data.messages.length;
@@ -478,6 +501,61 @@ class LoadTester {
     return sorted[index];
   }
 
+  writeResult() {
+    if (!this.config.resultPath) return;
+
+    const summarize = operation => {
+      const latencies = operation.latencies || [];
+      const sum = latencies.reduce((total, value) => total + value, 0);
+      return {
+        count: operation.count,
+        errors: operation.errors,
+        errorRate: operation.count ? operation.errors / operation.count : 0,
+        averageMs: latencies.length ? sum / latencies.length : 0,
+        p50Ms: this.getPercentile(latencies, 50),
+        p95Ms: this.getPercentile(latencies, 95),
+        p99Ms: this.getPercentile(latencies, 99),
+        maxMs: latencies.length ? Math.max(...latencies) : 0
+      };
+    };
+
+    const resultPath = path.resolve(this.config.resultPath);
+    const operations = Object.fromEntries(
+      Object.entries(this.metrics.operations).map(([name, operation]) => [name, summarize(operation)])
+    );
+    const result = {
+      generatedAt: new Date().toISOString(),
+      elapsedMs: Date.now() - this.metrics.startTime,
+      config: {
+        users: this.config.totalUsers,
+        messagesPerUser: this.config.messages,
+        batchSize: this.config.batchSize,
+        batchDelayMs: this.config.batchDelay,
+        apiUrl: this.config.apiUrl,
+        socketUrl: this.config.socketUrl,
+        roomId: this.config.roomId,
+        startIndex: this.config.startIndex
+      },
+      totals: {
+        usersCreated: this.metrics.usersCreated,
+        connected: this.metrics.connected,
+        disconnected: this.metrics.disconnected,
+        authErrors: this.metrics.errorsAuth,
+        connectionErrors: this.metrics.errorsConnection,
+        messageErrors: this.metrics.errorsMessage
+      },
+      connection: summarize({
+        count: this.metrics.connectionTimes.length,
+        errors: this.metrics.errorsConnection,
+        latencies: this.metrics.connectionTimes
+      }),
+      operations
+    };
+
+    fs.writeFileSync(resultPath, `${JSON.stringify(result, null, 2)}\n`);
+    console.log(chalk.gray(`Metrics JSON: ${resultPath}`));
+  }
+
   async run() {
     const { totalUsers, rampUpTime, batchSize, batchDelay } = this.config;
     const totalBatches = Math.ceil(totalUsers / batchSize);
@@ -525,7 +603,7 @@ class LoadTester {
 
       // Spawn all users in this batch simultaneously
       for (let i = batchStart; i < batchEnd; i++) {
-        promises.push(this.simulateUser(i, roomId));
+        promises.push(this.simulateUser(this.config.startIndex + i, roomId));
       }
 
       // Wait before starting next batch (except for the last batch)
@@ -543,6 +621,7 @@ class LoadTester {
     clearInterval(this.metricsInterval);
     this.printMetrics();
     this.printOperationRanking();
+    this.writeResult();
 
     console.log(chalk.bold.green('\n✓ Load test completed!\n'));
     process.exit(0);
@@ -559,7 +638,9 @@ const tester = new LoadTester({
   duration: argv.duration,
   messages: argv.messages,
   batchSize: argv.batchSize,
-  batchDelay: argv.batchDelay
+  batchDelay: argv.batchDelay,
+  startIndex: argv.startIndex,
+  resultPath: argv.resultPath
 });
 
 tester.run().catch(error => {
