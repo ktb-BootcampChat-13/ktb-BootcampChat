@@ -87,6 +87,12 @@ public class FileUtil {
         }
     }
 
+    public static boolean isAllowedType(String filename, String contentType) {
+        if (filename == null || contentType == null) return false;
+        List<String> extensions = ALLOWED_TYPES.get(contentType);
+        return extensions != null && extensions.contains(getFileExtension(filename).toLowerCase());
+    }
+
     /**
      * 파일 타입 한글명 반환
      */

@@ -130,4 +130,23 @@ describe('api client', () => {
       },
     });
   });
+
+  it('respects a per-request zero retry limit', async () => {
+    const client = createApiClient({
+      baseURL: 'http://api.test',
+      getSession: () => null,
+    });
+    let attempts = 0;
+    client.defaults.adapter = async (config) => {
+      attempts += 1;
+      const error = new Error('Service unavailable');
+      error.config = config;
+      error.response = { config, data: {}, headers: {}, status: 503, statusText: 'Unavailable' };
+      throw error;
+    };
+
+    await expect(client.post('/api/files/upload/presign', {}, { maxRetries: 0 }))
+      .rejects.toMatchObject({ status: 503 });
+    expect(attempts).toBe(1);
+  });
 });

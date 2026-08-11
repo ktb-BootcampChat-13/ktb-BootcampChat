@@ -45,7 +45,7 @@ public class FileController {
     /**
      * 파일 업로드
      */
-    @Operation(summary = "파일 업로드", description = "파일을 업로드합니다. 최대 50MB까지 가능합니다.")
+    @Operation(summary = "파일 업로드", description = "server 모드에서 파일을 업로드합니다. 최대 5MB입니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "파일 업로드 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 파일",

@@ -5,22 +5,20 @@ import { Toast } from '../components/Toast';
 class FileService {
   constructor() {
     this.baseUrl = process.env.NEXT_PUBLIC_API_URL;
-    this.uploadLimit = 50 * 1024 * 1024; // 50MB
-    this.retryAttempts = 3;
-    this.retryDelay = 1000;
+    this.uploadLimit = 5 * 1024 * 1024;
     this.activeUploads = new Map();
 
     this.allowedTypes = {
       image: {
         extensions: ['.jpg', '.jpeg', '.png', '.gif', '.webp'],
         mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-        maxSize: 10 * 1024 * 1024,
+        maxSize: this.uploadLimit,
         name: '이미지'
       },
       document: {
         extensions: ['.pdf'],
         mimeTypes: ['application/pdf'],
-        maxSize: 20 * 1024 * 1024,
+        maxSize: this.uploadLimit,
         name: 'PDF 문서'
       }
     };
@@ -97,16 +95,17 @@ class FileService {
         headers: {
           'Content-Type': 'multipart/form-data'
         },
-        // 업로드는 한도가 50MB 라 공통 타임아웃으로는 정상 전송도 끊긴다.
+        // multipart 본문 전송은 공통 API 타임아웃보다 길 수 있다.
         timeout: 30000,
         cancelToken: source.token,
+        maxRetries: 0,
         withCredentials: true,
         onUploadProgress: (progressEvent) => {
-          if (onProgress) {
+          if (onProgress && progressEvent.total) {
             const percentCompleted = Math.round(
               (progressEvent.loaded * 100) / progressEvent.total
             );
-            onProgress(percentCompleted);
+            this.reportProgress(file.name, percentCompleted, onProgress);
           }
         }
       });
@@ -121,6 +120,11 @@ class FileService {
       }
 
       const fileData = response.data.file;
+      if (process.env.NEXT_PUBLIC_FILE_UPLOAD_MODE === 'mirror') {
+        this.uploadMirror(file).catch((error) => {
+          console.warn('S3 mirror upload failed', error?.message || error);
+        });
+      }
       return {
         success: true,
         data: {
@@ -148,6 +152,45 @@ class FileService {
 
       return this.handleUploadError(error);
     }
+  }
+
+  async uploadMirror(file) {
+    let uploadId;
+    const startedAt = Date.now();
+    try {
+      const intent = await axiosInstance.post('/api/files/upload/presign', {
+        originalFilename: file.name,
+        contentType: file.type,
+        size: file.size
+      }, { maxRetries: 0 });
+      uploadId = intent.data.uploadId;
+
+      // S3 요청에는 앱 인증 정보나 쿠키를 절대 전달하지 않는다.
+      const putResponse = await axios.put(intent.data.uploadUrl, file, {
+        headers: intent.data.headers,
+        withCredentials: false,
+        transformRequest: [(data) => data],
+        timeout: 30000
+      });
+      await axiosInstance.post('/api/files/upload/mirror-result', {
+        uploadId, success: true, status: putResponse.status, durationMs: Date.now() - startedAt
+      }, { maxRetries: 0 });
+    } catch (error) {
+      if (uploadId) {
+        await axiosInstance.post('/api/files/upload/mirror-result', {
+          uploadId, success: false, status: error.response?.status || 0,
+          durationMs: Date.now() - startedAt
+        }, { maxRetries: 0 }).catch(() => {});
+      }
+      throw error;
+    }
+  }
+  reportProgress(fileName, percent, callback) {
+    const upload = this.activeUploads.get(fileName);
+    const lastPercent = upload?.lastProgress ?? -10;
+    if (percent !== 100 && percent - lastPercent < 10) return;
+    if (upload) upload.lastProgress = percent;
+    callback(percent);
   }
   getFileUrl(filename, forPreview = false) {
     if (!filename) return '';

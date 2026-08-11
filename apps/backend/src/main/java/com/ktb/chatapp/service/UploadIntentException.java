@@ -1,0 +1,12 @@
+package com.ktb.chatapp.service;
+
+import org.springframework.http.HttpStatus;
+
+public class UploadIntentException extends RuntimeException {
+    private final HttpStatus status;
+    public UploadIntentException(HttpStatus status, String message) {
+        super(message);
+        this.status = status;
+    }
+    public HttpStatus status() { return status; }
+}
