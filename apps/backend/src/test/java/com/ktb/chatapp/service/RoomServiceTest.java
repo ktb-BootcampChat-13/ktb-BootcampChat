@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ktb.chatapp.dto.RoomResponse;
 import com.ktb.chatapp.dto.RoomsResponse;
 import com.ktb.chatapp.event.RoomUpdatedEvent;
+import com.ktb.chatapp.exception.InvalidRoomCursorException;
 import com.ktb.chatapp.model.Room;
 import com.ktb.chatapp.model.User;
 import com.ktb.chatapp.repository.RoomRepository;
@@ -58,9 +60,9 @@ class RoomServiceTest {
 
     @Test
     void getAllRooms_emptyList_avoidsBatchLookups() {
-        when(roomRepository.findAll()).thenReturn(List.of());
+        when(roomRepository.findPage(null, null, 31)).thenReturn(List.of());
 
-        RoomsResponse response = roomService.getAllRooms("viewer@test.com");
+        RoomsResponse response = roomService.getAllRooms("viewer@test.com", 30, null);
 
         assertTrue(response.isSuccess());
         assertTrue(response.getData().isEmpty());
@@ -79,12 +81,12 @@ class RoomServiceTest {
         User creator = user("creator-1", "Creator", "creator@test.com");
         User participant = user("participant-1", null, null);
 
-        when(roomRepository.findAll()).thenReturn(List.of(oldRoom, newRoom));
+        when(roomRepository.findPage(null, null, 31)).thenReturn(List.of(newRoom, oldRoom));
         when(userRepository.findSummariesByIdIn(anySet())).thenReturn(List.of(creator, participant));
         when(recentMessageCounter.countRecentMessages(anySet()))
             .thenReturn(Map.of("room-old", 7));
 
-        RoomsResponse response = roomService.getAllRooms("viewer@test.com");
+        RoomsResponse response = roomService.getAllRooms("viewer@test.com", 30, null);
 
         assertTrue(response.isSuccess());
         assertEquals(List.of("room-new", "room-old"), response.getData().stream()
@@ -113,6 +115,36 @@ class RoomServiceTest {
         assertTrue(json.has("recentMessageCount"));
         assertFalse(json.has("isCreator"));
         assertFalse(json.has("createdAtDateTime"));
+    }
+
+    @Test
+    void getAllRooms_returnsOpaqueCursorFromLookaheadItem() {
+        LocalDateTime newest = LocalDateTime.of(2026, 8, 12, 10, 0);
+        Room first = room("507f1f77bcf86cd799439011", "First", null, newest, Set.of());
+        Room second = room("507f1f77bcf86cd799439010", "Second", null, newest.minusMinutes(1), Set.of());
+        when(roomRepository.findPage(null, null, 2)).thenReturn(List.of(first, second));
+
+        RoomsResponse response = roomService.getAllRooms("viewer@test.com", 1, null);
+
+        assertEquals(List.of(first.getId()), response.getData().stream().map(RoomResponse::getId).toList());
+        assertTrue(response.getMetadata().isHasMore());
+        assertEquals(1, response.getMetadata().getCurrentCount());
+        assertTrue(response.getMetadata().getNextCursor() != null);
+    }
+
+    @Test
+    void getAllRooms_rejectsMalformedCursorBeforeQueryingRepository() {
+        assertThrows(InvalidRoomCursorException.class,
+            () -> roomService.getAllRooms("viewer@test.com", 30, "not-a-cursor"));
+        verify(roomRepository, never()).findPage(any(), any(), org.mockito.ArgumentMatchers.anyInt());
+    }
+
+    @Test
+    void getAllRooms_propagatesRepositoryFailure() {
+        when(roomRepository.findPage(null, null, 31)).thenThrow(new IllegalStateException("mongo unavailable"));
+
+        assertThrows(IllegalStateException.class,
+            () -> roomService.getAllRooms("viewer@test.com", 30, null));
     }
 
     @Test

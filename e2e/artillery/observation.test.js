@@ -14,6 +14,9 @@ const {
     serializeError,
     summarizeSamples,
     classifyRoomCreateFailure,
+    classifyHttpOutcome,
+    summarizeHttpFailures,
+    enrichHttpSample,
 } = require('./observation');
 
 test('normalizes dynamic API identifiers without changing static routes', () => {
@@ -50,6 +53,45 @@ test('summarizes and ranks samples by cumulative duration', () => {
     });
 });
 
+test('classifies only the failed-login 401 as an expected HTTP failure', () => {
+    assert.equal(classifyHttpOutcome({
+        action: 'failed_login', method: 'POST', normalizedPath: '/api/auth/login', status: 401,
+    }), 'expected_failure');
+    assert.equal(classifyHttpOutcome({
+        action: 'room_list_display', method: 'GET', normalizedPath: '/api/rooms', status: 401,
+    }), 'unexpected_failure');
+});
+
+test('backfills outcome fields when reading a legacy HTTP sample', () => {
+    assert.deepEqual(enrichHttpSample({
+        name: 'POST /api/auth/login', action: 'failed_login', status: 401, success: false,
+    }), {
+        name: 'POST /api/auth/login', action: 'failed_login', status: 401,
+        method: 'POST', normalizedPath: '/api/auth/login', outcome: 'expected_failure', success: true,
+    });
+});
+
+test('groups HTTP failures by status, method, path, and action with evidence URLs', () => {
+    const result = summarizeHttpFailures([
+        {
+            status: 404, method: 'GET', normalizedPath: '/api/files/view/{filename}',
+            action: 'file_upload', outcome: 'unexpected_failure',
+            url: 'https://chat.example.com/api/files/view/a.jpg', pageUrl: 'https://chat.example.com/chat/1',
+        },
+        {
+            status: 404, method: 'GET', normalizedPath: '/api/files/view/{filename}',
+            action: 'file_upload', outcome: 'unexpected_failure',
+            url: 'https://chat.example.com/api/files/view/b.jpg', pageUrl: 'https://chat.example.com/chat/2',
+        },
+    ]);
+    assert.equal(result[0].count, 2);
+    assert.equal(result[0].path, '/api/files/view/{filename}');
+    assert.deepEqual(result[0].urls, [
+        'https://chat.example.com/api/files/view/a.jpg',
+        'https://chat.example.com/api/files/view/b.jpg',
+    ]);
+});
+
 test('records run identity and workload metadata from the execution environment', () => {
     const metadata = createRunMetadata({
         BASE_URL: 'https://chat.example.com',
@@ -74,6 +116,7 @@ test('records run identity and workload metadata from the execution environment'
         loadGenerator: 'sha256:load',
     });
     assert.deepEqual(metadata.workload, {
+        profile: null,
         durationSeconds: 60,
         arrivalCount: 500,
         virtualUsersPerPod: 4,
