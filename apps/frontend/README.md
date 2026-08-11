@@ -37,6 +37,7 @@ cp .env.example .env.local
 PORT=3000
 NEXT_PUBLIC_API_URL=http://localhost:5001
 NEXT_PUBLIC_SOCKET_URL=http://localhost:5002
+NEXT_PUBLIC_FILE_UPLOAD_MODE=server
 ```
 
 > `.env.local`은 프로덕션 빌드(`build:production`)에서도 `.env.production`보다
@@ -45,6 +46,7 @@ NEXT_PUBLIC_SOCKET_URL=http://localhost:5002
 **환경 변수 설명:**
 - `NEXT_PUBLIC_API_URL`: 백엔드 REST API 서버 주소
 - `NEXT_PUBLIC_SOCKET_URL`: Socket.IO 서버 주소
+- `NEXT_PUBLIC_FILE_UPLOAD_MODE`: `server`(기본 multipart) 또는 `mirror`(multipart 성공 후 S3 보조 복제)
 
 서버환경에서 실행시 Route 53 에 등록한 도메인을 입력하세요. 예: `https://chat.goorm-ktb-[번호].goorm.team`
 
@@ -116,6 +118,9 @@ make deploy DEPLOY_PATH=/opt/ktb-chat-frontend
 
 ```bash
 docker build -t chat-app-frontend .
+
+# 운영 S3 직접 업로드 이미지
+docker build --build-arg NEXT_PUBLIC_FILE_UPLOAD_MODE=mirror -t chat-app-frontend .
 ```
 
 > **참고**: `NEXT_PUBLIC_*` 환경 변수는 빌드 시점에 코드에 인라인됩니다.

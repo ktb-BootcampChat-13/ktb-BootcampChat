@@ -55,25 +55,23 @@ const ProfileImageUpload = ({ currentImage, onImageChange }) => {
         throw new Error('인증 정보가 없습니다.');
       }
 
-      // FormData 생성
       const formData = new FormData();
       formData.append('profileImage', file);
-
-      // 파일 업로드 요청
-      const response = await api.post(
-        '/api/users/profile-image',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+      const response = await api.post('/api/users/profile-image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        maxRetries: 0,
+      });
 
       const data = response.data;
 
       if (!data?.imageUrl) {
         throw new Error(data?.message || '이미지 업로드에 실패했습니다.');
+      }
+
+      if (process.env.NEXT_PUBLIC_FILE_UPLOAD_MODE === 'mirror') {
+        mirrorProfileImage(file).catch((mirrorError) => {
+          console.warn('S3 profile mirror upload failed', mirrorError?.message || mirrorError);
+        });
       }
 
       const updatedUser = {
@@ -212,6 +210,41 @@ const ProfileImageUpload = ({ currentImage, onImageChange }) => {
       )}
     </VStack>
   );
+};
+
+const mirrorProfileImage = async (file) => {
+  let uploadId;
+  const startedAt = Date.now();
+  try {
+    const intent = await api.post('/api/users/profile-image/presign', {
+      originalFilename: file.name,
+      contentType: file.type,
+      size: file.size,
+    }, { maxRetries: 0 });
+    uploadId = intent.data.uploadId;
+    const putResponse = await fetch(intent.data.uploadUrl, {
+      method: 'PUT',
+      headers: intent.data.headers,
+      body: file,
+      credentials: 'omit',
+    });
+    if (!putResponse.ok) {
+      const error = new Error('S3 mirror upload failed');
+      error.status = putResponse.status;
+      throw error;
+    }
+    await api.post('/api/users/profile-image/mirror-result', {
+      uploadId, success: true, status: putResponse.status, durationMs: Date.now() - startedAt,
+    }, { maxRetries: 0 });
+  } catch (error) {
+    if (uploadId) {
+      await api.post('/api/users/profile-image/mirror-result', {
+        uploadId, success: false, status: error.status || error.response?.status || 0,
+        durationMs: Date.now() - startedAt,
+      }, { maxRetries: 0 }).catch(() => {});
+    }
+    throw error;
+  }
 };
 
 export default ProfileImageUpload;

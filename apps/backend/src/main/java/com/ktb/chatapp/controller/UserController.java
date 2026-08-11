@@ -103,7 +103,7 @@ public class UserController {
     /**
      * 프로필 이미지 업로드
      */
-    @Operation(summary = "프로필 이미지 업로드", description = "프로필 이미지를 업로드합니다. 최대 5MB까지 가능합니다.")
+    @Operation(summary = "프로필 이미지 업로드", description = "server 모드에서 프로필 이미지를 업로드합니다. 최대 5MB입니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "이미지 업로드 성공",
             content = @Content(schema = @Schema(implementation = ProfileImageResponse.class))),

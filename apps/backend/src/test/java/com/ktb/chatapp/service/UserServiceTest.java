@@ -48,7 +48,7 @@ class UserServiceTest {
      */
     @BeforeEach
     void setUp() {
-        userService = new UserService(userRepository, fileService, new LocalStorage(uploadDir.toString()));
+        userService = new UserService(userRepository, fileService, new LocalStorage(uploadDir.toString()), new UploadPolicy());
         ReflectionTestUtils.setField(userService, "maxProfileImageSize", 5242880L);
     }
 

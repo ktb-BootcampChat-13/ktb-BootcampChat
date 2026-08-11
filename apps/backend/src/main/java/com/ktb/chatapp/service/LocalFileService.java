@@ -18,17 +18,19 @@ public class LocalFileService implements FileService {
 
     private final StoragePort storagePort;
     private final FileRepository fileRepository;
+    private final UploadPolicy uploadPolicy;
 
-    public LocalFileService(StoragePort storagePort, FileRepository fileRepository) {
+    public LocalFileService(StoragePort storagePort, FileRepository fileRepository, UploadPolicy uploadPolicy) {
         this.storagePort = storagePort;
         this.fileRepository = fileRepository;
+        this.uploadPolicy = uploadPolicy;
     }
 
     @Override
     public FileUploadResult uploadFile(MultipartFile file, String uploaderId) {
         try {
             // 파일 보안 검증
-            FileUtil.validateFile(file);
+            uploadPolicy.validate(file.getOriginalFilename(), file.getContentType(), file.getSize(), false);
 
             // 안전한 파일명 생성
             String originalFilename = file.getOriginalFilename();
@@ -75,7 +77,8 @@ public class LocalFileService implements FileService {
     public String storeFile(MultipartFile file, String subDirectory) {
         try {
             // 파일 보안 검증
-            FileUtil.validateFile(file);
+            uploadPolicy.validate(file.getOriginalFilename(), file.getContentType(), file.getSize(),
+                    "profiles".equals(subDirectory));
 
             // 안전한 파일명 생성
             String originalFilename = file.getOriginalFilename();
