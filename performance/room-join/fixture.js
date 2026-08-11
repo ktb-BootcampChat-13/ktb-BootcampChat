@@ -8,7 +8,7 @@ const passwordHash = process.env.PASSWORD_HASH;
 const fixedMessages = integerEnv('FIXED_MESSAGES', 1000);
 const messageAxis = intList(process.env.MESSAGE_AXIS || '1000,10000,100000');
 const participantAxis = intList(process.env.PARTICIPANT_AXIS || '10,100,500');
-const maxVus = integerEnv('MAX_VUS', 100);
+const maxVus = integerEnv('MAX_VUS', 1200);
 
 if (!testId || !/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(testId)) fail('invalid or missing TEST_ID');
 if (action === 'create' && !passwordHash) fail('PASSWORD_HASH is required for create');

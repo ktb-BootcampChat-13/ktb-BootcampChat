@@ -1,66 +1,40 @@
 package com.ktb.chatapp.websocket.socketio.handler;
 
-import com.corundumstudio.socketio.BroadcastOperations;
 import com.corundumstudio.socketio.SocketIOClient;
-import com.corundumstudio.socketio.SocketIOServer;
-import com.ktb.chatapp.dto.FetchMessagesRequest;
-import com.ktb.chatapp.dto.FetchMessagesResponse;
-import com.ktb.chatapp.dto.MessageResponse;
-import com.ktb.chatapp.model.Message;
-import com.ktb.chatapp.model.MessageType;
-import com.ktb.chatapp.model.Room;
-import com.ktb.chatapp.model.User;
-import com.ktb.chatapp.repository.MessageRepository;
-import com.ktb.chatapp.repository.RoomRepository;
-import com.ktb.chatapp.repository.UserRepository;
+import com.mongodb.client.result.UpdateResult;
 import com.ktb.chatapp.websocket.socketio.SocketUser;
 import com.ktb.chatapp.websocket.socketio.UserRooms;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import static com.ktb.chatapp.websocket.socketio.SocketIOEvents.JOIN_ROOM_ERROR;
 import static com.ktb.chatapp.websocket.socketio.SocketIOEvents.JOIN_ROOM_SUCCESS;
-import static com.ktb.chatapp.websocket.socketio.SocketIOEvents.MESSAGE;
-import static com.ktb.chatapp.websocket.socketio.SocketIOEvents.PARTICIPANTS_UPDATE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RoomJoinHandlerTest {
 
-    @Mock private SocketIOServer socketIOServer;
-    @Mock private MessageRepository messageRepository;
-    @Mock private RoomRepository roomRepository;
-    @Mock private UserRepository userRepository;
+    @Mock private MongoTemplate mongoTemplate;
     @Mock private UserRooms userRooms;
-    @Mock private MessageLoader messageLoader;
-    @Mock private MessageResponseMapper messageResponseMapper;
-    @Mock private RoomLeaveHandler roomLeaveHandler;
+    @Mock private RoomPostJoinDispatcher postJoinDispatcher;
+    @Mock private JoinAckDispatcher joinAckDispatcher;
     @Mock private SocketIOClient client;
-    @Mock private BroadcastOperations roomOperations;
 
     private RoomJoinHandler handler;
 
     @BeforeEach
     void setUp() {
-        handler = new RoomJoinHandler(
-                socketIOServer,
-                messageRepository,
-                roomRepository,
-                userRepository,
-                userRooms,
-                messageLoader,
-                messageResponseMapper,
-                roomLeaveHandler);
+        handler = new RoomJoinHandler(mongoTemplate, userRooms, postJoinDispatcher, joinAckDispatcher);
     }
 
     @Test
@@ -73,45 +47,35 @@ class RoomJoinHandlerTest {
     }
 
     @Test
-    void handleJoinRoom_addsParticipantLoadsMessagesAndBroadcasts() {
+    void handleJoinRoomAcknowledgesBeforeDispatchingPostJoinWork() {
         SocketUser socketUser = new SocketUser("user-1", "tester", "session-1", "socket-1");
-        User user = User.builder().id("user-1").name("tester").email("tester@example.com").build();
-        Room room = Room.builder().id("room-1").name("room").participantIds(Set.of("user-1")).build();
-        MessageResponse joinMessageResponse = MessageResponse.builder()
-                .id("message-1")
-                .roomId("room-1")
-                .content("tester님이 입장하였습니다.")
-                .type(MessageType.system)
-                .timestamp(1L)
-                .build();
-        FetchMessagesResponse loadResponse = FetchMessagesResponse.builder()
-                .messages(List.of())
-                .hasMore(false)
-                .build();
 
         when(client.get("user")).thenReturn(socketUser);
-        when(userRepository.findById("user-1")).thenReturn(Optional.of(user));
-        when(roomRepository.findById("room-1")).thenReturn(Optional.of(room));
         when(userRooms.isInRoom("user-1", "room-1")).thenReturn(false);
-        when(messageRepository.save(any(Message.class))).thenAnswer(invocation -> {
-            Message message = invocation.getArgument(0);
-            message.setId("message-1");
-            message.setTimestamp(LocalDateTime.now());
-            return message;
-        });
-        when(messageLoader.loadMessages(any(FetchMessagesRequest.class), eq("user-1")))
-                .thenReturn(loadResponse);
-        when(messageResponseMapper.mapToMessageResponse(any(Message.class), eq(null)))
-                .thenReturn(joinMessageResponse);
-        when(socketIOServer.getRoomOperations("room-1")).thenReturn(roomOperations);
+        when(mongoTemplate.updateFirst(any(Query.class), any(Update.class), eq("rooms")))
+                .thenReturn(UpdateResult.acknowledged(1, 1L, null));
 
         handler.handleJoinRoom(client, "room-1");
 
-        verify(roomRepository).addParticipant("room-1", "user-1");
+        verify(mongoTemplate).updateFirst(any(Query.class), any(Update.class), eq("rooms"));
         verify(client).joinRoom("room-1");
         verify(userRooms).add("user-1", "room-1");
-        verify(client).sendEvent(eq(JOIN_ROOM_SUCCESS), any());
-        verify(roomOperations).sendEvent(MESSAGE, joinMessageResponse);
-        verify(roomOperations).sendEvent(eq(PARTICIPANTS_UPDATE), any());
+        verify(joinAckDispatcher).request(client, "room-1", "user-1", "tester");
+        verify(postJoinDispatcher).scheduleParticipantsUpdate("room-1");
+    }
+
+    @Test
+    void handleJoinRoom_missingRoomStopsBeforeJoiningSocket() {
+        SocketUser socketUser = new SocketUser("user-1", "tester", "session-1", "socket-1");
+        when(client.get("user")).thenReturn(socketUser);
+        when(userRooms.isInRoom("user-1", "room-1")).thenReturn(false);
+        when(mongoTemplate.updateFirst(any(Query.class), any(Update.class), eq("rooms")))
+                .thenReturn(UpdateResult.acknowledged(0, 0L, null));
+
+        handler.handleJoinRoom(client, "room-1");
+
+        verify(client).sendEvent(eq(JOIN_ROOM_ERROR), any());
+        verify(client, never()).joinRoom(any());
+        verify(joinAckDispatcher, never()).request(any(), any(), any(), any());
     }
 }

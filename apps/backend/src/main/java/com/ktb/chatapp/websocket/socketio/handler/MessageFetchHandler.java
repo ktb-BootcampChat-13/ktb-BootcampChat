@@ -3,10 +3,8 @@ package com.ktb.chatapp.websocket.socketio.handler;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import com.ktb.chatapp.dto.FetchMessagesRequest;
-import com.ktb.chatapp.dto.FetchMessagesResponse;
-import com.ktb.chatapp.model.Room;
-import com.ktb.chatapp.repository.RoomRepository;
 import com.ktb.chatapp.websocket.socketio.SocketUser;
+import com.ktb.chatapp.websocket.socketio.UserRooms;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -26,8 +24,8 @@ import static com.ktb.chatapp.websocket.socketio.SocketIOEvents.*;
 @RequiredArgsConstructor
 public class MessageFetchHandler {
 
-    private final RoomRepository roomRepository;
-    private final MessageLoader messageLoader;
+    private final UserRooms userRooms;
+    private final MessageFetchDispatcher messageFetchDispatcher;
 
     @OnEvent(FETCH_PREVIOUS_MESSAGES)
     public void handleFetchMessages(SocketIOClient client, FetchMessagesRequest data) {
@@ -42,8 +40,7 @@ public class MessageFetchHandler {
         
         try {
             // 권한 체크
-            Room room = roomRepository.findById(data.roomId()).orElse(null);
-            if (room == null || !room.getParticipantIds().contains(userId)) {
+            if (!userRooms.isInRoom(userId, data.roomId())) {
                 client.sendEvent(ERROR, Map.of(
                         "code", "LOAD_ERROR",
                         "message", "채팅방 접근 권한이 없습니다."
@@ -54,14 +51,7 @@ public class MessageFetchHandler {
             log.debug("Starting message load for user {} in room {}, limit: {}, before: {}",
                     userId, data.roomId(), data.limit(), data.before());
 
-            log.debug("Loading messages for room {}", data.roomId());
-            FetchMessagesResponse result = messageLoader.loadMessages(data, userId);
-            
-            log.debug("Previous messages loaded - room: {}, count: {}, hasMore: {}",
-                    data.roomId(), result.getMessages().size(),
-                    result.isHasMore());
-            
-            client.sendEvent(PREVIOUS_MESSAGES_LOADED, result);
+            messageFetchDispatcher.request(client, data, userId);
 
         } catch (Exception e) {
             log.error("Error handling fetchPreviousMessages", e);

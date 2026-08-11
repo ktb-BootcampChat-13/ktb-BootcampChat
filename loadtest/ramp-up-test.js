@@ -597,6 +597,19 @@ class RampUpLoadTester {
 
       this.sockets.push(socket);
 
+      let roomReadyRecorded = false;
+      const markRoomReady = () => {
+        if (roomReadyRecorded) return;
+        roomReadyRecorded = true;
+        onboardingStages.tti = Date.now() - onboardingStart;
+        this.metrics.onboardingCohorts.push({
+          arrivedAt,
+          activeUsersAtArrival,
+          stages: onboardingStages
+        });
+        this.startContinuousMessaging(socket, userId, roomId, token);
+      };
+
       socket.on('connect', () => {
         const connectionTime = Date.now() - connectStartTime;
         this.metrics.connected++;
@@ -611,24 +624,16 @@ class RampUpLoadTester {
 
       socket.on(SERVER_EMIT.JOIN_ROOM_SUCCESS, (data) => {
         this.log('info', `User ${userId} joined room ${roomId} via WebSocket`);
+        onboardingStages.join_ack = Date.now() - onboardingStart;
 
-        // TTI(도착~첫 메시지 성공 기준점)로 joinRoomSuccess 시점을 기록하고,
-        // 코호트를 도착 시점의 활성 사용자 수로 태깅해 온보딩 P95 산출에 쓴다.
-        onboardingStages.tti = Date.now() - onboardingStart;
-        this.metrics.onboardingCohorts.push({
-          arrivedAt,
-          activeUsersAtArrival,
-          stages: onboardingStages
-        });
-
-        // Step 5: WebSocket - Fetch Previous Messages
-        socket.emit(CLIENT_EMIT.FETCH_PREVIOUS_MESSAGES, {
-          roomId: roomId,
-          limit: 30
-        });
-
-        // Start continuous message sending
-        this.startContinuousMessaging(socket, userId, roomId, token);
+        if (Array.isArray(data.messages)) {
+          markRoomReady();
+        } else {
+          socket.emit(CLIENT_EMIT.FETCH_PREVIOUS_MESSAGES, {
+            roomId: roomId,
+            limit: 30
+          });
+        }
       });
 
       socket.on(SERVER_EMIT.JOIN_ROOM_ERROR, (error) => {
@@ -645,6 +650,7 @@ class RampUpLoadTester {
         if (messageCount > 0) {
           this.metrics.messagesReceived += messageCount;
         }
+        markRoomReady();
       });
 
       socket.on(SERVER_EMIT.MESSAGE, (data) => {
