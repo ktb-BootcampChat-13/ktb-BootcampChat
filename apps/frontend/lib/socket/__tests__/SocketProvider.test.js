@@ -36,7 +36,6 @@ describe('SocketProvider', () => {
 
     renderProvider(client, {
       token: 'token-1',
-      sessionId: 'session-1',
     });
 
     act(() => {
@@ -46,7 +45,6 @@ describe('SocketProvider', () => {
     expect(client.connect).toHaveBeenCalledWith({
       auth: {
         token: 'token-1',
-        sessionId: 'session-1',
       },
     });
   });

@@ -16,8 +16,6 @@ import com.ktb.chatapp.repository.UserRepository;
 import com.ktb.chatapp.util.BannedWordChecker;
 import com.ktb.chatapp.websocket.socketio.ai.AiService;
 import com.ktb.chatapp.service.RoomActivityNotifier;
-import com.ktb.chatapp.service.SessionService;
-import com.ktb.chatapp.service.SessionValidationResult;
 import com.ktb.chatapp.service.RateLimitService;
 import com.ktb.chatapp.service.RateLimitCheckResult;
 import com.ktb.chatapp.websocket.socketio.SocketUser;
@@ -45,7 +43,6 @@ public class ChatMessageHandler {
     private final UserRepository userRepository;
     private final FileRepository fileRepository;
     private final AiService aiService;
-    private final SessionService sessionService;
     private final RoomActivityNotifier roomActivityNotifier;
     private final BannedWordChecker bannedWordChecker;
     private final RateLimitService rateLimitService;
@@ -74,18 +71,6 @@ public class ChatMessageHandler {
                     "message", "세션이 만료되었습니다. 다시 로그인해주세요."
             ));
             timerSample.stop(createTimer("error", "session_null"));
-            return;
-        }
-
-        SessionValidationResult validation =
-                sessionService.validateSession(socketUser.id(), socketUser.authSessionId());
-        if (!validation.isValid()) {
-            recordError("session_expired");
-            client.sendEvent(ERROR, Map.of(
-                    "code", "SESSION_EXPIRED",
-                    "message", "세션이 만료되었습니다. 다시 로그인해주세요."
-            ));
-            timerSample.stop(createTimer("error", "session_expired"));
             return;
         }
 
@@ -172,8 +157,6 @@ public class ChatMessageHandler {
 
             // AI 멘션 처리
             aiService.handleAIMentions(roomId, socketUser.id(), messageContent);
-
-            sessionService.updateLastActivity(socketUser.id());
 
             // Record success metrics
             recordMessageSuccess(messageType);

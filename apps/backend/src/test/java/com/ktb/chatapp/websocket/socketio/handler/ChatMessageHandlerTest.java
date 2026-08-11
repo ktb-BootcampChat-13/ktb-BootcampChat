@@ -16,8 +16,6 @@ import com.ktb.chatapp.repository.UserRepository;
 import com.ktb.chatapp.service.RateLimitCheckResult;
 import com.ktb.chatapp.service.RateLimitService;
 import com.ktb.chatapp.service.RoomActivityNotifier;
-import com.ktb.chatapp.service.SessionService;
-import com.ktb.chatapp.service.SessionValidationResult;
 import com.ktb.chatapp.util.BannedWordChecker;
 import com.ktb.chatapp.websocket.socketio.SocketUser;
 import com.ktb.chatapp.websocket.socketio.ai.AiService;
@@ -49,7 +47,6 @@ class ChatMessageHandlerTest {
     @Mock private UserRepository userRepository;
     @Mock private FileRepository fileRepository;
     @Mock private AiService aiService;
-    @Mock private SessionService sessionService;
     @Mock private RoomActivityNotifier roomActivityNotifier;
     @Mock private BannedWordChecker bannedWordChecker;
     @Mock private RateLimitService rateLimitService;
@@ -67,7 +64,6 @@ class ChatMessageHandlerTest {
                         userRepository,
                         fileRepository,
                         aiService,
-                        sessionService,
                         roomActivityNotifier,
                         bannedWordChecker,
                         rateLimitService,
@@ -79,10 +75,6 @@ class ChatMessageHandlerTest {
         SocketIOClient client = mock(SocketIOClient.class);
         SocketUser socketUser = new SocketUser("user-1", "tester", "session-1", "socket-1");
         when(client.get("user")).thenReturn(socketUser);
-
-        SessionValidationResult validResult = SessionValidationResult.valid(null);
-        when(sessionService.validateSession(socketUser.id(), socketUser.authSessionId()))
-                .thenReturn(validResult);
 
         RateLimitCheckResult allowedResult = RateLimitCheckResult.allowed(10000, 9999, 60, System.currentTimeMillis() / 1000 + 60, 60);
         when(rateLimitService.checkRateLimit(eq(socketUser.id()), anyInt(), any()))
@@ -123,8 +115,6 @@ class ChatMessageHandlerTest {
         SocketUser socketUser = new SocketUser("user-1", "tester", "session-1", "socket-1");
         when(client.get("user")).thenReturn(socketUser);
 
-        when(sessionService.validateSession(socketUser.id(), socketUser.authSessionId()))
-                .thenReturn(SessionValidationResult.valid(null));
         when(rateLimitService.checkRateLimit(eq(socketUser.id()), anyInt(), any()))
                 .thenReturn(RateLimitCheckResult.allowed(10000, 9999, 60, System.currentTimeMillis() / 1000 + 60, 60));
 

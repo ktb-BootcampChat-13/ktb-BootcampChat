@@ -15,7 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -35,8 +37,8 @@ class SessionServiceUnitTest {
     private SessionService sessionService;
 
     @Test
-    @DisplayName("세션 생성은 기존 사용자 세션을 제거한 뒤 새 세션을 저장한다")
-    void createSession_RemovesExistingSessionsBeforeSave() {
+    @DisplayName("세션 생성은 단일 사용자 키에 새 세션을 저장한다")
+    void createSession_SavesSessionUsingSingleUserKey() {
         ArgumentCaptor<Session> sessionCaptor = ArgumentCaptor.forClass(Session.class);
         when(sessionStore.save(any(Session.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -44,7 +46,7 @@ class SessionServiceUnitTest {
                 USER_ID,
                 new SessionMetadata("agent", "127.0.0.1", "device"));
 
-        verify(sessionStore).deleteAll(USER_ID);
+        verify(sessionStore, never()).deleteAll(USER_ID);
         verify(sessionStore).save(sessionCaptor.capture());
         Session savedSession = sessionCaptor.getValue();
         assertThat(result.getSessionId()).isEqualTo(savedSession.getSessionId());
@@ -56,7 +58,7 @@ class SessionServiceUnitTest {
     @Test
     @DisplayName("세션 생성 중 저장소 실패는 RuntimeException으로 래핑된다")
     void createSession_StoreFailure_ThrowsRuntimeException() {
-        doThrow(new IllegalStateException("store down")).when(sessionStore).deleteAll(USER_ID);
+        doThrow(new IllegalStateException("store down")).when(sessionStore).save(any(Session.class));
 
         RuntimeException exception = assertThrows(
                 RuntimeException.class,
@@ -64,7 +66,7 @@ class SessionServiceUnitTest {
 
         assertThat(exception).hasMessage("세션 생성 중 오류가 발생했습니다.");
         assertThat(exception).hasRootCauseInstanceOf(IllegalStateException.class);
-        verify(sessionStore, never()).save(any(Session.class));
+        verify(sessionStore).save(any(Session.class));
     }
 
     @Test
@@ -121,6 +123,44 @@ class SessionServiceUnitTest {
 
         assertThat(result.isValid()).isFalse();
         assertThat(result.getError()).isEqualTo("VALIDATION_ERROR");
+    }
+
+    @Test
+    @DisplayName("오래된 활성 세션은 ID가 일치할 때만 원자적으로 갱신한다")
+    void validateSession_OldActiveSession_TouchesMatchingSession() {
+        Session oldSession = Session.builder()
+                .userId(USER_ID)
+                .sessionId(SESSION_ID)
+                .createdAt(Instant.now().minusSeconds(600).toEpochMilli())
+                .lastActivity(Instant.now().minusSeconds(600).toEpochMilli())
+                .expiresAt(Instant.now().plusSeconds(1200))
+                .build();
+        when(sessionStore.findByUserId(USER_ID)).thenReturn(Optional.of(oldSession));
+        when(sessionStore.touch(eq(USER_ID), eq(SESSION_ID), anyLong())).thenReturn(true);
+
+        SessionValidationResult result = sessionService.validateSession(USER_ID, SESSION_ID);
+
+        assertThat(result.isValid()).isTrue();
+        verify(sessionStore).touch(eq(USER_ID), eq(SESSION_ID), anyLong());
+    }
+
+    @Test
+    @DisplayName("활동 갱신 중 교체된 세션은 무효 처리한다")
+    void validateSession_ReplacedDuringTouch_ReturnsInvalidSession() {
+        Session oldSession = Session.builder()
+                .userId(USER_ID)
+                .sessionId(SESSION_ID)
+                .createdAt(Instant.now().minusSeconds(600).toEpochMilli())
+                .lastActivity(Instant.now().minusSeconds(600).toEpochMilli())
+                .expiresAt(Instant.now().plusSeconds(1200))
+                .build();
+        when(sessionStore.findByUserId(USER_ID)).thenReturn(Optional.of(oldSession));
+        when(sessionStore.touch(eq(USER_ID), eq(SESSION_ID), anyLong())).thenReturn(false);
+
+        SessionValidationResult result = sessionService.validateSession(USER_ID, SESSION_ID);
+
+        assertThat(result.isValid()).isFalse();
+        assertThat(result.getError()).isEqualTo("INVALID_SESSION");
     }
 
     @Test

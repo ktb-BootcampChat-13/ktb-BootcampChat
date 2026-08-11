@@ -8,11 +8,10 @@ export const SocketProvider = ({ children, client = socketClient, session = null
 
   useEffect(() => {
     const handleOnline = () => {
-      if (!client.isConnected() && session?.token && session?.sessionId) {
+      if (!client.isConnected() && session?.token) {
         client.connect({
           auth: {
             token: session.token,
-            sessionId: session.sessionId,
           },
         }).catch(() => {});
       }
@@ -29,7 +28,7 @@ export const SocketProvider = ({ children, client = socketClient, session = null
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
-  }, [client, session?.sessionId, session?.token]);
+  }, [client, session?.token]);
 
   return (
     <SocketContext.Provider value={value}>

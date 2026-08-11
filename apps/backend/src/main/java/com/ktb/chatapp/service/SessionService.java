@@ -19,6 +19,7 @@ public class SessionService {
     private final SessionStore sessionStore;
     public static final long SESSION_TTL_SEC = DurationStyle.detectAndParse(SESSION_TTL).getSeconds();
     private static final long SESSION_TIMEOUT = SESSION_TTL_SEC * 1000;
+    private static final long ACTIVITY_UPDATE_INTERVAL = 5 * 60 * 1000;
 
     private String generateSessionId() {
         return UUID.randomUUID().toString().replace("-", "");
@@ -36,9 +37,6 @@ public class SessionService {
 
     public SessionCreationResult createSession(String userId, SessionMetadata metadata) {
         try {
-            // Remove all existing user sessions
-            removeAllUserSessions(userId);
-
             String sessionId = generateSessionId();
             long now = Instant.now().toEpochMilli();
             
@@ -82,51 +80,32 @@ public class SessionService {
             }
 
             if (!sessionId.equals(session.getSessionId())) {
-                log.warn("Session ID mismatch for userId: {}. Provided: {}, Expected: {}", userId, sessionId, session.getSessionId());
+                log.warn("Session ID mismatch for userId: {}", userId);
                 return SessionValidationResult.invalid("INVALID_SESSION", "잘못된 세션 ID입니다.");
             }
 
             // Check if session has timed out
             long now = Instant.now().toEpochMilli();
             if (now - session.getLastActivity() > SESSION_TIMEOUT) {
-                log.warn("Session timed out for userId: {}, sessionId: {}", userId, sessionId);
+                log.warn("Session timed out for userId: {}", userId);
                 removeSession(userId, sessionId);
                 return SessionValidationResult.invalid("SESSION_EXPIRED", "세션이 만료되었습니다.");
             }
 
-            // Update last activity
-            session.setLastActivity(now);
-            session.setExpiresAt(Instant.now().plusSeconds(SESSION_TTL_SEC));
-            session = sessionStore.save(session);
+            if (now - session.getLastActivity() >= ACTIVITY_UPDATE_INTERVAL) {
+                if (!sessionStore.touch(userId, sessionId, now)) {
+                    return SessionValidationResult.invalid("INVALID_SESSION", "교체된 세션입니다.");
+                }
+                session.setLastActivity(now);
+                session.setExpiresAt(Instant.now().plusSeconds(SESSION_TTL_SEC));
+            }
 
             SessionData sessionData = toSessionData(session);
             return SessionValidationResult.valid(sessionData);
 
         } catch (Exception e) {
-            log.error("Session validation error for userId: {}, sessionId: {}", userId, sessionId, e);
+            log.error("Session validation error for userId: {}", userId, e);
             return SessionValidationResult.invalid("VALIDATION_ERROR", "세션 검증 중 오류가 발생했습니다.");
-        }
-    }
-
-    public void updateLastActivity(String userId) {
-        try {
-            if (userId == null) {
-                log.warn("updateLastActivity called with null userId");
-                return;
-            }
-
-            Session session = sessionStore.findByUserId(userId).orElse(null);
-            if (session == null) {
-                log.debug("No session found to update last activity for user: {}", userId);
-                return;
-            }
-
-            session.setLastActivity(Instant.now().toEpochMilli());
-            session.setExpiresAt(Instant.now().plusSeconds(SESSION_TTL_SEC));
-            sessionStore.save(session);
-            
-        } catch (Exception e) {
-            log.error("Failed to update session activity for user: {}", userId, e);
         }
     }
 
@@ -138,7 +117,7 @@ public class SessionService {
                 sessionStore.deleteAll(userId);
             }
         } catch (Exception e) {
-            log.error("Session removal error for userId: {}, sessionId: {}", userId, sessionId, e);
+            log.error("Session removal error for userId: {}", userId, e);
             throw new RuntimeException("세션 삭제 중 오류가 발생했습니다.", e);
         }
     }

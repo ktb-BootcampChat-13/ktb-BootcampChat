@@ -16,11 +16,9 @@ describe('api client', () => {
     expect(
       getAuthHeaders({
         token: 'token-1',
-        sessionId: 'session-1',
       })
     ).toEqual({
-      'x-auth-token': 'token-1',
-      'x-session-id': 'session-1',
+      Authorization: 'Bearer token-1',
     });
   });
 
@@ -29,7 +27,6 @@ describe('api client', () => {
       baseURL: 'http://api.test',
       getSession: () => ({
         token: 'token-1',
-        sessionId: 'session-1',
       }),
     });
 
@@ -43,8 +40,7 @@ describe('api client', () => {
 
     const response = await client.get('/api/rooms');
 
-    expect(readHeader(response.config.headers, 'x-auth-token')).toBe('token-1');
-    expect(readHeader(response.config.headers, 'x-session-id')).toBe('session-1');
+    expect(readHeader(response.config.headers, 'Authorization')).toBe('Bearer token-1');
   });
 
   it('respects skipAuth requests', async () => {
@@ -52,7 +48,6 @@ describe('api client', () => {
       baseURL: 'http://api.test',
       getSession: () => ({
         token: 'token-1',
-        sessionId: 'session-1',
       }),
     });
 
@@ -66,8 +61,7 @@ describe('api client', () => {
 
     const response = await client.post('/api/auth/login', {}, { skipAuth: true });
 
-    expect(readHeader(response.config.headers, 'x-auth-token')).toBeUndefined();
-    expect(readHeader(response.config.headers, 'x-session-id')).toBeUndefined();
+    expect(readHeader(response.config.headers, 'Authorization')).toBeUndefined();
   });
 
   it('clears stored users on auth expiration', async () => {

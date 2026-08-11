@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Socket.IO Authorization Handler
- * socket.handshake.auth.token과 sessionId를 처리한다.
+ * socket.handshake.auth.token을 처리한다.
  */
 @Slf4j
 @Component
@@ -37,17 +37,17 @@ public class AuthTokenListenerImpl implements AuthTokenListener {
         try {
             var authToken = (Map<?, ?>) _authToken;
             String token = authToken.get("token") != null ? authToken.get("token").toString() : null;
-            String sessionId = authToken.get("sessionId") != null ? authToken.get("sessionId").toString() : null;
 
-            if (token == null || sessionId == null) {
-                log.warn("Missing authentication credentials in Socket.IO handshake - token: {}, sessionId: {}",
-                        token != null, sessionId != null);
+            if (token == null) {
+                log.warn("Missing token in Socket.IO handshake");
                 return new AuthTokenResult(false, "Authentication error");
             }
 
             String userId;
+            String sessionId;
             try {
                 userId = jwtService.extractUserId(token);
+                sessionId = jwtService.extractSessionId(token);
             } catch (JwtException e) {
                 return new AuthTokenResult(false, Map.of("message", "Invalid token"));
             }

@@ -22,8 +22,7 @@ export const useChatFileUpload = () => {
       const uploadResponse = await fileService.uploadFile(
         file,
         (progress) => setUploadProgress(progress),
-        currentUser.token,
-        currentUser.sessionId
+        currentUser.token
       );
 
       if (!uploadResponse.success) {

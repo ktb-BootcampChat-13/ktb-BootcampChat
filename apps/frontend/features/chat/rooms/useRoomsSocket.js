@@ -25,7 +25,6 @@ export const useRoomsSocket = ({
           .connect({
             auth: {
               token: currentUser.token,
-              sessionId: currentUser.sessionId,
             },
           })
           .catch((err) => {

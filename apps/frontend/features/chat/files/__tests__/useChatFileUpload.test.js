@@ -29,7 +29,7 @@ describe('useChatFileUpload', () => {
     await act(async () => {
       response = await result.current.uploadChatFile(
         { name: 'sample.pdf' },
-        { token: 'token-1', sessionId: 'session-1' }
+        { token: 'token-1' }
       );
     });
 
@@ -51,7 +51,7 @@ describe('useChatFileUpload', () => {
       try {
         await result.current.uploadChatFile(
           { name: 'sample.pdf' },
-          { token: 'token-1', sessionId: 'session-1' }
+          { token: 'token-1' }
         );
       } catch (error) {
         uploadError = error;

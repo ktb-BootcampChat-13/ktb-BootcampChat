@@ -1,12 +1,14 @@
 package com.ktb.chatapp.service;
 
 import com.ktb.chatapp.config.MongoTestContainer;
+import com.ktb.chatapp.config.RedisTestContainer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * 백엔드 저장소(Redis/MongoDB)가 변경되어도 테스트 코드 수정이 불필요
  */
 @SpringBootTest
-@Import(MongoTestContainer.class)
+@Import({MongoTestContainer.class, RedisTestContainer.class})
 @TestPropertySource(properties = {
     "socketio.enabled=false"
 })
@@ -27,6 +29,9 @@ class SessionServiceTest {
 
     @Autowired
     private SessionService sessionService;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     private static final String TEST_USER_ID = "test-user-123";
     private static final String TEST_USER_ID_2 = "test-user-456";
@@ -67,6 +72,9 @@ class SessionServiceTest {
         assertNotNull(result.getSessionData());
         assertEquals(TEST_USER_ID, result.getSessionData().getUserId());
         assertEquals(result.getSessionId(), result.getSessionData().getSessionId());
+        String redisKey = "auth:session:" + TEST_USER_ID;
+        assertTrue(Boolean.TRUE.equals(redisTemplate.hasKey(redisKey)));
+        assertThat(redisTemplate.getExpire(redisKey)).isPositive();
     }
 
     @Test
@@ -167,8 +175,8 @@ class SessionServiceTest {
     }
 
     @Test
-    @DisplayName("세션 검증 - lastActivity 업데이트")
-    void validateSession_UpdatesLastActivity() throws InterruptedException {
+    @DisplayName("짧은 간격의 세션 검증은 lastActivity를 다시 저장하지 않는다")
+    void validateSession_DoesNotUpdateLastActivityWithinThrottleWindow() throws InterruptedException {
         // Given
         SessionMetadata metadata = createTestMetadata();
         SessionCreationResult created = sessionService.createSession(TEST_USER_ID, metadata);
@@ -181,42 +189,7 @@ class SessionServiceTest {
 
         // Then
         assertTrue(result.isValid());
-        assertThat(result.getSession().getLastActivity()).isGreaterThan(initialLastActivity);
-    }
-
-    // ============ 세션 활동 업데이트 테스트 ============
-
-    @Test
-    @DisplayName("lastActivity 업데이트 성공")
-    void updateLastActivity_Success() throws InterruptedException {
-        // Given
-        SessionMetadata metadata = createTestMetadata();
-        SessionCreationResult created = sessionService.createSession(TEST_USER_ID, metadata);
-        long initialLastActivity = created.getSessionData().getLastActivity();
-
-        Thread.sleep(100);
-
-        // When
-        sessionService.updateLastActivity(TEST_USER_ID);
-
-        // Then - 세션 데이터를 다시 가져와서 확인
-        SessionData activeSession = sessionService.getActiveSession(TEST_USER_ID);
-        assertNotNull(activeSession);
-        assertThat(activeSession.getLastActivity()).isGreaterThan(initialLastActivity);
-    }
-
-    @Test
-    @DisplayName("lastActivity 업데이트 - null userId 처리")
-    void updateLastActivity_NullUserId_NoException() {
-        // When & Then - 예외 발생하지 않아야 함
-        assertDoesNotThrow(() -> sessionService.updateLastActivity(null));
-    }
-
-    @Test
-    @DisplayName("lastActivity 업데이트 - 존재하지 않는 세션")
-    void updateLastActivity_NonExistentSession_NoException() {
-        // When & Then
-        assertDoesNotThrow(() -> sessionService.updateLastActivity("non-existent-user"));
+        assertThat(result.getSession().getLastActivity()).isEqualTo(initialLastActivity);
     }
 
     // ============ 세션 제거 테스트 ============

@@ -109,7 +109,7 @@ export const AuthProviderWithRouter = ({ children, router }) => {
   const logout = useCallback(async () => {
     try {
       // authService를 통해 로그아웃 API 호출
-      await authService.logout(user?.token, user?.sessionId);
+      await authService.logout(user?.token);
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
@@ -136,15 +136,13 @@ export const AuthProviderWithRouter = ({ children, router }) => {
 
     const updatedUserData = await authService.updateProfile(
       updates,
-      user.token,
-      user.sessionId
+      user.token
     );
 
     const updatedUser = {
       ...user,
       ...updatedUserData,
       token: user.token,
-      sessionId: user.sessionId,
       lastActivity: Date.now()
     };
 
@@ -171,7 +169,7 @@ export const AuthProviderWithRouter = ({ children, router }) => {
   // 토큰 검증
   const verifyToken = useCallback(async () => {
     try {
-      if (!user?.token || !user?.sessionId) {
+      if (!user?.token) {
         throw new Error('No authentication data found');
       }
 

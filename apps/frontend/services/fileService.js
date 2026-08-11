@@ -74,7 +74,7 @@ class FileService {
     return { success: true };
   }
 
-  async uploadFile(file, onProgress, token, sessionId) {
+  async uploadFile(file, onProgress, token) {
     const validationResult = await this.validateFile(file);
     if (!validationResult.success) {
       return validationResult;
@@ -91,7 +91,7 @@ class FileService {
         `${this.baseUrl}/api/files/upload` :
         '/api/files/upload';
 
-      // token과 sessionId는 axios 인터셉터에서 자동으로 추가되므로
+      // token은 axios 인터셉터에서 자동으로 추가되므로
       // 여기서는 명시적으로 전달하지 않아도 됩니다
       const response = await axiosInstance.post(uploadUrl, formData, {
         headers: {
@@ -157,19 +157,18 @@ class FileService {
     return `${baseUrl}/api/files/${endpoint}/${filename}`;
   }
 
-  getPreviewUrl(file, token, sessionId, withAuth = true) {
+  getPreviewUrl(file, token, withAuth = true) {
     if (!file?.filename) return '';
 
     const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/files/view/${file.filename}`;
 
     if (!withAuth) return baseUrl;
 
-    if (!token || !sessionId) return baseUrl;
+    if (!token) return baseUrl;
 
     // URL 객체 생성 전 프로토콜 확인
     const url = new URL(baseUrl);
     url.searchParams.append('token', encodeURIComponent(token));
-    url.searchParams.append('sessionId', encodeURIComponent(sessionId));
 
     return url.toString();
   }

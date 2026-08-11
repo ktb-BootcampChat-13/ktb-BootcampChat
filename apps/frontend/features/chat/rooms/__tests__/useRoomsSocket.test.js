@@ -11,7 +11,6 @@ vi.mock('@/lib/socket/socketClient', () => ({
 
 const currentUser = {
   token: 'token-1',
-  sessionId: 'session-1',
 };
 
 const renderRoomsSocket = (socket, overrides = {}) => {
