@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class Message {
     private MessageType type;
 
     // Mongo 문서 필드명 "file" 사용
+    @Indexed(name = "file_idx")
     @Field("file")
     private String fileId;
 
