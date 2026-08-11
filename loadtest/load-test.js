@@ -124,7 +124,7 @@ class LoadTester {
         // If login fails, try to register
         if (loginError.response?.status === 401 || loginError.response?.status === 404) {
           this.log('info', `Registering new user: ${email}`);
-          // register 응답은 token/sessionId가 null이라 소켓 인증에 쓸 수 없다 — 재로그인 필수
+          // register 응답은 token이 없어 소켓 인증에 쓸 수 없다 — 재로그인 필수
           await axios.post(
             `${this.config.apiUrl}/api/auth/register`,
             { email, password, name },
@@ -203,11 +203,11 @@ class LoadTester {
         return;
       }
 
-      const { token, sessionId, user } = authData;
+      const { token, user } = authData;
 
       // 3. Connect to Socket.IO
       const socket = io(this.config.socketUrl, {
-        auth: { token, sessionId },
+        auth: { token },
         transports: ['websocket', 'polling'],
         reconnection: true,
         reconnectionAttempts: 3,

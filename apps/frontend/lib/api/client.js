@@ -23,8 +23,7 @@ export const getAuthHeaders = (session = loadStoredUser()) => {
   }
 
   return {
-    'x-auth-token': session.token,
-    ...(session.sessionId ? { 'x-session-id': session.sessionId } : {}),
+    Authorization: `Bearer ${session.token}`,
   };
 };
 

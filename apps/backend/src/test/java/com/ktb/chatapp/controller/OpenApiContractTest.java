@@ -50,6 +50,6 @@ class OpenApiContractTest {
                 .andExpect(jsonPath("$.servers[*].url", hasItem("http://localhost:5001")))
                 .andExpect(jsonPath("$.paths['/api/health']").exists())
                 .andExpect(jsonPath("$.components.securitySchemes['Bearer Authentication']").exists())
-                .andExpect(jsonPath("$.components.securitySchemes['Session ID'].name").value("x-session-id"));
+                .andExpect(jsonPath("$.components.securitySchemes['Session ID']").doesNotExist());
     }
 }

@@ -24,11 +24,12 @@ public class SocketIOEventListener {
     @EventListener
     public void handleSessionEndedEvent(SessionEndedEvent event) {
         try {
-            socketIOServer.getRoomOperations("user:" + event.getUserId())
-                    .sendEvent(SESSION_ENDED, Map.of(
-                            "reason", event.getReason(),
-                            "message", event.getMessage()
-                    ));
+            var userOperations = socketIOServer.getRoomOperations("user:" + event.getUserId());
+            userOperations.sendEvent(SESSION_ENDED, Map.of(
+                    "reason", event.getReason(),
+                    "message", event.getMessage()
+            ));
+            userOperations.getClients().forEach(client -> client.disconnect());
             log.info("session_ended 이벤트 발송: userId={}, reason={}", event.getUserId(), event.getReason());
         } catch (Exception e) {
             log.error("session_ended 이벤트 발송 실패: userId={}", event.getUserId(), e);

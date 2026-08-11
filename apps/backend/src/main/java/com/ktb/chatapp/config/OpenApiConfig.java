@@ -42,7 +42,6 @@ public class OpenApiConfig {
 
         // 보안 스키마 이름
         String jwtSchemeName = "Bearer Authentication";
-        String sessionSchemeName = "Session ID";
 
         return new OpenAPI()
                 .info(new Info()
@@ -52,10 +51,8 @@ public class OpenApiConfig {
 
                                 ## 인증 방법
                                 1. `/api/auth/register` 또는 `/api/auth/login`으로 회원가입/로그인
-                                2. 응답으로 받은 `token`과 `sessionId`를 사용
-                                3. 이후 모든 요청에 다음 헤더 포함:
-                                   - `Authorization: Bearer {token}`
-                                   - `x-session-id: {sessionId}`
+                                2. 응답으로 받은 `token`을 사용
+                                3. 이후 모든 요청에 `Authorization: Bearer {token}` 헤더 포함
 
                                 ## 주요 기능
                                 - 사용자 인증 및 관리
@@ -88,12 +85,6 @@ public class OpenApiConfig {
                                 .scheme("bearer")
                                 .bearerFormat("JWT")
                                 .description("JWT 토큰을 입력하세요 (Bearer 접두사 제외)"))
-                        // Session ID 헤더 보안 스키마
-                        .addSecuritySchemes(sessionSchemeName, new SecurityScheme()
-                                .type(SecurityScheme.Type.APIKEY)
-                                .in(SecurityScheme.In.HEADER)
-                                .name("x-session-id")
-                                .description("세션 ID를 입력하세요"))
                         // 공통 에러 응답 스키마
                         .addSchemas("ApiErrorResponse", new Schema<>()
                                 .type("object")
@@ -153,7 +144,6 @@ public class OpenApiConfig {
                                                 .example("{ \"success\": false, \"code\": \"RATE_LIMIT_EXCEEDED\", \"message\": \"요청 한도를 초과했습니다.\" }")))))
                 // 글로벌 보안 요구사항 (일부 엔드포인트는 개별적으로 재정의)
                 .addSecurityItem(new SecurityRequirement()
-                        .addList(jwtSchemeName)
-                        .addList(sessionSchemeName));
+                        .addList(jwtSchemeName));
     }
 }

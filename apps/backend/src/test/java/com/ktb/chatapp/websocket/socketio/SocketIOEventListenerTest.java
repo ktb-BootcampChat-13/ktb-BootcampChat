@@ -1,12 +1,14 @@
 package com.ktb.chatapp.websocket.socketio;
 
 import com.corundumstudio.socketio.BroadcastOperations;
+import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.ktb.chatapp.dto.RoomResponse;
 import com.ktb.chatapp.event.RoomActivityEvent;
 import com.ktb.chatapp.event.RoomUpdatedEvent;
 import com.ktb.chatapp.event.SessionEndedEvent;
 import java.util.Map;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +32,7 @@ class SocketIOEventListenerTest {
     @Mock private SocketIOServer socketIOServer;
     @Mock private BroadcastOperations userOperations;
     @Mock private BroadcastOperations roomListOperations;
+    @Mock private SocketIOClient userClient;
 
     private SocketIOEventListener listener;
 
@@ -43,6 +46,7 @@ class SocketIOEventListenerTest {
         SessionEndedEvent event =
                 new SessionEndedEvent(this, "user-1", "duplicate_login", "ended");
         when(socketIOServer.getRoomOperations("user:user-1")).thenReturn(userOperations);
+        when(userOperations.getClients()).thenReturn(List.of(userClient));
 
         listener.handleSessionEndedEvent(event);
 
@@ -52,6 +56,7 @@ class SocketIOEventListenerTest {
         Map<String, String> payload = (Map<String, String>) payloadCaptor.getValue();
         assertEquals("duplicate_login", payload.get("reason"));
         assertEquals("ended", payload.get("message"));
+        verify(userClient).disconnect();
     }
 
     @Test

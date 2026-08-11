@@ -37,7 +37,7 @@
  *      a) 회원가입 (POST /api/auth/register) 또는 로그인 (POST /api/auth/login)
  *      b) [REST API] 방 입장 (POST /api/rooms/:roomId/join)
  *      c) [REST API] 방 정보 확인 (GET /api/rooms/:roomId)
- *      d) Socket.IO 연결 (with JWT token & sessionId)
+ *      d) Socket.IO 연결 (with JWT token)
  *      e) [WebSocket] 채팅방 참여 (joinRoom event)
  *      f) [WebSocket] 이전 메시지 가져오기 (fetchPreviousMessages event → previousMessagesLoaded 수신)
  *      g) 랜덤 간격으로 메시지 전송 (chatMessage event → message 브로드캐스트 수신)
@@ -391,14 +391,13 @@ class RampUpLoadTester {
     return `${randomAdj} ${randomNoun} ${randomNum}`;
   }
 
-  async getUserProfile(token, sessionId, userId) {
+  async getUserProfile(token, userId) {
     try {
       const response = await axios.get(
         `${this.config.apiUrl}/api/users/profile`,
         {
           headers: {
-            'x-auth-token': token,
-            'x-session-id': sessionId
+            Authorization: `Bearer ${token}`
           },
           timeout: 5000
         }
@@ -412,7 +411,7 @@ class RampUpLoadTester {
     }
   }
 
-  async updateUserProfile(token, sessionId, userId, newName) {
+  async updateUserProfile(token, userId, newName) {
     try {
       this.metrics.profileUpdatesAttempted++;
       const response = await axios.put(
@@ -420,8 +419,7 @@ class RampUpLoadTester {
         { name: newName },
         {
           headers: {
-            'x-auth-token': token,
-            'x-session-id': sessionId,
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
           timeout: 5000
@@ -437,7 +435,7 @@ class RampUpLoadTester {
     }
   }
 
-  async uploadFileToChat(socket, token, sessionId, userId, roomId) {
+  async uploadFileToChat(socket, token, userId, roomId) {
     try {
       // Create form data with the image file
       const formData = new FormData();
@@ -452,8 +450,7 @@ class RampUpLoadTester {
         formData,
         {
           headers: {
-            'x-auth-token': token,
-            'x-session-id': sessionId,
+            Authorization: `Bearer ${token}`,
             ...formData.getHeaders()
           },
           timeout: 10000,
@@ -534,7 +531,7 @@ class RampUpLoadTester {
         return;
       }
 
-      const { token, sessionId, user } = authData;
+      const { token, user } = authData;
       // auth(login/register) 단계 완료 시점 (bcrypt CPU 힌트)
       onboardingStages.auth = Date.now() - onboardingStart;
 
@@ -546,8 +543,7 @@ class RampUpLoadTester {
           {},
           {
             headers: {
-              'x-auth-token': token,
-              'x-session-id': sessionId,
+              Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json'
             },
             timeout: 5000
@@ -572,8 +568,7 @@ class RampUpLoadTester {
           `${this.config.apiUrl}/api/rooms/${roomId}`,
           {
             headers: {
-              'x-auth-token': token,
-              'x-session-id': sessionId,
+              Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json'
             },
             timeout: 5000
@@ -592,7 +587,7 @@ class RampUpLoadTester {
 
       // Step 3: WebSocket Connection
       const socket = io(this.config.socketUrl, {
-        auth: { token, sessionId },
+        auth: { token },
         transports: ['websocket'],
         reconnection: false,
         forceNew: true,
@@ -633,7 +628,7 @@ class RampUpLoadTester {
         });
 
         // Start continuous message sending
-        this.startContinuousMessaging(socket, userId, roomId, token, sessionId);
+        this.startContinuousMessaging(socket, userId, roomId, token);
       });
 
       socket.on(SERVER_EMIT.JOIN_ROOM_ERROR, (error) => {
@@ -785,7 +780,7 @@ class RampUpLoadTester {
     }
   }
 
-  startContinuousMessaging(socket, userId, roomId, token, sessionId) {
+  startContinuousMessaging(socket, userId, roomId, token) {
     let messageCount = 0;
 
     const sendMessage = async () => {
@@ -810,13 +805,13 @@ class RampUpLoadTester {
         if (messageCount % 10 === 0) {
           this.log('info', `User ${userId} reached ${messageCount} messages, updating profile...`);
           const newName = this.generateRandomName();
-          await this.updateUserProfile(token, sessionId, userId, newName);
+          await this.updateUserProfile(token, userId, newName);
         }
 
         // Upload image to chat every 17 messages
         if (messageCount % 17 === 0) {
           this.log('info', `User ${userId} reached ${messageCount} messages, uploading image...`);
-          await this.uploadFileToChat(socket, token, sessionId, userId, roomId);
+          await this.uploadFileToChat(socket, token, userId, roomId);
         }
 
       } catch (error) {

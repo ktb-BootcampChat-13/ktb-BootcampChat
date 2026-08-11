@@ -135,7 +135,7 @@ export const useRoomHandling = ({
 
   const setupSocket = useCallback(async () => {
     try {
-      if (!user?.token || !user?.sessionId) {
+      if (!user?.token) {
         throw new Error('Invalid authentication state');
       }
 
@@ -167,7 +167,6 @@ export const useRoomHandling = ({
       const socket = await socketClient.connect({
         auth: {
           token: user.token,
-          sessionId: user.sessionId,
         },
         transports: ['websocket', 'polling'],
         reconnection: true,
@@ -193,7 +192,7 @@ export const useRoomHandling = ({
   const fetchRoomData = useCallback(
     async (roomId) => {
       try {
-        if (!user?.token || !user?.sessionId) {
+        if (!user?.token) {
           await handleSessionError();
           throw new Error('인증 정보가 유효하지 않습니다.');
         }
