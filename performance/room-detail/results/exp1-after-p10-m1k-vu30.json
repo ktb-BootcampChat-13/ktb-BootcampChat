@@ -1,0 +1,21 @@
+{
+  "testName": "exp1-after-p10-m1k-vu30",
+  "fixtureId": "room-detail-20260811",
+  "roomId": "room-detail-20260811:room:p10-m1k",
+  "commit": "ce107855630f5ca543228d08ba6330a6fe96ad95",
+  "participants": 10,
+  "recentMessages": 1000,
+  "vus": 30,
+  "duration": "1m",
+  "startedAt": "2026-08-11T06:22:24.458Z",
+  "endedAt": "2026-08-11T06:23:24.493Z",
+  "requests": 141849,
+  "rps": 2362.7738417554333,
+  "averageMs": 12.59192297443058,
+  "p95Ms": 17.484599999999993,
+  "p99Ms": 28.44879999999998,
+  "maxMs": 168.525,
+  "errorRate": 0,
+  "timeoutCount": 0,
+  "averageResponseBytes": 1750
+}
