@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "채팅방 (Rooms)", description = "채팅방 생성 및 관리 API - 채팅방 목록 조회, 생성, 참여, 헬스체크")
@@ -232,16 +233,16 @@ public class RoomController {
     public ResponseEntity<?> joinRoom(
             @Parameter(description = "채팅방 ID", example = "60d5ec49f1b2c8b9e8c4f2a1") @PathVariable String roomId,
             @RequestBody JoinRoomRequest joinRoomRequest,
-            Principal principal) {
+            Authentication authentication) {
         try {
-            Room joinedRoom = roomService.joinRoom(roomId, joinRoomRequest.getPassword(), principal.getName());
+            String userId = ((Map<?, ?>) authentication.getDetails()).get("userId").toString();
+            RoomResponse roomResponse = roomService.joinRoomResponse(
+                    roomId, joinRoomRequest.getPassword(), authentication.getName(), userId);
 
-            if (joinedRoom == null) {
+            if (roomResponse == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(StandardResponse.error("채팅방을 찾을 수 없습니다."));
             }
-
-            RoomResponse roomResponse = mapToRoomResponse(joinedRoom, principal.getName());
             
             return ResponseEntity.ok(
                 Map.of(
