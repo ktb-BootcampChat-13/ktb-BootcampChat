@@ -176,15 +176,13 @@ public class RoomService {
         return roomRepository.findById(roomId);
     }
 
-    public Room joinRoom(String roomId, String password, String name) {
+    public RoomResponse joinRoom(String roomId, String password, String userId) {
         Optional<Room> roomOpt = roomRepository.findById(roomId);
         if (roomOpt.isEmpty()) {
             return null;
         }
 
         Room room = roomOpt.get();
-        User user = userRepository.findByEmail(name)
-            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다: " + name));
 
         // 비밀번호 확인
         if (room.isHasPassword()) {
@@ -194,36 +192,50 @@ public class RoomService {
         }
 
         // 이미 참여중인지 확인
-        if (!room.getParticipantIds().contains(user.getId())) {
-            // 채팅방 참여
-            room.getParticipantIds().add(user.getId());
-            room = roomRepository.save(room);
+        if (!room.getParticipantIds().contains(userId)) {
+            room = roomRepository.addParticipantAndReturn(roomId, userId);
+            if (room == null) {
+                return null;
+            }
         }
-        
+
+        RoomResponse roomResponse = mapToRoomResponse(room, userId);
+
         // Publish event for room updated
         try {
-            RoomResponse roomResponse = mapToRoomResponse(room, name);
             eventPublisher.publishEvent(new RoomUpdatedEvent(this, roomId, roomResponse));
         } catch (Exception e) {
             log.error("roomUpdate 이벤트 발행 실패", e);
         }
 
-        return room;
+        return roomResponse;
     }
 
     private RoomResponse mapToRoomResponse(Room room, String name) {
         if (room == null) return null;
 
-        User creator = null;
+        Set<String> userIds = new LinkedHashSet<>();
         if (room.getCreator() != null) {
-            creator = userRepository.findById(room.getCreator()).orElse(null);
+            userIds.add(room.getCreator());
         }
-
-        List<User> participants = room.getParticipantIds().stream()
-            .map(userRepository::findById)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .toList();
+        if (room.getParticipantIds() != null) {
+            userIds.addAll(room.getParticipantIds());
+        }
+        Map<String, User> usersById = userIds.isEmpty()
+            ? Map.of()
+            : userRepository.findAllById(userIds).stream()
+                .filter(user -> user != null && user.getId() != null)
+                .collect(Collectors.toMap(User::getId, Function.identity()));
+        User creator = room.getCreator() != null ? usersById.get(room.getCreator()) : null;
+        if (creator == null) {
+            throw new RuntimeException("Creator not found for room " + room.getId());
+        }
+        List<User> participants = room.getParticipantIds() == null
+            ? List.of()
+            : room.getParticipantIds().stream()
+                .map(usersById::get)
+                .filter(java.util.Objects::nonNull)
+                .toList();
 
         int recentMessageCount = recentMessageCounter.countRecentMessages(room.getId());
 

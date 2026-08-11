@@ -3,7 +3,9 @@ package com.ktb.chatapp.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -13,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ktb.chatapp.dto.RoomResponse;
 import com.ktb.chatapp.dto.RoomsResponse;
+import com.ktb.chatapp.event.RoomUpdatedEvent;
 import com.ktb.chatapp.model.Room;
 import com.ktb.chatapp.model.User;
 import com.ktb.chatapp.repository.RoomRepository;
@@ -24,10 +27,12 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class RoomServiceTest {
@@ -108,6 +113,50 @@ class RoomServiceTest {
         assertTrue(json.has("recentMessageCount"));
         assertFalse(json.has("isCreator"));
         assertFalse(json.has("createdAtDateTime"));
+    }
+
+    @Test
+    void joinRoom_usesUserIdAtomicUpdateAndSharesOneResponseWithEvent() {
+        Room before = room("room-1", "Room", "creator-1", LocalDateTime.now(),
+            new java.util.LinkedHashSet<>(List.of("creator-1")));
+        Room after = room("room-1", "Room", "creator-1", before.getCreatedAt(),
+            new java.util.LinkedHashSet<>(List.of("creator-1", "user-1")));
+        User creator = user("creator-1", "Creator", "creator@test.com");
+        User participant = user("user-1", "Participant", "participant@test.com");
+        when(roomRepository.findById("room-1")).thenReturn(java.util.Optional.of(before));
+        when(roomRepository.addParticipantAndReturn("room-1", "user-1")).thenReturn(after);
+        when(userRepository.findAllById(anySet())).thenReturn(List.of(participant, creator));
+        when(recentMessageCounter.countRecentMessages("room-1")).thenReturn(4);
+
+        RoomResponse response = roomService.joinRoom("room-1", null, "user-1");
+
+        assertEquals(List.of("creator-1", "user-1"), response.getParticipants().stream()
+            .map(participantResponse -> participantResponse.getId()).toList());
+        assertEquals(false, ReflectionTestUtils.getField(response, "isCreator"));
+        assertEquals(4, response.getRecentMessageCount());
+        verify(userRepository, never()).findByEmail(any());
+        verify(roomRepository, never()).save(any());
+        verify(userRepository).findAllById(anySet());
+        verify(recentMessageCounter).countRecentMessages("room-1");
+        ArgumentCaptor<RoomUpdatedEvent> eventCaptor = ArgumentCaptor.forClass(RoomUpdatedEvent.class);
+        verify(eventPublisher).publishEvent(eventCaptor.capture());
+        assertSame(response, eventCaptor.getValue().getRoomResponse());
+    }
+
+    @Test
+    void joinRoom_keepsExistingParticipantWithoutMutationAndUsesIdForIsCreator() {
+        Room room = room("room-1", "Room", "creator-1", LocalDateTime.now(),
+            new java.util.LinkedHashSet<>(List.of("creator-1")));
+        User creator = user("creator-1", "Creator", "creator@test.com");
+        when(roomRepository.findById("room-1")).thenReturn(java.util.Optional.of(room));
+        when(userRepository.findAllById(anySet())).thenReturn(List.of(creator));
+
+        RoomResponse response = roomService.joinRoom("room-1", null, "creator-1");
+
+        assertEquals(true, ReflectionTestUtils.getField(response, "isCreator"));
+        verify(roomRepository, never()).addParticipantAndReturn(any(), any());
+        verify(roomRepository, never()).save(any());
+        verify(userRepository, never()).findByEmail(any());
     }
 
     private static Room room(
