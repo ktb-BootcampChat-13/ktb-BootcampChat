@@ -85,6 +85,7 @@ export function handleSummary(data) {
     fixtureId: FIXTURE_ID,
     roomId: ROOM_ID,
     commit: __ENV.COMMIT || 'unknown',
+    mongoIndexes: __ENV.MONGO_INDEXES || 'unknown',
     participants: EXPECTED_PARTICIPANTS,
     recentMessages: EXPECTED_RECENT_MESSAGES,
     vus: VUS,

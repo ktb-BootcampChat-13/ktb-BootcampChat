@@ -32,7 +32,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(controllers = {ProfileImageController.class, UploadsResourceAccessTest.NoopController.class})
 @Import({SecurityConfig.class, WebMvcConfig.class, LocalStorage.class})
-@TestPropertySource(properties = "file.upload-dir=target/test-classes/test-uploads")
+@TestPropertySource(properties = {
+        "file.storage.type=local",
+        "file.upload-dir=target/test-classes/test-uploads"
+})
 class UploadsResourceAccessTest {
 
     @Autowired
