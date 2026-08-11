@@ -5,6 +5,9 @@ const { randomUUID } = require('crypto');
 const OBJECT_ID = /^[a-f\d]{24}$/i;
 const UUID = /^[a-f\d]{8}-[a-f\d]{4}-[1-5][a-f\d]{3}-[89ab][a-f\d]{3}-[a-f\d]{12}$/i;
 const INTEGER = /^\d+$/;
+const CHAT_ROOM_URL = /\/chat\/[a-f\d]{24}(?:[/?#]|$)/i;
+const CHAT_INPUT_TEST_ID = 'chat-message-input';
+const LATE_VISIBILITY_TIMEOUT_MS = 15000;
 
 const SOCKET_PAIRS = {
     joinRoom: { response: 'joinRoomSuccess', metric: 'room_join' },
@@ -84,12 +87,69 @@ function summarizeSamples(samples) {
     }).sort((a, b) => b.totalDurationMs - a.totalDurationMs);
 }
 
+function classifyRoomCreateFailure(report) {
+    const diagnostic = report.diagnostics?.find((item) => item.action === 'room_create');
+    if (!diagnostic) return 'unclassified';
+    if (diagnostic.becameVisibleWithin15s) return 'late_visibility';
+
+    const detailRequests = report.samples?.http?.filter((sample) =>
+        sample.name === 'GET /api/rooms/{roomId}') || [];
+    if (detailRequests.some((sample) => sample.success === false || sample.status >= 400)) {
+        return 'room_detail_http_failure';
+    }
+    if (detailRequests.some((sample) => sample.durationMs >= 5000)) {
+        return 'room_detail_http_slow';
+    }
+
+    const socketSamples = report.samples?.socket || [];
+    if (!socketSamples.some((sample) => sample.name === 'connection' && sample.success)) {
+        return 'socket_connection';
+    }
+
+    const timeline = report.timeline || [];
+    const joinSent = timeline.some((item) => item.name === 'socket.sent' && item.event === 'joinRoom');
+    const joinSucceeded = timeline.some((item) =>
+        item.name === 'socket.received' && item.event === 'joinRoomSuccess');
+    if (joinSent && !joinSucceeded) return 'join_room_response';
+    if (joinSucceeded) return 'frontend_state_or_render';
+    if (diagnostic.errorSurface) return 'error_surface';
+    return 'unclassified';
+}
+
 function createObservation(page, vuContext) {
     const startedRequests = new Map();
     const pendingSocketEvents = new Map();
-    const samples = { documents: [], http: [], socket: [], actions: [], layoutShifts: [] };
+    const samples = {
+        documents: [], http: [], socket: [], actions: [], browser: [], layoutShifts: [],
+    };
+    const timeline = [];
+    const diagnostics = [];
     let currentAction = null;
     let socketSequence = 0;
+
+    const addTimelineEvent = (name, details = {}) => {
+        timeline.push({ name, at: new Date().toISOString(), ...details });
+    };
+
+    const onFrameNavigated = (frame) => {
+        if (frame !== page.mainFrame()) return;
+        addTimelineEvent('navigation', { url: frame.url() });
+    };
+    const onConsole = (message) => {
+        if (!['error', 'warning'].includes(message.type())) return;
+        samples.browser.push({
+            name: `console.${message.type()}`,
+            message: message.text(),
+            at: new Date().toISOString(),
+            url: page.url(),
+        });
+    };
+    const onPageError = (error) => {
+        samples.browser.push({
+            name: 'pageerror', message: error.message, stack: error.stack,
+            at: new Date().toISOString(), url: page.url(),
+        });
+    };
 
     const recordHttp = async (request, success) => {
         const started = startedRequests.get(request);
@@ -138,6 +198,7 @@ function createObservation(page, vuContext) {
 
         webSocket.on('framesent', ({ payload }) => {
             const event = parseSocketEvent(payload);
+            if (event) addTimelineEvent('socket.sent', { event });
             const pair = SOCKET_PAIRS[event];
             if (!pair) return;
             const queue = pendingSocketEvents.get(pair.response) || [];
@@ -159,6 +220,7 @@ function createObservation(page, vuContext) {
                 }
             }
             const event = parseSocketEvent(payload);
+            if (event) addTimelineEvent('socket.received', { event });
             const queue = pendingSocketEvents.get(event);
             const pending = Array.isArray(queue) ? queue.shift() : null;
             if (pending) {
@@ -175,6 +237,44 @@ function createObservation(page, vuContext) {
     page.on('requestfailed', onRequestFailed);
     page.on('response', onResponse);
     page.on('websocket', onWebSocket);
+    page.on('framenavigated', onFrameNavigated);
+    page.on('console', onConsole);
+    page.on('pageerror', onPageError);
+
+    const diagnoseRoomCreateFailure = async (error, actionStartedAt) => {
+        const diagnostic = {
+            action: 'room_create',
+            error: error.message,
+            failedAt: new Date().toISOString(),
+            urlAtFailure: page.url(),
+            reachedChatRoomUrl: CHAT_ROOM_URL.test(page.url()),
+            inputVisibleAtFailure: false,
+            becameVisibleWithin15s: false,
+            inputVisibleAfterMs: null,
+            finalUrl: null,
+            errorSurface: null,
+        };
+        try {
+            diagnostic.inputVisibleAtFailure = await page.getByTestId(CHAT_INPUT_TEST_ID).isVisible();
+            if (!diagnostic.inputVisibleAtFailure && diagnostic.reachedChatRoomUrl) {
+                await page.getByTestId(CHAT_INPUT_TEST_ID).waitFor({
+                    state: 'visible', timeout: LATE_VISIBILITY_TIMEOUT_MS,
+                });
+            }
+            if (diagnostic.inputVisibleAtFailure || diagnostic.reachedChatRoomUrl) {
+                diagnostic.becameVisibleWithin15s = true;
+                diagnostic.inputVisibleAfterMs = Number((performance.now() - actionStartedAt).toFixed(1));
+                addTimelineEvent('chat-input.visible', { durationMs: diagnostic.inputVisibleAfterMs });
+            }
+        } catch {
+            diagnostic.errorSurface = await page.locator('[role="alert"], .chat-container').allTextContents()
+                .then((values) => values.join(' ').trim().slice(0, 1000))
+                .catch(() => null);
+        }
+        diagnostic.finalUrl = page.url();
+        diagnostic.reachedChatRoomUrl ||= CHAT_ROOM_URL.test(diagnostic.finalUrl);
+        diagnostics.push(diagnostic);
+    };
 
     void page.addInitScript(() => {
         window.__e2eLayoutShifts = [];
@@ -238,6 +338,7 @@ function createObservation(page, vuContext) {
         currentAction = name;
         const startedAt = performance.now();
         const wallStartedAt = new Date().toISOString();
+        addTimelineEvent('action.started', { action: name });
         try {
             const result = await callback();
             samples.actions.push({
@@ -252,8 +353,12 @@ function createObservation(page, vuContext) {
                 error: { name: error.name, message: error.message },
                 diagnostics: await collectPageDiagnostics(),
             });
+            if (name === 'room_create') {
+                await diagnoseRoomCreateFailure(error, startedAt);
+            }
             throw error;
         } finally {
+            addTimelineEvent('action.ended', { action: name });
             currentAction = previousAction;
         }
     }
@@ -265,6 +370,9 @@ function createObservation(page, vuContext) {
         page.off('requestfailed', onRequestFailed);
         page.off('response', onResponse);
         page.off('websocket', onWebSocket);
+        page.off('framenavigated', onFrameNavigated);
+        page.off('console', onConsole);
+        page.off('pageerror', onPageError);
 
         samples.layoutShifts = await page.evaluate(() => window.__e2eLayoutShifts || []).catch(() => []);
 
@@ -273,11 +381,13 @@ function createObservation(page, vuContext) {
         const runDirectory = path.join(outputRoot, runId);
         fs.mkdirSync(runDirectory, { recursive: true });
         const report = {
-            schemaVersion: 1,
+            schemaVersion: 2,
             runId,
             vuId: vuContext?._uid || vuContext?.vars?.$uuid || randomUUID(),
             generatedAt: new Date().toISOString(),
             samples,
+            timeline,
+            diagnostics,
             summary: {
                 actions: summarizeSamples(samples.actions),
                 documents: summarizeSamples(samples.documents),
@@ -318,4 +428,5 @@ module.exports = {
     normalizeDocumentPath,
     parseSocketEvent,
     summarizeSamples,
+    classifyRoomCreateFailure,
 };

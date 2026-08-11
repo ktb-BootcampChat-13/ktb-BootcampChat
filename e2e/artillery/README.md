@@ -32,7 +32,25 @@ pnpm --filter e2e exec artillery run artillery/artillery-config.yaml
 
 node e2e/artillery/report-observations.js \
   e2e/artillery/results/stage0-run1
+
+# 방 생성 후 입력창 노출 실패를 원인별로 분류
+node e2e/artillery/diagnose-room-creation.js \
+  e2e/artillery/results/stage0-run1
 ```
+
+`diagnose-room-creation.js`는 기존 시나리오의 5초 어서션을 변경하지 않는다. 실패한
+VU만 최대 15초 추가 관찰하여 늦은 렌더링인지 영구 실패인지 구분하고, 방 상세 REST,
+Socket.IO 연결, `joinRoomSuccess`, 브라우저 오류를 함께 저장한다. 결과는 실행 디렉터리의
+`room-creation-diagnosis.json`에 기록된다.
+
+백엔드는 `/actuator/prometheus`에 다음 입장 처리 지표를 제공한다.
+
+- `chat_room_join_total_duration_seconds`: 결과별 전체 `joinRoom` 처리시간
+- `chat_room_join_step_duration_seconds`: 사용자·방 조회, 참가자 갱신, 메시지 저장·조회,
+  참가자 직렬화, 성공 이벤트 전송의 단계별 처리시간
+
+`room_join_trace` 로그는 `roomId`, `socketId`, 결과, 전체 시간과 단계별 시간을 한 줄에
+남겨 브라우저 관측 결과와 연결할 수 있다.
 
 각 VU의 원시 JSON과 합산 `summary.json`이 지정한 실행 디렉터리에 저장됩니다. 표는
 호출 수, 성공/실패, 평균, p95, p99, 누적시간 및 같은 계층 내 누적시간 비중을 보여 줍니다.

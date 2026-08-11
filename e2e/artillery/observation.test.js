@@ -1,6 +1,12 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { normalizeApiPath, normalizeDocumentPath, parseSocketEvent, summarizeSamples } = require('./observation');
+const {
+    normalizeApiPath,
+    normalizeDocumentPath,
+    parseSocketEvent,
+    summarizeSamples,
+    classifyRoomCreateFailure,
+} = require('./observation');
 
 test('normalizes dynamic API identifiers without changing static routes', () => {
     assert.equal(normalizeApiPath('http://localhost:5001/api/rooms'), '/api/rooms');
@@ -34,4 +40,35 @@ test('summarizes and ranks samples by cumulative duration', () => {
         name: 'fast-frequent', count: 2, success: 1, failure: 1,
         averageMs: 20, p95Ms: 20, p99Ms: 20, totalDurationMs: 40, contributionPct: 57.1,
     });
+});
+
+test('classifies late visibility after the original assertion fails', () => {
+    assert.equal(classifyRoomCreateFailure({
+        diagnostics: [{ action: 'room_create', becameVisibleWithin15s: true }],
+    }), 'late_visibility');
+});
+
+test('classifies a missing joinRoomSuccess after socket join was sent', () => {
+    assert.equal(classifyRoomCreateFailure({
+        diagnostics: [{ action: 'room_create', becameVisibleWithin15s: false }],
+        samples: {
+            http: [{ name: 'GET /api/rooms/{roomId}', success: true, status: 200, durationMs: 20 }],
+            socket: [{ name: 'connection', success: true }],
+        },
+        timeline: [{ name: 'socket.sent', event: 'joinRoom' }],
+    }), 'join_room_response');
+});
+
+test('classifies render failure after joinRoomSuccess arrives', () => {
+    assert.equal(classifyRoomCreateFailure({
+        diagnostics: [{ action: 'room_create', becameVisibleWithin15s: false }],
+        samples: {
+            http: [],
+            socket: [{ name: 'connection', success: true }],
+        },
+        timeline: [
+            { name: 'socket.sent', event: 'joinRoom' },
+            { name: 'socket.received', event: 'joinRoomSuccess' },
+        ],
+    }), 'frontend_state_or_render');
 });

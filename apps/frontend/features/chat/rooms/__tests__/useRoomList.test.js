@@ -13,9 +13,9 @@ vi.mock('@/services/axios', () => ({
 
 const roomsResponse = (rooms) => ({ data: { data: rooms } });
 
-const renderRoomList = () =>
-  renderHook(() =>
-    useRoomList({
+const renderRoomList = (overrides = {}) =>
+  renderHook(() => {
+    const props = {
       currentUser: { token: 'token-1' },
       router: { push: vi.fn() },
       connectionStatus: CONNECTION_STATUS.CONNECTED,
@@ -26,12 +26,30 @@ const renderRoomList = () =>
       setIsRetrying: vi.fn(),
       getRetryDelay: vi.fn(() => 1000),
       attemptConnection: vi.fn(() => Promise.resolve(true)),
-    })
-  );
+      ...overrides,
+    };
+    return useRoomList(props);
+  });
 
 describe('useRoomList', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  it('loads rooms directly without a redundant health preflight', async () => {
+    const attemptConnection = vi.fn(() => Promise.resolve(true));
+    const setConnectionStatus = vi.fn();
+    axiosInstance.get.mockResolvedValue(roomsResponse([]));
+
+    const { result } = renderRoomList({ attemptConnection, setConnectionStatus });
+
+    await act(async () => {
+      await result.current.fetchRooms();
+    });
+
+    expect(attemptConnection).not.toHaveBeenCalled();
+    expect(axiosInstance.get).toHaveBeenCalledWith('/api/rooms');
+    expect(setConnectionStatus).toHaveBeenCalledWith(CONNECTION_STATUS.CONNECTED);
   });
 
   it('replaces the list on refresh without leaving the refreshing flag on', async () => {
