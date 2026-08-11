@@ -1,0 +1,21 @@
+{
+  "testName": "baseline-p10-m1k-vu30",
+  "fixtureId": "room-detail-20260811",
+  "roomId": "room-detail-20260811:room:p10-m1k",
+  "commit": "ce107855630f5ca543228d08ba6330a6fe96ad95",
+  "participants": 10,
+  "recentMessages": 1000,
+  "vus": 30,
+  "duration": "1m",
+  "startedAt": "2026-08-11T04:59:09.965Z",
+  "endedAt": "2026-08-11T05:00:10.048Z",
+  "requests": 30617,
+  "rps": 509.5823009619,
+  "averageMs": 58.60356700525837,
+  "p95Ms": 77.7178,
+  "p99Ms": 117.23071999999999,
+  "maxMs": 614.039,
+  "errorRate": 0,
+  "timeoutCount": 0,
+  "averageResponseBytes": 1751
+}
