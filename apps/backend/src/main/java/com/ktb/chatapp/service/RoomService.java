@@ -20,6 +20,11 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +38,7 @@ public class RoomService {
     private final RecentMessageCounter recentMessageCounter;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
+    private final MongoTemplate mongoTemplate;
 
     public RoomsResponse getAllRooms(String name) {
 
@@ -177,15 +183,23 @@ public class RoomService {
     }
 
     public Room joinRoom(String roomId, String password, String name) {
+        User user = userRepository.findByEmail(name)
+            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다: " + name));
+        JoinRoomResult result = joinRoomInternal(roomId, password, user.getId());
+        if (result == null) {
+            return null;
+        }
+        publishRoomUpdatedIfParticipantAdded(roomId, name, result);
+        return result.room();
+    }
+
+    private JoinRoomResult joinRoomInternal(String roomId, String password, String userId) {
         Optional<Room> roomOpt = roomRepository.findById(roomId);
         if (roomOpt.isEmpty()) {
             return null;
         }
 
         Room room = roomOpt.get();
-        User user = userRepository.findByEmail(name)
-            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다: " + name));
-
         // 비밀번호 확인
         if (room.isHasPassword()) {
             if (password == null || !passwordEncoder.matches(password, room.getPassword())) {
@@ -193,37 +207,93 @@ public class RoomService {
             }
         }
 
-        // 이미 참여중인지 확인
-        if (!room.getParticipantIds().contains(user.getId())) {
-            // 채팅방 참여
-            room.getParticipantIds().add(user.getId());
-            room = roomRepository.save(room);
+        if (room.getParticipantIds() != null && room.getParticipantIds().contains(userId)) {
+            return new JoinRoomResult(room, false);
         }
-        
-        // Publish event for room updated
+
+        Query addParticipant = Query.query(Criteria.where("_id").is(roomId)
+            .and("participantIds").ne(userId));
+        Room updatedRoom = mongoTemplate.findAndModify(
+            addParticipant,
+            new Update().addToSet("participantIds", userId),
+            FindAndModifyOptions.options().returnNew(true),
+            Room.class);
+        if (updatedRoom != null) {
+            return new JoinRoomResult(updatedRoom, true);
+        }
+
+        // The room was deleted, or another concurrent request added the same participant first.
+        return roomRepository.findById(roomId)
+            .map(latestRoom -> new JoinRoomResult(latestRoom, false))
+            .orElse(null);
+    }
+
+    public RoomResponse joinRoomResponse(String roomId, String password, String name) {
+        User user = userRepository.findByEmail(name)
+            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다: " + name));
+        return joinRoomResponse(roomId, password, name, user.getId());
+    }
+
+    public RoomResponse joinRoomResponse(
+            String roomId, String password, String name, String userId) {
+        JoinRoomResult result = joinRoomInternal(roomId, password, userId);
+        if (result == null) {
+            return null;
+        }
+
+        RoomResponse response = mapToRoomResponse(result.room(), name);
+        publishRoomUpdatedIfParticipantAdded(roomId, result, response);
+        return response;
+    }
+
+    private void publishRoomUpdatedIfParticipantAdded(
+            String roomId, String name, JoinRoomResult result) {
+        if (!result.participantAdded()) {
+            return;
+        }
+        publishRoomUpdatedIfParticipantAdded(roomId, result, mapToRoomResponse(result.room(), name));
+    }
+
+    private void publishRoomUpdatedIfParticipantAdded(
+            String roomId, JoinRoomResult result, RoomResponse response) {
+        if (!result.participantAdded()) {
+            return;
+        }
         try {
-            RoomResponse roomResponse = mapToRoomResponse(room, name);
-            eventPublisher.publishEvent(new RoomUpdatedEvent(this, roomId, roomResponse));
+            eventPublisher.publishEvent(new RoomUpdatedEvent(this, roomId, response));
         } catch (Exception e) {
             log.error("roomUpdate 이벤트 발행 실패", e);
         }
-
-        return room;
     }
 
     private RoomResponse mapToRoomResponse(Room room, String name) {
         if (room == null) return null;
 
-        User creator = null;
+        Set<String> userIds = new LinkedHashSet<>();
         if (room.getCreator() != null) {
-            creator = userRepository.findById(room.getCreator()).orElse(null);
+            userIds.add(room.getCreator());
         }
-
-        List<User> participants = room.getParticipantIds().stream()
-            .map(userRepository::findById)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .toList();
+        if (room.getParticipantIds() != null) {
+            userIds.addAll(room.getParticipantIds());
+        }
+        Query usersQuery = Query.query(Criteria.where("_id").in(userIds));
+        usersQuery.fields()
+            .include("_id")
+            .include("name")
+            .include("email")
+            .include("profileImage");
+        Map<String, User> usersById = userIds.isEmpty()
+            ? Map.of()
+            : mongoTemplate.find(usersQuery, User.class).stream()
+                .filter(user -> user != null && user.getId() != null)
+                .collect(Collectors.toMap(User::getId, Function.identity()));
+        User creator = room.getCreator() != null ? usersById.get(room.getCreator()) : null;
+        List<User> participants = room.getParticipantIds() == null
+            ? List.of()
+            : room.getParticipantIds().stream()
+                .map(usersById::get)
+                .filter(java.util.Objects::nonNull)
+                .toList();
 
         int recentMessageCount = recentMessageCounter.countRecentMessages(room.getId());
 
@@ -276,4 +346,6 @@ public class RoomService {
             .recentMessageCount(recentMessageCount)
             .build();
     }
+
+    private record JoinRoomResult(Room room, boolean participantAdded) {}
 }

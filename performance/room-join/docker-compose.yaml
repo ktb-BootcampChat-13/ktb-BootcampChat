@@ -1,0 +1,74 @@
+services:
+  mongo:
+    image: mongo:8.3.4
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: bootcamp-chat
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  redis:
+    image: redis:8.8.0
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  mongodb-exporter:
+    image: percona/mongodb_exporter:0.51.0
+    command: ["--mongodb.uri=mongodb://mongo:27017", "--collect-all"]
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  app:
+    image: ktb-chat-backend:join-optimized-8fde958
+    ports:
+      - "5001:5001"
+      - "5002:5002"
+    env_file:
+      - ../../apps/backend/.env
+    environment:
+      MONGO_URI: mongodb://mongo:27017/bootcamp-chat
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      FILE_STORAGE_TYPE: local
+      SPRING_DATA_MONGODB_AUTO_INDEX_CREATION: "true"
+      SWAGGER_ENABLED: "false"
+      SERVER_TOMCAT_THREADS_MAX: ${TOMCAT_THREADS_MAX:-10}
+      SERVER_TOMCAT_MAX_CONNECTIONS: ${TOMCAT_MAX_CONNECTIONS:-50}
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  prometheus:
+    image: prom/prometheus:v3.13.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.performance.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+    depends_on:
+      - app
+      - mongodb-exporter
+
+volumes:
+  mongo_data:
+  redis_data:
+  prometheus_data:
