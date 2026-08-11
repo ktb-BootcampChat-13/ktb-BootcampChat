@@ -1,2 +1,18 @@
 .DS_Store
 apps/backend/target/
+
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+.next/
+apps/backend/.mvn/wrapper/maven-wrapper.jar
+
+# env
+.env.local
+.env.*.local
+
+# editors
+.idea/
+.vscode/
