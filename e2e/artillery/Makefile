@@ -19,7 +19,7 @@ export FORBIDDEN_WORDS ?= "b3sig78jv,9c0hej6x,lbl276sz"
 export PHASE1_DURATION ?= 5 # 해당 시간 내에
 export PHASE1_ARRIVAL_COUNT ?= 1 # 몇명의 가상 유저를 생성할건지?
 
-.PHONY: verify-env artillery
+.PHONY: verify-env artillery artillery-auth-negative artillery-room-lifecycle artillery-messaging artillery-media-profile
 
 verify-env:
 	# Check Node.js installed
@@ -36,5 +36,16 @@ verify-env:
 	@pnpm --filter e2e exec playwright install chromium
 
 artillery: verify-env
-	@echo "🚀 Running basic head test ($(PHASE1_ARRIVAL_COUNT) users for $(PHASE1_DURATION)s)..."
-	@pnpm --filter e2e exec artillery run artillery/artillery-config.yaml
+	@$(MAKE) artillery-room-lifecycle
+
+artillery-auth-negative: verify-env
+	@pnpm --filter e2e exec artillery run artillery/artillery-auth-negative.yaml
+
+artillery-room-lifecycle: verify-env
+	@pnpm --filter e2e exec artillery run artillery/artillery-room-lifecycle.yaml
+
+artillery-messaging: verify-env
+	@pnpm --filter e2e exec artillery run artillery/artillery-messaging.yaml
+
+artillery-media-profile: verify-env
+	@pnpm --filter e2e exec artillery run artillery/artillery-media-profile.yaml

@@ -18,6 +18,18 @@
   PHASE1_ARRIVAL_COUNT=10 PHASE1_DURATION=30 make artillery
   ```
 
+  기본 실행은 방 생성·랜덤 입장만 검증합니다. 기능별 부하는 다음처럼 분리해서 실행합니다.
+
+  ```bash
+  make artillery-auth-negative  # VU당 의도된 로그인 401 한 건
+  make artillery-room-lifecycle # 목록 조회, 방 생성, 랜덤 입장
+  make artillery-messaging      # 일반/대량/금칙어 메시지
+  make artillery-media-profile  # 파일 업로드와 프로필 변경
+  ```
+
+  `auth-negative`의 `POST /api/auth/login` 401만 `expected_failure`이며, 다른 프로필의
+  401과 모든 404는 `unexpected_failure`로 집계됩니다.
+
 ## Stage 0 관측 실행
 
 브라우저 흐름을 부하 테스트로 올리기 전에 1 VU로 실제 호출 경로를 진단합니다. 이 실행은

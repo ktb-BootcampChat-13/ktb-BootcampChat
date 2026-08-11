@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
-const { summarizeSamples } = require('./observation');
+const { enrichHttpSample, summarizeHttpFailures, summarizeSamples } = require('./observation');
 
 const runDirectories = process.argv.slice(2).map((value) => path.resolve(value));
 if (runDirectories.length === 0) {
@@ -22,14 +22,14 @@ for (const report of reports) {
     samples.runtime.push(...(report.samples.runtime || []));
     samples.layoutShifts.push(...(report.samples.layoutShifts || []));
 }
+samples.http = samples.http.map(enrichHttpSample);
 
 const timestamps = Object.values(samples).flat()
     .flatMap((sample) => [sample.startedAt, sample.endedAt])
     .filter(Boolean)
     .sort();
 const rankedHttp = summarizeSamples(samples.http.filter((sample) =>
-    sample.name !== 'GET /api/health' &&
-    !(sample.name === 'POST /api/auth/login' && sample.status === 401)));
+    sample.name !== 'GET /api/health' && sample.outcome !== 'expected_failure'));
 const expectedTotal = Number(process.env.EXPECTED_TOTAL_VUS || 0);
 const expectedPerRun = Number(process.env.EXPECTED_VUS || process.env.PHASE1_ARRIVAL_COUNT || 0);
 const expectedVirtualUsers = expectedTotal > 0
@@ -37,6 +37,13 @@ const expectedVirtualUsers = expectedTotal > 0
     : expectedPerRun > 0 ? expectedPerRun * runDirectories.length : null;
 const completedVirtualUsers = reports.filter((report) => report.samples.actions.length > 0 &&
     report.samples.actions.every((sample) => sample.success)).length;
+const profiles = [...new Set(reports.map((report) => report.metadata?.workload?.profile).filter(Boolean))];
+const expected401Samples = samples.http.filter((sample) => sample.outcome === 'expected_failure' && sample.status === 401);
+const unexpected401Samples = samples.http.filter((sample) => sample.outcome === 'unexpected_failure' && sample.status === 401);
+const expected401PerVuSatisfied = profiles.length === 1 && profiles[0] === 'auth-negative'
+    ? reports.every((report) => report.samples.http.map(enrichHttpSample)
+        .filter((sample) => sample.outcome === 'expected_failure' && sample.status === 401).length === 1)
+    : expected401Samples.length === 0;
 
 const aggregate = {
     schemaVersion: 1,
@@ -55,6 +62,12 @@ const aggregate = {
         targetReached: expectedVirtualUsers === null ? null : reports.length === expectedVirtualUsers,
         adoptable: expectedVirtualUsers === null ? false :
             reports.length === expectedVirtualUsers && completedVirtualUsers / expectedVirtualUsers >= 0.99,
+        httpExpectations: {
+            profiles,
+            expected401: expected401Samples.length,
+            unexpected401: unexpected401Samples.length,
+            expected401PerVuSatisfied,
+        },
     },
     summary: {
         actions: summarizeSamples(samples.actions),
@@ -62,6 +75,11 @@ const aggregate = {
         resources: summarizeSamples(samples.resources),
         httpDiagnostic: summarizeSamples(samples.http),
         httpRanked: rankedHttp,
+        httpFailures: summarizeHttpFailures(samples.http),
+        expectedHttpFailures: summarizeHttpFailures(samples.http.filter((sample) =>
+            sample.outcome === 'expected_failure')),
+        unexpectedHttpFailures: summarizeHttpFailures(samples.http.filter((sample) =>
+            sample.outcome === 'unexpected_failure')),
         socket: summarizeSamples(samples.socket),
         runtime: summarizeSamples(samples.runtime),
         cls: {

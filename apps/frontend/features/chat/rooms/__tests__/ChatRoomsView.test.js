@@ -7,6 +7,8 @@ import { CONNECTION_STATUS } from '../useServerConnection';
 const mocks = vi.hoisted(() => ({
   connectionStatus: 'checking',
   error: null,
+  listStatus: 'ready',
+  rooms: [],
   fetchRooms: vi.fn(() => Promise.resolve()),
   refreshRooms: vi.fn(() => Promise.resolve(true)),
   attemptConnection: vi.fn(() => Promise.resolve(true)),
@@ -39,15 +41,24 @@ vi.mock('../useServerConnection', async () => {
 });
 
 vi.mock('../useRoomList', () => ({
+  ROOM_LIST_STATUS: { LOADING: 'loading', READY: 'ready', ERROR: 'error' },
   useRoomList: () => ({
-    rooms: [],
+    rooms: mocks.rooms,
     setRooms: vi.fn(),
     error: mocks.error,
     loading: false,
     refreshing: false,
     joiningRoom: false,
+    joiningRoomId: null,
+    navigationTarget: null,
+    listStatus: mocks.listStatus,
+    hasMore: false,
+    loadingMore: false,
+    hasNewRooms: false,
+    setHasNewRooms: vi.fn(),
     fetchRooms: mocks.fetchRooms,
     refreshRooms: mocks.refreshRooms,
+    loadMoreRooms: vi.fn(),
     handleJoinRoom: vi.fn(),
   }),
 }));
@@ -60,6 +71,8 @@ describe('ChatRoomsView', () => {
   beforeEach(() => {
     mocks.connectionStatus = CONNECTION_STATUS.CHECKING;
     mocks.error = null;
+    mocks.listStatus = 'ready';
+    mocks.rooms = [];
     mocks.fetchRooms.mockClear();
     mocks.refreshRooms.mockClear();
     mocks.attemptConnection.mockClear();
@@ -148,5 +161,24 @@ describe('ChatRoomsView', () => {
     render(<ChatRoomsView router={{ push: vi.fn() }} />);
 
     expect(screen.getByTestId('rooms-content-slot')).toBeInTheDocument();
+    expect(screen.getByTestId('rooms-content-slot')).toHaveAttribute('data-state', 'ready');
+  });
+
+  it('keeps the REST room list visible when the socket connection fails', () => {
+    mocks.connectionStatus = CONNECTION_STATUS.ERROR;
+    mocks.rooms = [{ _id: 'room-1', name: '방 1', createdAt: '2026-08-12T10:00:00' }];
+
+    render(<ChatRoomsView router={{ push: vi.fn() }} />);
+
+    expect(screen.getByTestId('rooms-socket-error')).toBeInTheDocument();
+    expect(screen.getByTestId('join-chat-room-button')).toHaveAttribute('data-room-id', 'room-1');
+  });
+
+  it('exposes a dedicated room-list load error state', () => {
+    mocks.listStatus = 'error';
+
+    render(<ChatRoomsView router={{ push: vi.fn() }} />);
+
+    expect(screen.getByTestId('rooms-load-error')).toBeInTheDocument();
   });
 });

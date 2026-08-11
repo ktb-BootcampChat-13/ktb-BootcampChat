@@ -7,7 +7,7 @@ import {
   useServerConnection,
   CONNECTION_STATUS,
 } from './useServerConnection';
-import { useRoomList } from './useRoomList';
+import { ROOM_LIST_STATUS, useRoomList } from './useRoomList';
 import RoomsTable from './RoomsTable';
 import ConnectionErrorBanner from '@/components/ConnectionErrorBanner';
 
@@ -45,9 +45,16 @@ export default function ChatRoomsView({ router }) {
     error,
     loading,
     refreshing,
-    joiningRoom,
+    joiningRoomId,
+    navigationTarget,
+    listStatus,
+    hasMore,
+    loadingMore,
+    hasNewRooms,
+    setHasNewRooms,
     fetchRooms,
     refreshRooms,
+    loadMoreRooms,
     handleJoinRoom,
   } = useRoomList({
     currentUser,
@@ -134,7 +141,12 @@ export default function ChatRoomsView({ router }) {
     };
   }, [currentUserKey, connectionStatus]);
 
-  useRoomsSocket({ currentUser, setConnectionStatus, setRooms });
+  useRoomsSocket({
+    currentUser,
+    setConnectionStatus,
+    setRooms,
+    onRoomCreated: () => setHasNewRooms(true),
+  });
 
   return (
     <Box
@@ -170,7 +182,9 @@ export default function ChatRoomsView({ router }) {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => fetchRooms()}
+                  onClick={() => connectionStatus === CONNECTION_STATUS.ERROR
+                    ? attemptConnection().catch(() => {})
+                    : fetchRooms()}
                   disabled={isRetrying}
                 >
                   <RefreshOutlineIcon size={16} />
@@ -222,19 +236,57 @@ export default function ChatRoomsView({ router }) {
           </Callout.Root>
         )}
 
-        <Box data-testid="rooms-content-slot" $css={{ minHeight: '430px', width: '100%' }}>
-        {connectionStatus === CONNECTION_STATUS.ERROR ? (
-          <ConnectionErrorBanner message="채팅 서버와 연결할 수 없습니다. 잠시 후 다시 시도해주세요." />
-        ) : loading ? (
+        {connectionStatus === CONNECTION_STATUS.ERROR && listStatus === ROOM_LIST_STATUS.READY && (
+          <Box data-testid="rooms-socket-error">
+            <ConnectionErrorBanner message="실시간 연결이 끊겼습니다. 현재 조회된 목록은 계속 볼 수 있습니다." />
+          </Box>
+        )}
+
+        {hasNewRooms && (
+          <Callout.Root colorPalette="primary" data-testid="rooms-new-available">
+            <HStack $css={{ gap: '$200', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Text typography="body2">새 채팅방이 있습니다.</Text>
+              <Button size="sm" variant="outline" onClick={() => refreshRooms()}>
+                목록 갱신
+              </Button>
+            </HStack>
+          </Callout.Root>
+        )}
+
+        <Box
+          data-testid="rooms-content-slot"
+          data-state={listStatus}
+          data-joining-room-id={joiningRoomId || undefined}
+          data-navigation-target={navigationTarget || undefined}
+          $css={{ minHeight: '430px', width: '100%' }}
+        >
+        {listStatus === ROOM_LIST_STATUS.LOADING || loading ? (
           <Box $css={{ minHeight: '430px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <LoadingIndicator text="채팅방 목록을 불러오는 중..." />
           </Box>
+        ) : listStatus === ROOM_LIST_STATUS.ERROR ? (
+          <Box data-testid="rooms-load-error" $css={{ minHeight: '430px' }}>
+            <ConnectionErrorBanner message="채팅방 목록을 불러오지 못했습니다. 다시 시도해주세요." />
+          </Box>
         ) : rooms.length > 0 ? (
-          <RoomsTable
-            rooms={rooms}
-            connectionStatus={connectionStatus}
-            onJoinRoom={handleJoinRoom}
-          />
+          <VStack $css={{ gap: '$200', width: '100%' }}>
+            <RoomsTable
+              rooms={rooms}
+              connectionStatus={connectionStatus}
+              joiningRoomId={joiningRoomId}
+              onJoinRoom={handleJoinRoom}
+            />
+            {hasMore && (
+              <Button
+                variant="outline"
+                onClick={loadMoreRooms}
+                disabled={loadingMore}
+                data-testid="load-more-rooms-button"
+              >
+                {loadingMore ? '불러오는 중' : '더 보기'}
+              </Button>
+            )}
+          </VStack>
         ) : !error && (
           <VStack
             $css={{ gap: '$300', alignItems: 'center', justifyContent: 'center', minHeight: '430px', padding: '$400' }}

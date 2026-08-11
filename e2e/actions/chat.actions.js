@@ -1,6 +1,62 @@
 const { bannedWordSafeToken } = require('../utils/bannedWordSafeText');
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
+const ROOM_READY_TIMEOUT = Number(process.env.ROOM_READY_TIMEOUT || 5000);
+
+function scenarioError(code, message, cause) {
+  const error = new Error(`${code}: ${message}`, cause ? { cause } : undefined);
+  error.code = code;
+  return error;
+}
+
+async function waitForRoomListReady(page, { timeout = ROOM_READY_TIMEOUT } = {}) {
+  const content = page.getByTestId('rooms-content-slot');
+  try {
+    await content.waitFor({ state: 'visible', timeout });
+    await page.waitForFunction(
+      () => ['ready', 'error'].includes(
+        document.querySelector('[data-testid="rooms-content-slot"]')?.dataset.state
+      ),
+      undefined,
+      { timeout }
+    );
+  } catch (error) {
+    throw scenarioError(
+      'ROOM_LIST_READY_TIMEOUT',
+      `채팅방 목록이 ${timeout}ms 안에 준비되지 않았습니다. Current URL: ${page.url()}`,
+      error
+    );
+  }
+
+  const state = await content.getAttribute('data-state');
+  if (state === 'error') {
+    throw scenarioError('ROOM_LIST_LOAD_FAILED', `채팅방 목록 API가 실패했습니다. Current URL: ${page.url()}`);
+  }
+
+  const buttons = page.getByTestId('join-chat-room-button');
+  const hasRooms = await buttons.count() > 0;
+  const isEmpty = await page.getByTestId('rooms-empty').isVisible().catch(() => false);
+  if (!hasRooms && !isEmpty) {
+    throw scenarioError(
+      'ROOM_LIST_RENDER_INCONSISTENT',
+      `목록 상태는 ready지만 방 버튼과 빈 상태가 모두 없습니다. Current URL: ${page.url()}`
+    );
+  }
+
+  return { buttons, hasRooms, isEmpty };
+}
+
+async function waitForChatRoomReady(page, { timeout = ROOM_READY_TIMEOUT } = {}) {
+  try {
+    await page.getByTestId('chat-message-input').waitFor({ state: 'visible', timeout });
+  } catch (error) {
+    throw scenarioError(
+      'CHAT_ROOM_RENDER_TIMEOUT',
+      `채팅 입력창이 ${timeout}ms 안에 표시되지 않았습니다. Current URL: ${page.url()}`,
+      error
+    );
+  }
+}
 
 /**
  * 첫 번째 채팅방 입장 액션
@@ -18,14 +74,51 @@ async function joinFirstChatRoomAction(page) {
 async function joinRandomChatRoomAction(page) {
   await page.goto(`${BASE_URL}/chat`);
 
-  // 채팅방 버튼이 최소 하나 이상 로드될 때까지 대기
-  await page.getByTestId('join-chat-room-button').first().waitFor({ state: 'visible' });
+  const { buttons: chatRoomButtons, hasRooms } = await waitForRoomListReady(page);
+  if (!hasRooms) {
+    throw scenarioError('ROOM_LIST_EMPTY', '입장할 채팅방이 없습니다.');
+  }
 
-  const chatRoomButtons = page.getByTestId('join-chat-room-button');
   const count = await chatRoomButtons.count();
 
   const randomIndex = Math.floor(Math.random() * count);
-  await chatRoomButtons.nth(randomIndex).click();
+  const button = chatRoomButtons.nth(randomIndex);
+  const roomId = await button.getAttribute('data-room-id');
+  if (!roomId) {
+    throw scenarioError('ROOM_LIST_RENDER_INCONSISTENT', '입장 버튼에 room ID가 없습니다.');
+  }
+
+  const joinResponsePromise = page.waitForResponse((response) =>
+    response.request().method() === 'POST' &&
+    new URL(response.url()).pathname === `/api/rooms/${roomId}/join`,
+  { timeout: ROOM_READY_TIMEOUT });
+
+  let response;
+  try {
+    [response] = await Promise.all([joinResponsePromise, button.click()]);
+  } catch (error) {
+    throw scenarioError('JOIN_HTTP_FAILED', `채팅방 ${roomId} 입장 요청이 완료되지 않았습니다.`, error);
+  }
+
+  if (!response.ok()) {
+    throw scenarioError('JOIN_HTTP_FAILED', `채팅방 ${roomId} 입장 요청이 HTTP ${response.status()}로 실패했습니다.`);
+  }
+  const body = await response.json().catch(() => null);
+  if (body?.success !== true) {
+    throw scenarioError('JOIN_RESPONSE_INVALID', `채팅방 ${roomId} 입장 응답이 success=true가 아닙니다.`);
+  }
+
+  try {
+    await page.waitForURL(`${BASE_URL}/chat/${roomId}`, { timeout: ROOM_READY_TIMEOUT });
+  } catch (error) {
+    throw scenarioError(
+      'JOIN_NAVIGATION_TIMEOUT',
+      `입장 API는 200이지만 ${ROOM_READY_TIMEOUT}ms 안에 이동하지 못했습니다. Room ID: ${roomId}, Current URL: ${page.url()}`,
+      error
+    );
+  }
+  await waitForChatRoomReady(page);
+  return roomId;
 }
 
 /**
@@ -122,4 +215,6 @@ module.exports = {
   uploadFileAction,
   scrollChatToTopAction,
   addEmojiReactionAction,
+  waitForRoomListReady,
+  waitForChatRoomReady,
 };

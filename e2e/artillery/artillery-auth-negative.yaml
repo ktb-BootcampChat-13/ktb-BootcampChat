@@ -1,10 +1,10 @@
 config:
   target: "{{ $env.BASE_URL }}"
   phases:
-    - name: "phase 1"
+    - name: "auth negative"
       duration: "{{ $env.PHASE1_DURATION }}"
       arrivalCount: "{{ $env.PHASE1_ARRIVAL_COUNT }}"
-  processor: "./all-scenarios.js"
+  processor: "./profile-scenarios.js"
   engines:
     playwright:
       launchOptions:
@@ -14,4 +14,4 @@ config:
 
 scenarios:
   - engine: playwright
-    flowFunction: roomLifecycleProfile
+    flowFunction: authNegativeProfile

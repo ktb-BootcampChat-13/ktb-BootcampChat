@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -106,5 +107,34 @@ class RoomRepositoryImplIntegrationTest {
         for (int index = 0; index < participantCount; index++) {
             assertTrue(stored.getParticipantIds().contains("user-" + index));
         }
+    }
+
+    @Test
+    void findPageUsesCreatedAtAndIdAsStableCursor() {
+        mongoTemplate.dropCollection(Room.class);
+        LocalDateTime timestamp = LocalDateTime.of(2026, 8, 12, 10, 0);
+        Room newest = room("507f1f77bcf86cd799439013", timestamp.plusMinutes(1));
+        Room tiedHigherId = room("507f1f77bcf86cd799439012", timestamp);
+        Room tiedLowerId = room("507f1f77bcf86cd799439011", timestamp);
+        Room oldest = room("507f1f77bcf86cd799439010", timestamp.minusMinutes(1));
+        List.of(oldest, tiedLowerId, newest, tiedHigherId).forEach(mongoTemplate::save);
+
+        List<Room> firstPage = repository.findPage(null, null, 2);
+        List<Room> secondPage = repository.findPage(
+            firstPage.get(1).getCreatedAt(), firstPage.get(1).getId(), 2);
+
+        assertEquals(List.of(newest.getId(), tiedHigherId.getId()),
+            firstPage.stream().map(Room::getId).toList());
+        assertEquals(List.of(tiedLowerId.getId(), oldest.getId()),
+            secondPage.stream().map(Room::getId).toList());
+    }
+
+    private static Room room(String id, LocalDateTime createdAt) {
+        return Room.builder()
+            .id(id)
+            .creator("creator-1")
+            .createdAt(createdAt)
+            .participantIds(Set.of("creator-1"))
+            .build();
     }
 }

@@ -116,4 +116,20 @@ describe('useRoomsSocket', () => {
 
     expect(setRooms).not.toHaveBeenCalled();
   });
+
+  it('marks a new room as available without growing the loaded room array', async () => {
+    const socket = createSocket();
+    const setRooms = vi.fn();
+    const onRoomCreated = vi.fn();
+
+    renderRoomsSocket(socket, { setRooms, onRoomCreated });
+    await waitFor(() => {
+      expect(socket.on).toHaveBeenCalledWith('roomCreated', expect.any(Function));
+    });
+
+    handlerFor(socket, 'roomCreated')({ _id: 'new-room' });
+
+    expect(onRoomCreated).toHaveBeenCalledWith({ _id: 'new-room' });
+    expect(setRooms).not.toHaveBeenCalled();
+  });
 });
