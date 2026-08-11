@@ -1,0 +1,70 @@
+{
+  "uid": "ktb-chat-monitoring",
+  "title": "KTB Chat Monitoring",
+  "tags": ["ktb", "loadtest"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5s",
+  "time": { "from": "now-15m", "to": "now" },
+  "templating": { "list": [] },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Monitored targets",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "targets": [{ "expr": "count(up{job!=\"cadvisor\"})", "legendFormat": "targets", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "none", "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] } }, "overrides": [] },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "auto", "textMode": "auto", "colorMode": "value" }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "HTTP requests / sec",
+      "gridPos": { "h": 8, "w": 18, "x": 6, "y": 0 },
+      "targets": [{ "expr": "sum by (status) (rate(http_server_requests_seconds_count{application=\"ktb-chat-backend\"}[1m]))", "legendFormat": "status {{status}}", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "reqps", "color": { "mode": "palette-classic" } }, "overrides": [] },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "HTTP average latency",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [{ "expr": "sum(rate(http_server_requests_seconds_sum{application=\"ktb-chat-backend\"}[1m])) / sum(rate(http_server_requests_seconds_count{application=\"ktb-chat-backend\"}[1m]))", "legendFormat": "average", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } }
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "JVM heap used",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [{ "expr": "sum(jvm_memory_used_bytes{application=\"ktb-chat-backend\",area=\"heap\"})", "legendFormat": "heap", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "bytes" }, "overrides": [] },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "JVM CPU",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "targets": [{ "expr": "process_cpu_usage{application=\"ktb-chat-backend\"}", "legendFormat": "process", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1 }, "overrides": [] },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "MongoDB and Redis exporter up",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "targets": [
+        { "expr": "up{job=\"mongodb\"}", "legendFormat": "mongodb", "refId": "A" },
+        { "expr": "up{job=\"redis\"}", "legendFormat": "redis", "refId": "B" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "none", "min": 0, "max": 1 }, "overrides": [] },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } }
+    }
+  ]
+}

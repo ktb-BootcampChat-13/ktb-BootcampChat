@@ -1,0 +1,16 @@
+{
+  "testName": "room-join-before-1",
+  "fixtureId": "rooms324-users562-messages8051",
+  "apiBaseUrl": "http://localhost:5001",
+  "model": "HTTP-only room join",
+  "vus": 10,
+  "duration": "3m",
+  "thinkTimeMs": 1000,
+  "endedAt": "2026-08-11T01:11:27.059Z",
+  "p95Ms": 137.09819999999993,
+  "p99Ms": 245.29899999999998,
+  "averageMs": 93.7216435944142,
+  "errorRate": 0,
+  "timeoutCount": 0,
+  "completedRequests": 1647
+}

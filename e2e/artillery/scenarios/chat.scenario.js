@@ -27,27 +27,29 @@ async function gotoChatPage(page, vuContext) {
  * Artillery 채팅방 생성 및 메시지 전송 시나리오
  */
 async function chatRoomCreationScenario(page, vuContext) {
+    const observe = vuContext.vars.observation.action;
     try {
         // 1. 채팅방 확인
         await expect(page).toHaveURL(`${BASE_URL}/chat`);
 
         // 2. 채팅방 생성
         const roomName = `부하테스트_${randomUUID()}`;
-        await createChatRoomAction(page, roomName);
-        await expect(page).toHaveURL(new RegExp(`${BASE_URL}/chat/\\w+`));
+        await observe('room_create', async () => {
+            await createChatRoomAction(page, roomName);
+            await expect(page).toHaveURL(new RegExp(`${BASE_URL}/chat/\\w+`));
 
-        // URL 이 바뀌어도 소켓이 안 붙으면 방은 로딩 스피너에 머문다.
-        // 입력창이 떠야 방에 들어온 것이고, 여기서 끊어야 다음 단계가
-        // "입력창을 못 찾음"으로 30s 를 태우지 않는다.
-        await expect(page.getByTestId('chat-message-input')).toBeVisible();
+            // URL 이 바뀌어도 소켓이 안 붙으면 방은 로딩 스피너에 머문다.
+            await expect(page.getByTestId('chat-message-input')).toBeVisible();
+        });
 
         // 3. 메시지 전송
         const message = `테스트 메시지 ${bannedWordSafeText(Date.now())}`;
-        await sendMessageAction(page, message);
-        await page.waitForTimeout(ACTION_TIMEOUT_SHORT);
-
-        const messageElement = page.getByTestId('message-content').filter({ hasText: message });
-        await expect(messageElement).toBeVisible();
+        await observe('message_send', async () => {
+            await sendMessageAction(page, message);
+            await page.waitForTimeout(ACTION_TIMEOUT_SHORT);
+            const messageElement = page.getByTestId('message-content').filter({ hasText: message });
+            await expect(messageElement).toBeVisible();
+        });
 
         vuContext.vars.chatRoomUrl = page.url();
     } catch (error) {
@@ -60,14 +62,21 @@ async function chatRoomCreationScenario(page, vuContext) {
  * Artillery 메시지 대량 전송 시나리오
  */
 async function massMessageScenario(page, vuContext) {
+    const observe = vuContext.vars.observation.action;
     try {
         // 1. 랜덤 채팅방 입장
-        await joinRandomChatRoomAction(page);
-        await expect(page).toHaveURL(new RegExp(`${BASE_URL}/chat/\\w+`));
+        await observe('room_join', async () => {
+            await joinRandomChatRoomAction(page);
+            await expect(page).toHaveURL(new RegExp(`${BASE_URL}/chat/\\w+`));
+            await expect(page.getByTestId('chat-message-input')).toBeVisible();
+        });
 
         // 2. 여러 메시지 연속 전송 (10개)
         console.log(`Sending ${MASS_MESSAGE_COUNT} messages...`);
-        await sendMultipleMessagesAction(page, MASS_MESSAGE_COUNT);
+        await observe('mass_message_send', async () => {
+            const messages = await sendMultipleMessagesAction(page, MASS_MESSAGE_COUNT);
+            await expect(page.getByTestId('message-content').filter({ hasText: messages.at(-1) })).toBeVisible();
+        });
     } catch (error) {
         console.error('Mass message scenario failed:', error.message);
         throw error;
@@ -78,10 +87,14 @@ async function massMessageScenario(page, vuContext) {
  * Artillery 파일 업로드 시나리오
  */
 async function fileUploadScenario(page, vuContext) {
+    const observe = vuContext.vars.observation.action;
     try {
         // 1. 랜덤 채팅방 입장
-        await joinRandomChatRoomAction(page);
-        await expect(page).toHaveURL(new RegExp(`${BASE_URL}/chat/\\w+`));
+        await observe('room_join_for_file', async () => {
+            await joinRandomChatRoomAction(page);
+            await expect(page).toHaveURL(new RegExp(`${BASE_URL}/chat/\\w+`));
+            await expect(page.getByTestId('chat-message-input')).toBeVisible();
+        });
 
         // 2. 이미지 파일 업로드
         const filePath = path.resolve(__dirname, '../../fixtures/images/profile.jpg');
@@ -92,13 +105,13 @@ async function fileUploadScenario(page, vuContext) {
             { timeout: 15000 }
         );
 
-        await uploadFileAction(page, filePath, message);
-        await uploadPromise;
-
-        await page.waitForTimeout(ACTION_TIMEOUT);
-
-        const fileMessageContainer = page.getByTestId('file-message-container').filter({ hasText: message });
-        await expect(fileMessageContainer).toBeVisible({ timeout: 10000 });
+        await observe('file_upload', async () => {
+            await uploadFileAction(page, filePath, message);
+            await uploadPromise;
+            await page.waitForTimeout(ACTION_TIMEOUT);
+            const fileMessageContainer = page.getByTestId('file-message-container').filter({ hasText: message });
+            await expect(fileMessageContainer).toBeVisible({ timeout: 10000 });
+        });
     } catch (error) {
         console.error('File upload scenario failed:', error.message);
         throw error;
@@ -110,6 +123,7 @@ async function fileUploadScenario(page, vuContext) {
  */
 async function forbiddenWordScenario(page, vuContext) {
     const testUser = vuContext.vars.testUser;
+    const observe = vuContext.vars.observation.action;
     // NOTE: 환경변수에서 금칙어 목록을 가져오거나 기본값 사용
     const FORBIDDEN_WORDS = process.env.FORBIDDEN_WORDS
         ? process.env.FORBIDDEN_WORDS
@@ -120,20 +134,21 @@ async function forbiddenWordScenario(page, vuContext) {
 
     try {
         // 1. 랜덤 채팅방 입장
-        await joinRandomChatRoomAction(page);
-        await expect(page).toHaveURL(new RegExp(`${BASE_URL}/chat/\\w+`));
+        await observe('room_join_for_forbidden_word', async () => {
+            await joinRandomChatRoomAction(page);
+            await expect(page).toHaveURL(new RegExp(`${BASE_URL}/chat/\\w+`));
+            await expect(page.getByTestId('chat-message-input')).toBeVisible();
+        });
 
         // 2. 금칙어 메시지 전송 시도
         const forbiddenWord = FORBIDDEN_WORDS[Math.floor(Math.random() * FORBIDDEN_WORDS.length)];
-        await sendMessageAction(page, forbiddenWord);
-
-        // 3. 에러 토스트 확인
-        const errorToast = page.getByTestId('toast-error');
-        await expect(errorToast).toBeVisible({ timeout: 5000 });
-
-        // 4. 메시지가 전송되지 않았는지 확인
-        const sentMessage = page.getByTestId('message-content').filter({ hasText: forbiddenWord });
-        await expect(sentMessage).not.toBeVisible();
+        await observe('forbidden_message_send', async () => {
+            await sendMessageAction(page, forbiddenWord);
+            const errorToast = page.getByTestId('toast-error');
+            await expect(errorToast).toBeVisible({ timeout: 5000 });
+            const sentMessage = page.getByTestId('message-content').filter({ hasText: forbiddenWord });
+            await expect(sentMessage).not.toBeVisible();
+        });
 
         vuContext.vars.testUser = testUser;
     } catch (error) {

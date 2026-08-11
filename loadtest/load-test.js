@@ -85,6 +85,7 @@ class LoadTester {
       errorsMessage: 0,
       latencies: [],
       connectionTimes: [],
+      operations: {},
       startTime: Date.now()
     };
     this.sockets = [];
@@ -104,6 +105,33 @@ class LoadTester {
     }
 
     // Don't output to console directly - it will be handled by printMetrics
+  }
+
+  recordOperation(name, elapsedMs = 0, failed = false) {
+    const operation = this.metrics.operations[name] || { count: 0, errors: 0, latencies: [] };
+    operation.count++;
+    if (failed) operation.errors++;
+    if (elapsedMs > 0) operation.latencies.push(elapsedMs);
+    this.metrics.operations[name] = operation;
+  }
+
+  printOperationRanking() {
+    const rows = Object.entries(this.metrics.operations)
+      .map(([name, operation]) => {
+        const avg = operation.latencies.length
+          ? operation.latencies.reduce((sum, value) => sum + value, 0) / operation.latencies.length
+          : 0;
+        const errorRate = operation.errors / operation.count;
+        const impact = operation.count * Math.max(avg, 1) * (1 + errorRate * 10);
+        return { name, count: operation.count, avg, errorRate, impact };
+      })
+      .sort((a, b) => b.impact - a.impact)
+      .slice(0, 5);
+
+    console.log(chalk.bold.magenta('\n=== Operation Impact Ranking (first-pass) ==='));
+    rows.forEach((row, index) => {
+      console.log(`${index + 1}. ${row.name}: impact=${row.impact.toFixed(1)}, count=${row.count}, avg=${row.avg.toFixed(1)}ms, errors=${(row.errorRate * 100).toFixed(1)}%`);
+    });
   }
 
   async createTestUser(userId) {
@@ -224,13 +252,18 @@ class LoadTester {
           this.log('success', `User ${userId} (${user.name}) connected in ${connectionTime}ms`);
 
           // Join room
+          const joinStart = Date.now();
           socket.emit(CLIENT_EMIT.JOIN_ROOM, roomId);
+
+          socket.__loadtestJoinStart = joinStart;
         });
 
         socket.on(SERVER_EMIT.JOIN_ROOM_SUCCESS, (data) => {
+          this.recordOperation('joinRoom', Date.now() - (socket.__loadtestJoinStart || Date.now()));
           this.log('info', `User ${userId} joined room ${roomId} with ${data.participants?.length || 0} participants`);
 
           // Fetch previous messages before starting to send
+          socket.__loadtestPreviousStart = Date.now();
           socket.emit(CLIENT_EMIT.FETCH_PREVIOUS_MESSAGES, { roomId: roomId, limit: 30 });
 
           // Start sending messages
@@ -238,6 +271,7 @@ class LoadTester {
         });
 
         socket.on(SERVER_EMIT.PREVIOUS_MESSAGES_LOADED, (data) => {
+          this.recordOperation('fetchPreviousMessages', Date.now() - (socket.__loadtestPreviousStart || Date.now()));
           this.metrics.previousMessagesFetched++;
           if (data.messages?.length) {
             this.metrics.messagesReceived += data.messages.length;
@@ -245,6 +279,7 @@ class LoadTester {
         });
 
         socket.on(SERVER_EMIT.JOIN_ROOM_ERROR, (error) => {
+          this.recordOperation('joinRoom', Date.now() - (socket.__loadtestJoinStart || Date.now()), true);
           this.metrics.errorsConnection++;
           this.log('error', `User ${userId} failed to join room:`, error.message || JSON.stringify(error));
           socket.close();
@@ -259,6 +294,7 @@ class LoadTester {
             socket.emit(CLIENT_EMIT.MARK_MESSAGES_AS_READ, {
               messageIds: [data._id]
             });
+            this.recordOperation('markMessagesAsRead');
             this.metrics.messagesRead++;
 
             // Randomly react to ~10% of messages
@@ -268,6 +304,7 @@ class LoadTester {
                 reaction: '👍',
                 type: 'add'
               });
+              this.recordOperation('messageReaction');
               this.metrics.reactionsSent++;
             }
           }
@@ -505,6 +542,7 @@ class LoadTester {
     // Stop metrics reporting and print final report
     clearInterval(this.metricsInterval);
     this.printMetrics();
+    this.printOperationRanking();
 
     console.log(chalk.bold.green('\n✓ Load test completed!\n'));
     process.exit(0);

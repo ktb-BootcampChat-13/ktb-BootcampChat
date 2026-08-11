@@ -16,17 +16,20 @@ const ACTION_TIMEOUT_SHORT = parseInt(process.env.ACTION_TIMEOUT_SHORT || '500',
  * 이름 변경 + 이미지 업로드
  */
 async function fullProfileUpdateScenario(page, vuContext) {
+    const observe = vuContext.vars.observation.action;
     try {
         // 1. 프로필 페이지 이동
-        await goToProfileAction(page);
+        await observe('profile_open', () => goToProfileAction(page));
         await page.waitForTimeout(ACTION_TIMEOUT_SHORT);
 
         // 2. 이미지 업로드
-        await page.getByTestId('profile-image-file-input').setInputFiles(PROFILE_IMAGE_PATH);
-        await page.waitForTimeout(ACTION_TIMEOUT);
+        await observe('profile_image_change', async () => {
+            await page.getByTestId('profile-image-file-input').setInputFiles(PROFILE_IMAGE_PATH);
+            await page.waitForTimeout(ACTION_TIMEOUT);
+            await expect(page.getByTestId('toast-success')).toBeVisible();
+        });
 
         // 2-1. 이미지 업로드 검증
-        await expect(page.getByTestId('toast-success')).toBeVisible();
         await page.waitForTimeout(ACTION_TIMEOUT_SHORT);
 
         // 3. 이름 변경
@@ -35,13 +38,13 @@ async function fullProfileUpdateScenario(page, vuContext) {
         await page.waitForTimeout(ACTION_TIMEOUT_SHORT);
 
         // 4. 저장
-        await page.getByTestId('profile-save-button').click();
-        await page.waitForTimeout(ACTION_TIMEOUT);
-
-        // 5. 성공 확인
-        await expect(page.getByTestId('profile-success-message')).toBeVisible();
-        await expect(page.getByTestId('profile-name-input')).toHaveValue(newName);
-        await expect(page.getByTestId('profile-image-avatar')).toBeVisible();
+        await observe('profile_name_change', async () => {
+            await page.getByTestId('profile-save-button').click();
+            await page.waitForTimeout(ACTION_TIMEOUT);
+            await expect(page.getByTestId('profile-success-message')).toBeVisible();
+            await expect(page.getByTestId('profile-name-input')).toHaveValue(newName);
+            await expect(page.getByTestId('profile-image-avatar')).toBeVisible();
+        });
     } catch (error) {
         console.error('Full profile update scenario failed:', error.message);
         throw error;
