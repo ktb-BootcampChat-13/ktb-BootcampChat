@@ -18,6 +18,32 @@
   PHASE1_ARRIVAL_COUNT=10 PHASE1_DURATION=30 make artillery
   ```
 
+## Stage 0 관측 실행
+
+브라우저 흐름을 부하 테스트로 올리기 전에 1 VU로 실제 호출 경로를 진단합니다. 이 실행은
+사용자 행동을 바꾸지 않고 HTTP API, Socket.IO 요청-완료 쌍, 화면 행동 완료시간을 각각
+수집합니다.
+
+```bash
+BASE_URL=http://localhost:3000 \
+PHASE1_ARRIVAL_COUNT=1 PHASE1_DURATION=5 \
+OBSERVATION_RUN_ID=stage0-run1 \
+pnpm --filter e2e exec artillery run artillery/artillery-config.yaml
+
+node e2e/artillery/report-observations.js \
+  e2e/artillery/results/stage0-run1
+```
+
+각 VU의 원시 JSON과 합산 `summary.json`이 지정한 실행 디렉터리에 저장됩니다. 표는
+호출 수, 성공/실패, 평균, p95, p99, 누적시간 및 같은 계층 내 누적시간 비중을 보여 줍니다.
+HTTP의 4xx/5xx는 실패로 집계되므로 의도된 로그인 실패 시나리오의 401은 행동 성공 여부와
+별도로 해석해야 합니다. Socket 표에는 연결, 방 입장, 과거 메시지 조회, 메시지 전송 완료가
+서로 섞이지 않습니다. 해당 실행이 `fetchPreviousMessages`를 보내지 않았다면 과거 메시지 행은
+생성되지 않습니다.
+
+`PHASE1_ARRIVAL_COUNT`는 지속 동시 VU가 아니라 phase 동안 생성할 총 사용자 수입니다.
+Stage 0을 3회 완료하고 Mongo profiler/실행계획 근거까지 확보하기 전에는 VU를 올리지 않습니다.
+
 ## 환경 변수
 
   Artillery 실행 시 다음 환경 변수로 커스터마이징할 수 있습니다:

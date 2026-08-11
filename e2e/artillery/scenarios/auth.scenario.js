@@ -13,22 +13,23 @@ const ACTION_TIMEOUT_SHORT = parseInt(process.env.ACTION_TIMEOUT_SHORT || '500',
  */
 async function loginScenario(page, vuContext) {
     let testUser = vuContext.vars.testUser;
+    const observe = vuContext.vars.observation.action;
 
     try {
         // 1. 회원가입
-        await registerAction(page, testUser);
+        await observe('register', () => registerAction(page, testUser));
         await page.waitForTimeout(ACTION_TIMEOUT);
 
         // 2. 로그인
-        await loginAction(page, testUser);
+        await observe('login', () => loginAction(page, testUser));
         await expect(page).toHaveURL(`${BASE_URL}/chat`);
 
         // URL 만으로는 완주를 판정할 수 없다. 방 목록이 실제로 그려져야
         // 로그인이 쓸모 있는 상태로 끝난 것이다(목록이 비어 있는 경우 포함).
-        await expect(
-            page.getByTestId('join-chat-room-button').first()
-                .or(page.getByTestId('rooms-empty'))
-        ).toBeVisible();
+        await observe('room_list_display', () => expect(
+                page.getByTestId('join-chat-room-button').first()
+                    .or(page.getByTestId('rooms-empty'))
+            ).toBeVisible());
 
         // 컨텍스트에 사용자 정보 저장 (다른 시나리오에서 사용 가능)
         vuContext.vars.testUser = testUser;
@@ -43,11 +44,12 @@ async function loginScenario(page, vuContext) {
  * 잘못된 로그인 시도 부하 테스트
  */
 async function failedLoginScenario(page, vuContext) {
+    const observe = vuContext.vars.observation.action;
     try {
-        await loginAction(page, {
+        await observe('failed_login', () => loginAction(page, {
             email: 'nonexistent@example.com',
             password: 'WrongPassword123!',
-        }, false);
+        }, false));
 
         await page.waitForTimeout(500);
         const errorElement = page.getByTestId('login-error-message');
