@@ -1,6 +1,6 @@
 # Ollama CLI Agent
 
-로컬 Ollama의 `qwen2.5`와 대화하고, 현재 날짜나 시각이 필요할 때 모델이 스스로 `get_datetime` 도구를 선택하는 CLI 에이전트입니다.
+로컬 Ollama의 `qwen2.5`와 대화하고, 질문에 따라 모델이 스스로 `get_datetime` 또는 `get_weather` 도구를 선택하는 CLI 에이전트입니다.
 
 ## 설치
 
@@ -40,10 +40,11 @@ python main.py chat --model qwen2.5:7b
 You: 파이썬 리스트와 튜플의 차이가 뭐야?
 You: 내가 방금 무엇을 물었지?
 You: 지금 몇 시야?
+You: 서울 날씨 알려줘
 You: exit
 ```
 
-세 번째 질문에서 모델은 `get_datetime` 도구를 선택하고, Python이 반환한 현재 시각을 바탕으로 최종 답변을 만듭니다.
+세 번째 질문에서는 `get_datetime`, 네 번째 질문에서는 `get_weather` 도구를 선택합니다. 날씨 조회는 API 키가 필요 없는 `wttr.in`을 사용하므로 인터넷 연결이 필요합니다. 네트워크나 조회가 실패하면 에이전트가 종료되지 않고 오류 원인을 답변합니다.
 
 ## 테스트
 
