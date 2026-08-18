@@ -1,6 +1,6 @@
 # Ollama CLI Agent
 
-로컬 Ollama의 `qwen2.5`와 대화하고, 질문에 따라 모델이 스스로 `get_datetime` 또는 `get_weather` 도구를 선택하는 CLI 에이전트입니다.
+로컬 Ollama의 `qwen2.5`와 대화하고, 질문에 따라 모델이 스스로 `get_datetime`, `get_weather`, `get_news` 도구를 선택하는 CLI 에이전트입니다.
 
 ## 설치
 
@@ -41,10 +41,11 @@ You: 파이썬 리스트와 튜플의 차이가 뭐야?
 You: 내가 방금 무엇을 물었지?
 You: 지금 몇 시야?
 You: 서울 날씨 알려줘
+You: 인공지능 최신 뉴스 알려줘
 You: exit
 ```
 
-세 번째 질문에서는 `get_datetime`, 네 번째 질문에서는 `get_weather` 도구를 선택합니다. 날씨 조회는 API 키가 필요 없는 `wttr.in`을 사용하므로 인터넷 연결이 필요합니다. 네트워크나 조회가 실패하면 에이전트가 종료되지 않고 오류 원인을 답변합니다.
+세 번째 질문에서는 `get_datetime`, 네 번째 질문에서는 `get_weather`, 다섯 번째 질문에서는 `get_news` 도구를 선택합니다. 날씨는 `wttr.in`, 뉴스는 Google News RSS를 사용하며 API 키 없이 동작합니다. 외부 조회에는 인터넷 연결이 필요하고, 실패하면 에이전트가 종료되지 않고 오류 원인을 답변합니다.
 
 ## 테스트
 

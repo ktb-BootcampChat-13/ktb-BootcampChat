@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import xml.etree.ElementTree as ET
 from collections.abc import Callable
 from typing import Any
 from urllib.parse import quote
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 
 def get_datetime() -> str:
@@ -28,9 +29,34 @@ def get_weather(city: str) -> str:
     )
 
 
+def get_news(query: str = "", count: int = 5) -> str:
+    """Google News RSS에서 최신 기사 제목을 요청한 개수만큼 반환한다."""
+    if query:
+        url = (
+            f"https://news.google.com/rss/search?q={quote(query)}"
+            "&hl=ko&gl=KR&ceid=KR:ko"
+        )
+    else:
+        url = "https://news.google.com/rss?hl=ko&gl=KR&ceid=KR:ko"
+
+    request = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urlopen(request, timeout=10) as response:
+        root = ET.fromstring(response.read())
+
+    count = max(1, min(count, 5))
+    items = root.findall(".//item")[:count]
+    if not items:
+        return "[오류] 뉴스 결과가 없습니다."
+
+    return "\n".join(
+        f"- {(item.findtext('title') or '제목 없음').strip()}" for item in items
+    )
+
+
 TOOL_FUNCTIONS: dict[str, Callable[..., str]] = {
     "get_datetime": get_datetime,
     "get_weather": get_weather,
+    "get_news": get_news,
 }
 
 TOOL_SCHEMAS = [
@@ -56,6 +82,29 @@ TOOL_SCHEMAS = [
                     }
                 },
                 "required": ["city"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_news",
+            "description": "최신 한국 주요 뉴스 또는 검색어와 관련된 최신 기사 제목을 조회한다.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "뉴스 검색어. 생략하면 한국 주요 뉴스를 조회한다.",
+                    },
+                    "count": {
+                        "type": "integer",
+                        "description": "가져올 기사 개수. 1부터 5까지 지정할 수 있다.",
+                        "minimum": 1,
+                        "maximum": 5,
+                        "default": 5,
+                    },
+                },
             },
         },
     },

@@ -1,4 +1,4 @@
-from agent import Agent
+from agent import Agent, SYSTEM_PROMPT
 
 
 class FakeChatClient:
@@ -100,3 +100,7 @@ def test_stops_when_tool_call_limit_is_reached():
 
     assert "도구 호출 한계(2회)" in answer
     assert len(client.calls) == 2
+
+
+def test_system_prompt_forbids_inventing_news_links():
+    assert "뉴스 도구 결과에 없는 링크나 사실을 만들지 마세요" in SYSTEM_PROMPT
