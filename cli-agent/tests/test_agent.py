@@ -1,3 +1,4 @@
+import agent as agent_module
 from agent import Agent, SYSTEM_PROMPT
 
 
@@ -104,3 +105,26 @@ def test_stops_when_tool_call_limit_is_reached():
 
 def test_system_prompt_forbids_inventing_news_links():
     assert "뉴스 도구 결과에 없는 링크나 사실을 만들지 마세요" in SYSTEM_PROMPT
+
+
+def test_executes_registered_tool_from_text_fallback(monkeypatch):
+    client = FakeChatClient(
+        [
+            response(
+                'Escorts\n<tool_call>\n{"name":"get_news","arguments":{"count":3}}\n</tool_call>'
+            ),
+            response("뉴스 3개입니다."),
+        ]
+    )
+    calls = []
+
+    def fake_run_tool(name, arguments):
+        calls.append((name, arguments))
+        return "- 기사 1\n- 기사 2\n- 기사 3"
+
+    monkeypatch.setattr(agent_module, "run_tool", fake_run_tool)
+    agent = Agent(chat_client=client)
+
+    assert agent.ask("뉴스 3개 알려줘") == "뉴스 3개입니다."
+    assert calls == [("get_news", {"count": 3})]
+    assert any(message["role"] == "tool" for message in agent.messages)

@@ -6,7 +6,7 @@ from typing import Any
 
 import ollama
 
-from tools import TOOL_SCHEMAS, run_tool
+from tools import TOOL_FUNCTIONS, TOOL_SCHEMAS, run_tool
 
 
 SYSTEM_PROMPT = (
@@ -29,6 +29,24 @@ def _as_dict(item: Any) -> dict[str, Any]:
     if hasattr(item, "model_dump"):
         return item.model_dump(exclude_none=True)
     raise TypeError(f"지원하지 않는 모델 응답 형식: {type(item).__name__}")
+
+
+def _parse_text_tool_call(content: str) -> tuple[str, dict[str, Any]] | None:
+    start = content.find("{")
+    end = content.rfind("}")
+    if start < 0 or end <= start:
+        return None
+    try:
+        parsed = json.loads(content[start : end + 1])
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(parsed, dict):
+        return None
+    name = parsed.get("name")
+    arguments = parsed.get("arguments", {})
+    if name not in TOOL_FUNCTIONS or not isinstance(arguments, dict):
+        return None
+    return name, arguments
 
 
 class Agent:
@@ -65,7 +83,29 @@ class Agent:
 
             tool_calls = _value(message, "tool_calls", None) or []
             if not tool_calls:
-                return self._record_answer(_value(message, "content", "") or "")
+                content = _value(message, "content", "") or ""
+                text_tool_call = _parse_text_tool_call(content)
+                if text_tool_call is None:
+                    return self._record_answer(content)
+
+                name, arguments = text_tool_call
+                self.messages.append(
+                    {
+                        "role": "assistant",
+                        "content": "",
+                        "tool_calls": [
+                            {"function": {"name": name, "arguments": arguments}}
+                        ],
+                    }
+                )
+                self.messages.append(
+                    {
+                        "role": "tool",
+                        "tool_name": name,
+                        "content": run_tool(name, arguments),
+                    }
+                )
+                continue
 
             self.messages.append(_as_dict(message))
             for call in tool_calls:
