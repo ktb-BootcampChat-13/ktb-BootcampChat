@@ -85,3 +85,44 @@ def test_news_tool_is_registered_for_model_selection():
     assert tools.TOOL_FUNCTIONS["get_news"] is tools.get_news
     assert "get_news" in schema_names
     assert news_schema["function"]["parameters"]["properties"]["count"]["maximum"] == 5
+
+
+def test_get_exchange_rate_converts_amount(monkeypatch):
+    payload = b"""{
+        "amount": 100.0,
+        "base": "USD",
+        "date": "2026-08-17",
+        "rates": {"KRW": 141191.0}
+    }"""
+    requested_urls = []
+
+    def fake_urlopen(request, timeout):
+        requested_urls.append((request.full_url, request.get_header("User-agent"), timeout))
+        return BytesIO(payload)
+
+    monkeypatch.setattr(tools, "urlopen", fake_urlopen)
+
+    result = tools.get_exchange_rate("usd", "krw", amount=100)
+
+    assert result == "100.00 USD = 141,191.00 KRW (기준일: 2026-08-17)"
+    assert "amount=100" in requested_urls[0][0]
+    assert "from=USD" in requested_urls[0][0]
+    assert "to=KRW" in requested_urls[0][0]
+    assert requested_urls[0][1] == "Mozilla/5.0"
+    assert requested_urls[0][2] == 10
+
+
+def test_exchange_rate_tool_is_registered_for_model_selection():
+    schema_names = [schema["function"]["name"] for schema in tools.TOOL_SCHEMAS]
+    exchange_schema = next(
+        schema
+        for schema in tools.TOOL_SCHEMAS
+        if schema["function"]["name"] == "get_exchange_rate"
+    )
+
+    assert tools.TOOL_FUNCTIONS["get_exchange_rate"] is tools.get_exchange_rate
+    assert "get_exchange_rate" in schema_names
+    assert exchange_schema["function"]["parameters"]["required"] == [
+        "base",
+        "target",
+    ]

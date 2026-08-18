@@ -5,7 +5,7 @@ import json
 import xml.etree.ElementTree as ET
 from collections.abc import Callable
 from typing import Any
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 from urllib.request import Request, urlopen
 
 
@@ -53,10 +53,29 @@ def get_news(query: str = "", count: int = 5) -> str:
     )
 
 
+def get_exchange_rate(base: str, target: str, amount: float = 1) -> str:
+    """Frankfurter API로 통화 금액을 환산한다."""
+    base = base.upper()
+    target = target.upper()
+    query = urlencode({"amount": amount, "from": base, "to": target})
+    request = Request(
+        f"https://api.frankfurter.app/latest?{query}",
+        headers={"User-Agent": "Mozilla/5.0"},
+    )
+    with urlopen(request, timeout=10) as response:
+        data = json.load(response)
+    converted = data["rates"][target]
+    return (
+        f"{amount:,.2f} {base} = {converted:,.2f} {target} "
+        f"(기준일: {data['date']})"
+    )
+
+
 TOOL_FUNCTIONS: dict[str, Callable[..., str]] = {
     "get_datetime": get_datetime,
     "get_weather": get_weather,
     "get_news": get_news,
+    "get_exchange_rate": get_exchange_rate,
 }
 
 TOOL_SCHEMAS = [
@@ -105,6 +124,32 @@ TOOL_SCHEMAS = [
                         "default": 5,
                     },
                 },
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_exchange_rate",
+            "description": "기준 통화 금액을 대상 통화로 환산하고 환율 기준일을 반환한다.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "base": {
+                        "type": "string",
+                        "description": "기준 통화의 3자리 코드. 예: USD, KRW, EUR",
+                    },
+                    "target": {
+                        "type": "string",
+                        "description": "대상 통화의 3자리 코드. 예: KRW, USD, JPY",
+                    },
+                    "amount": {
+                        "type": "number",
+                        "description": "환산할 기준 통화 금액. 생략하면 1",
+                        "default": 1,
+                    },
+                },
+                "required": ["base", "target"],
             },
         },
     },
