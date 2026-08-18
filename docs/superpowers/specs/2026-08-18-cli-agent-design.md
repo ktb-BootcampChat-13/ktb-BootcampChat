@@ -2,7 +2,7 @@
 
 ## Goal
 
-Build a small Python CLI agent that uses the local Ollama `qwen2.5` model, keeps conversation context during one run, invokes a calculator tool when needed, and saves the completed conversation to JSON on exit.
+Build a small Python CLI agent that uses the local Ollama `qwen2.5` model, keeps conversation context during one run, invokes a current-date-and-time tool when needed, and saves the completed conversation to JSON on exit.
 
 ## Scope
 
@@ -27,7 +27,7 @@ The `chat` command starts a standard-input loop. The user exits with `exit`, `qu
 
 ### `agent.py`
 
-- Sends the current message history and calculator schema to Ollama.
+- Sends the current message history and `get_datetime` schema to Ollama.
 - Detects tool-call responses from the model.
 - Executes requested tools and appends tool results to the message history.
 - Repeats model/tool processing up to `max_steps` times for each user request.
@@ -35,9 +35,9 @@ The `chat` command starts a standard-input loop. The user exits with `exit`, `qu
 
 ### `tools.py`
 
-- Exposes a calculator tool for arithmetic expressions.
-- Supports numeric literals, parentheses, and addition, subtraction, multiplication, division, modulo, powers, and unary signs.
-- Parses expressions with Python's `ast` module and explicitly rejects names, attributes, calls, indexing, and other executable syntax. It does not use unrestricted `eval()`.
+- Exposes a `get_datetime` tool that returns the current local date, weekday, and time.
+- Registers the Python function and its tool schema in one module.
+- Converts unknown tools and execution failures into error strings instead of terminating the agent loop.
 
 ### `history.py`
 
@@ -47,35 +47,35 @@ The `chat` command starts a standard-input loop. The user exits with `exit`, `qu
 ## Data Flow
 
 1. The CLI appends user input to the message history.
-2. The agent sends that history and the calculator definition to Ollama.
+2. The agent sends that history and the `get_datetime` definition to Ollama.
 3. If the model returns a normal assistant message, the CLI prints it.
-4. If the model requests the calculator, the agent validates and executes the expression, appends the tool result, and calls the model again.
+4. If the model requests `get_datetime`, the agent executes it, appends the tool result, and calls the model again.
 5. The loop stops when a final assistant message is returned or `max_steps` is reached.
 6. On process exit, the CLI writes all messages to `history.json`.
 
 ## Error Handling
 
 - An unavailable Ollama service or missing model produces a concise user-facing error without a Python traceback in normal CLI use.
-- Invalid calculator expressions return an error as a tool result so the model can explain the problem.
+- Unknown tool names, malformed arguments, and tool exceptions become tool-result error messages so the model can explain the problem.
 - A non-positive `--max-steps` value is rejected by argument parsing.
 - Reaching the tool-loop limit produces an explicit limit error rather than looping indefinitely.
 - A history write failure is reported without hiding the original exit behavior.
 
 ## Verification
 
-Automated tests cover calculator arithmetic, precedence, unary operators, division by zero, and rejection of executable or unsupported syntax. CLI parsing tests cover the default model, configurable step limit, and invalid limits. Agent tests use a fake Ollama client to verify both direct responses and calculator tool-call flow without requiring a live model.
+Automated tests cover the date-time tool and tool-dispatch failures. CLI parsing tests cover the default model, configurable step limit, and invalid limits. Agent tests use a fake Ollama client to verify direct responses, short-term memory, date-time tool calls, model failures, and the tool-call limit without requiring a live model.
 
 A manual smoke test verifies that:
 
 1. `python main.py chat --model qwen2.5 --max-steps 3` starts the prompt.
 2. A normal question receives a direct answer.
-3. A request such as `12 * (3 + 4)를 계산해줘` invokes the calculator and returns `84`.
+3. A request such as `지금 몇 시야?` invokes `get_datetime` and returns the actual local time.
 4. Entering `exit` terminates the CLI and creates `history.json`.
 
 ## Non-goals
 
 - Restoring history automatically on the next run.
 - Calling external web APIs.
-- Supporting tools other than the calculator.
+- Supporting tools other than `get_datetime`.
 - Adding a graphical or web interface.
 - Modifying the existing chat application.
