@@ -8,6 +8,8 @@ from typing import Any
 from urllib.parse import quote, urlencode
 from urllib.request import Request, urlopen
 
+from ddgs import DDGS
+
 
 def get_datetime() -> str:
     """현재 로컬 날짜, 요일, 시각을 반환한다."""
@@ -68,11 +70,25 @@ def get_exchange_rate(base: str, target: str, amount: float = 1) -> str:
     )
 
 
+def web_search(query: str, count: int = 5) -> str:
+    """웹에서 최신 정보를 검색해 제목과 요약문을 반환한다."""
+    count = max(1, min(count, 5))
+    results = list(DDGS().text(query, max_results=count))
+    if not results:
+        return "[오류] 웹 검색 결과가 없습니다."
+    return "\n".join(
+        f"- {(item.get('title') or '제목 없음').strip()}\n"
+        f"  {(item.get('body') or '요약 없음').strip()}"
+        for item in results
+    )
+
+
 TOOL_FUNCTIONS: dict[str, Callable[..., str]] = {
     "get_datetime": get_datetime,
     "get_weather": get_weather,
     "get_news": get_news,
     "get_exchange_rate": get_exchange_rate,
+    "web_search": web_search,
 }
 
 TOOL_SCHEMAS = [
@@ -148,6 +164,23 @@ TOOL_SCHEMAS = [
                     },
                 },
                 "required": ["base", "target"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "web_search",
+            "description": "모델이 모르는 최신 정보나 일반 웹 정보가 필요할 때 웹을 검색해 제목과 요약문을 반환한다.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "구체적인 웹 검색어. 예: 2026 F1 드라이버 순위",
+                    }
+                },
+                "required": ["query"],
             },
         },
     },

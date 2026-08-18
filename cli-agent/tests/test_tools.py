@@ -138,3 +138,39 @@ def test_exchange_rate_tool_is_registered_for_model_selection():
         "base",
         "target",
     ]
+
+
+def test_web_search_returns_requested_titles_and_snippets(monkeypatch):
+    calls = []
+
+    class FakeDDGS:
+        def text(self, query, max_results):
+            calls.append((query, max_results))
+            return [
+                {"title": "F1 순위", "body": "2026 시즌 드라이버 순위입니다."},
+                {"title": "F1 일정", "body": "다음 경기는 이번 주말입니다."},
+            ]
+
+    monkeypatch.setattr(tools, "DDGS", FakeDDGS)
+
+    result = tools.web_search("2026 F1 최신 순위", count=2)
+
+    assert result == (
+        "- F1 순위\n  2026 시즌 드라이버 순위입니다.\n"
+        "- F1 일정\n  다음 경기는 이번 주말입니다."
+    )
+    assert calls == [("2026 F1 최신 순위", 2)]
+
+
+def test_web_search_tool_is_registered_for_model_selection():
+    schema_names = [schema["function"]["name"] for schema in tools.TOOL_SCHEMAS]
+    search_schema = next(
+        schema
+        for schema in tools.TOOL_SCHEMAS
+        if schema["function"]["name"] == "web_search"
+    )
+
+    assert tools.TOOL_FUNCTIONS["web_search"] is tools.web_search
+    assert "web_search" in schema_names
+    assert search_schema["function"]["parameters"]["required"] == ["query"]
+    assert "count" not in search_schema["function"]["parameters"]["properties"]

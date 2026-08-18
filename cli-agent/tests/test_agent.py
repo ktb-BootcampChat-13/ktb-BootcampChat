@@ -107,6 +107,11 @@ def test_system_prompt_forbids_inventing_news_links():
     assert "뉴스 도구 결과에 없는 링크나 사실을 만들지 마세요" in SYSTEM_PROMPT
 
 
+def test_system_prompt_prioritizes_fresh_tool_results():
+    assert "최신 정보는 기존 지식보다 도구 결과를 우선하세요" in SYSTEM_PROMPT
+    assert "도구 결과와 모순되는 내용을 덧붙이지 마세요" in SYSTEM_PROMPT
+
+
 def test_executes_registered_tool_from_text_fallback(monkeypatch):
     client = FakeChatClient(
         [
