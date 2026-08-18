@@ -85,6 +85,18 @@ def test_news_tool_is_registered_for_model_selection():
     assert tools.TOOL_FUNCTIONS["get_news"] is tools.get_news
     assert "get_news" in schema_names
     assert news_schema["function"]["parameters"]["properties"]["count"]["maximum"] == 5
+    assert news_schema["function"]["parameters"]["required"] == ["query"]
+
+
+def test_get_news_rejects_missing_topic_before_network_request(monkeypatch):
+    def fail_if_requested(*_args, **_kwargs):
+        raise AssertionError("검색어 없이 네트워크를 호출하면 안 됩니다.")
+
+    monkeypatch.setattr(tools, "urlopen", fail_if_requested)
+
+    result = tools.run_tool("get_news", {"count": 3})
+
+    assert "missing 1 required positional argument: 'query'" in result
 
 
 def test_get_exchange_rate_converts_amount(monkeypatch):

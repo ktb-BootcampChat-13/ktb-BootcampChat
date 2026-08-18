@@ -29,15 +29,12 @@ def get_weather(city: str) -> str:
     )
 
 
-def get_news(query: str = "", count: int = 5) -> str:
+def get_news(query: str, count: int = 5) -> str:
     """Google News RSS에서 최신 기사 제목을 요청한 개수만큼 반환한다."""
-    if query:
-        url = (
-            f"https://news.google.com/rss/search?q={quote(query)}"
-            "&hl=ko&gl=KR&ceid=KR:ko"
-        )
-    else:
-        url = "https://news.google.com/rss?hl=ko&gl=KR&ceid=KR:ko"
+    url = (
+        f"https://news.google.com/rss/search?q={quote(query)}"
+        "&hl=ko&gl=KR&ceid=KR:ko"
+    )
 
     request = Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urlopen(request, timeout=10) as response:
@@ -114,7 +111,7 @@ TOOL_SCHEMAS = [
                 "properties": {
                     "query": {
                         "type": "string",
-                        "description": "뉴스 검색어. 생략하면 한국 주요 뉴스를 조회한다.",
+                        "description": "사용자가 요청한 뉴스 주제. 예: 인공지능. 일반 주요 뉴스는 한국으로 지정한다.",
                     },
                     "count": {
                         "type": "integer",
@@ -124,6 +121,7 @@ TOOL_SCHEMAS = [
                         "default": 5,
                     },
                 },
+                "required": ["query"],
             },
         },
     },
