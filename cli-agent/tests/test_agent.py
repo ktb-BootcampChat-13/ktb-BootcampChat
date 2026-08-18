@@ -91,16 +91,21 @@ def test_model_failure_is_explained_and_recorded():
     assert agent.messages[-1] == {"role": "assistant", "content": answer}
 
 
-def test_stops_when_tool_call_limit_is_reached():
+def test_forces_final_answer_when_tool_call_limit_is_reached():
     client = FakeChatClient(
-        [response(tool_calls=[datetime_call()]), response(tool_calls=[datetime_call()])]
+        [
+            response(tool_calls=[datetime_call()]),
+            response(tool_calls=[datetime_call()]),
+            response("수집한 결과로 답변합니다."),
+        ]
     )
     agent = Agent(max_steps=2, chat_client=client)
 
     answer = agent.ask("시간 알려줘")
 
-    assert "도구 호출 한계(2회)" in answer
-    assert len(client.calls) == 2
+    assert answer == "수집한 결과로 답변합니다."
+    assert len(client.calls) == 3
+    assert "tools" not in client.calls[-1]
 
 
 def test_system_prompt_forbids_inventing_news_links():

@@ -121,9 +121,23 @@ class Agent:
                     {"role": "tool", "tool_name": name, "content": result}
                 )
 
-        return self._record_answer(
-            f"[중단] 도구 호출 한계({self.max_steps}회)에 도달했습니다."
-        )
+        try:
+            response = self.chat_client(
+                model=self.model,
+                messages=[dict(message) for message in self.messages],
+            )
+            message = _value(response, "message")
+            if message is None:
+                raise ValueError("응답에 message가 없습니다.")
+            content = _value(message, "content", "") or ""
+            if not content:
+                raise ValueError("최종 답변이 비어 있습니다.")
+            return self._record_answer(content)
+        except Exception as error:
+            return self._record_answer(
+                f"[중단] 도구 호출 한계({self.max_steps}회)에 도달했고 "
+                f"최종 답변 생성에도 실패했습니다: {error}"
+            )
 
     @staticmethod
     def _parse_arguments(raw_arguments: Any) -> tuple[dict[str, Any], str | None]:
